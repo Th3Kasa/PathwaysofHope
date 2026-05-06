@@ -1,28 +1,27 @@
 "use client";
 
-import Image from "next/image";
 import { TrustStrip } from "@/components/trust-strip";
 import { DonateButton } from "@/components/donate-button";
 import { motion, type Variants } from "framer-motion";
 
-const TEAM = [
+const BOARD = [
   {
-    name: "Brother Hakim Peter",
-    role: "Founder & Director, Kapoeta Shelter",
-    image: "/images/kapoeta/hakim.png",
-    bio: "A South Sudanese pastor who left a stable life in Australia to answer a calling he describes as impossible to ignore. Hakim has lived in Kapoeta since 2020, leading the shelter full-time. He knows every child by name. He is the mission.",
+    name: "Waleed Mansour",
+    roles: ["Director"],
+    initials: "WM",
+    bio: "Waleed brings a deep commitment to transparent governance and community-driven charity. As a director of Pathways of Hope, he ensures the organisation's mission remains accountable to those it serves.",
   },
   {
-    name: "Elder Mamdouh Mansour",
-    role: "Australian Coordinator",
-    image: "/images/kapoeta/hakim-community.jpg",
-    bio: "Elder Mamdouh coordinates Australian donations, logistics, and volunteer travel. He was instrumental in organising the original shipping container from Sydney, navigating customs across three countries to deliver supplies to Kapoeta.",
+    name: "Hanan Mansour",
+    roles: ["Director"],
+    initials: "HM",
+    bio: "Hanan is committed to building sustainable charitable structures that honour both donors and recipients. Her focus is on long-term impact over short-term visibility.",
   },
   {
-    name: "Philip Hanna",
-    role: "Fundraising & Operations Lead",
-    image: "/images/kapoeta/community-1.jpg",
-    bio: "Philip oversees fundraising strategy, donor relationships, and the financial transparency that makes Pathways of Hope trustworthy. A committed volunteer, Philip has self-funded multiple visits to Kapoeta to see the impact firsthand.",
+    name: "Sylvia Mansour",
+    roles: ["Director", "Public Officer", "Secretary"],
+    initials: "SM",
+    bio: "Sylvia holds responsibility for the organisation's public obligations and governance records. Her diligence ensures Pathways of Hope meets all regulatory requirements as a registered Australian charity.",
   },
 ];
 
@@ -32,8 +31,8 @@ const COMMITMENTS = [
     body: "Pathways of Hope is registered with the Australian Charities and Not-for-profits Commission (ACNC). Donations are tax-deductible for Australian taxpayers.",
   },
   {
-    title: "100% to the children — structurally guaranteed",
-    body: "All volunteer travel costs — flights, accommodation, visas — are self-funded by the individuals involved. Not one cent of donor money is spent on getting people to and from Kapoeta.",
+    title: "100% to the field — structurally guaranteed",
+    body: "All volunteer travel costs — flights, accommodation, visas — are self-funded by the individuals involved. Not one cent of donor money is spent on getting people to and from our missions.",
   },
   {
     title: "Full financial transparency",
@@ -41,21 +40,26 @@ const COMMITMENTS = [
   },
   {
     title: "Local leadership, not outsider management",
-    body: "Brother Hakim Peter is the decision-maker on the ground. We do not impose Australian management on a Sudanese community. We resource a leader the community already trusts.",
+    body: "The local leader on the ground is the decision-maker. We do not impose Australian management on communities we serve. We resource leaders those communities already trust.",
   },
   {
     title: "No overhead extraction",
-    body: "Our administrative costs are covered by a small number of committed donors who specifically designate their gifts for operations. General donations are ringfenced for Kapoeta.",
+    body: "Our administrative costs are covered by a small number of committed donors who specifically designate their gifts for operations. General donations are ringfenced for mission work.",
   },
   {
     title: "Multi-church, multi-national accountability",
-    body: "We are not a one-church project. Our accountability network spans Toongabbie Evangelical Church, Sudanese Grace Church Melbourne, UK partners, and Egyptian Christian communities.",
+    body: "We are not a one-church project. Our accountability network spans churches and communities across Australia, the United Kingdom, and beyond.",
   },
 ];
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.25, 0.46, 0.45, 0.94] } },
+};
+
+const stagger: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12 } },
 };
 
 const fadeRight: Variants = {
@@ -65,21 +69,13 @@ const fadeRight: Variants = {
 
 const fadeLeft: Variants = {
   hidden: { opacity: 0, x: -20 },
-  visible: { opacity: 1, x: 0, transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] } },
-};
-
-const staggerContainer: Variants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.12,
-    },
-  },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] } },
 };
 
 export default function AboutPage() {
   return (
     <div className="bg-[#FDFAF6]">
+
       {/* Hero */}
       <section className="py-28 px-4 bg-[#F5EFE6]">
         <div className="max-w-4xl mx-auto">
@@ -96,22 +92,22 @@ export default function AboutPage() {
             style={{ fontFamily: "var(--font-serif)" }}
             initial="hidden"
             animate="visible"
-            variants={{ ...fadeUp, visible: { ...fadeUp.visible, transition: { duration: 0.7, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] as const } } }}
+            variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] } } }}
           >
-            A small team. An unshakeable conviction.
+            A registered Australian charity built on trust, transparency, and local leadership.
           </motion.h1>
           <motion.p
             className="text-[#3D2B1F] text-xl leading-relaxed max-w-2xl"
             initial="hidden"
             animate="visible"
-            variants={{ ...fadeUp, visible: { ...fadeUp.visible, transition: { duration: 0.7, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] as const } } }}
+            variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] } } }}
           >
-            Pathways of Hope is a registered Australian charity built on one principle: when you find a person doing extraordinary work with local trust and local knowledge, you fund them — and get out of the way.
+            Pathways of Hope exists to resource extraordinary local leaders who are already changing lives — without bureaucratic overhead or outsider interference.
           </motion.p>
         </div>
       </section>
 
-      {/* Origin Story */}
+      {/* Our Model */}
       <section className="py-20 px-4">
         <div className="max-w-3xl mx-auto">
           <motion.h2
@@ -122,20 +118,19 @@ export default function AboutPage() {
             viewport={{ once: true, margin: "-60px" }}
             variants={fadeUp}
           >
-            How Pathways of Hope began
+            Our model
           </motion.h2>
           <motion.div
             className="space-y-6"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-40px" }}
-            variants={staggerContainer}
+            variants={stagger}
           >
             {[
-              "In 2020, a group of Australian Christians learned of Brother Hakim Peter’s mission in Kapoeta. What moved them wasn’t a polished NGO pitch — it was the simplicity and immediacy of the need, and the quality of the person already responding to it.",
-              "Hakim had gone to Kapoeta not because an organisation sent him, but because God called him. He found 320 children without shelter or food, and he stayed. The Australian community asked: how can we help?",
-              "From that question, Pathways of Hope grew: a small, accountable structure that channels support to Hakim without bureaucratic overhead, political interference, or the loss that comes when organisations prioritise their own perpetuation over the mission.",
-              "Today, the network spans Australia, Egypt, South Sudan, and the United Kingdom. Churches, families, and individuals give regularly. Every cent reaches Kapoeta — not because we say so, but because we’ve built a structure where that is structurally true.",
+              "We don't parachute in. We find people already doing the work — with the local trust, cultural knowledge, and personal commitment that no external organisation can replicate — and we fund them.",
+              "Every dollar donated reaches the field. Our volunteers fund their own travel. Our administrative costs are covered by designated operational donors. This isn't a promise — it's a structural fact.",
+              "Pathways of Hope is designed to grow with new missions over time. Each new partnership follows the same principle: identify a trusted local leader, build a transparent funding structure, and mobilise a global community of support.",
             ].map((para, i) => (
               <motion.p
                 key={i}
@@ -162,103 +157,110 @@ export default function AboutPage() {
             className="text-3xl sm:text-4xl font-light text-[#1C1410] leading-relaxed italic"
             style={{ fontFamily: "var(--font-serif)" }}
           >
-            &ldquo;We don&apos;t manage from Sydney. We serve from within.&rdquo;
+            &ldquo;We exist to remove every barrier between a generous heart and a child in need.&rdquo;
           </blockquote>
-          <cite className="block mt-6 text-[#8C7B72] text-sm not-italic tracking-wide">
-            — Elder Mamdouh Mansour
-          </cite>
         </motion.div>
       </section>
 
-      {/* Team */}
-      <section className="py-24 px-4">
+      {/* Board of Directors */}
+      <section className="py-20 px-4">
         <div className="max-w-6xl mx-auto">
-          <motion.p
-            className="text-[#B85C38] text-sm uppercase tracking-widest mb-4 font-medium"
+          <motion.div
+            className="mb-14"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.3 }}
             variants={fadeUp}
           >
-            The team
-          </motion.p>
-          <motion.h2
-            className="text-4xl font-light text-[#1C1410] mb-14"
-            style={{ fontFamily: "var(--font-serif)" }}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-          >
-            The people who make it possible
-          </motion.h2>
+            <p className="text-[#B85C38] text-sm uppercase tracking-widest mb-3 font-medium">Governance</p>
+            <h2
+              className="text-4xl font-light text-[#1C1410]"
+              style={{ fontFamily: "var(--font-serif)" }}
+            >
+              Board of Directors
+            </h2>
+            <p className="text-[#8C7B72] mt-3 max-w-xl">
+              Pathways of Hope is governed by its Responsible People — our board of directors who ensure the organisation operates with integrity, accountability, and purpose.
+            </p>
+          </motion.div>
+
           <motion.div
             className="grid grid-cols-1 md:grid-cols-3 gap-10"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-60px" }}
-            variants={staggerContainer}
+            viewport={{ once: true, amount: 0.2 }}
+            variants={stagger}
           >
-            {TEAM.map((person) => (
-              <motion.div key={person.name} variants={fadeUp}>
-                <motion.div
-                  className="relative h-72 rounded-2xl overflow-hidden mb-6"
-                  whileHover={{ scale: 1.03 }}
-                  transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] as const }}
-                >
-                  <Image
-                    src={person.image}
-                    alt={`${person.name} — ${person.role}`}
-                    fill
-                    className="object-cover object-top"
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                  />
-                </motion.div>
-                <h3
-                  className="text-xl font-semibold text-[#1C1410] mb-1"
-                  style={{ fontFamily: "var(--font-serif)" }}
-                >
-                  {person.name}
-                </h3>
-                <p className="text-[#B85C38] text-sm font-medium mb-3">{person.role}</p>
-                <p className="text-[#8C7B72] text-sm leading-relaxed">{person.bio}</p>
+            {BOARD.map((person) => (
+              <motion.div
+                key={person.name}
+                variants={fadeUp}
+                whileHover={{ y: -4 }}
+                className="bg-white rounded-2xl border border-[#EDD9B4] overflow-hidden shadow-sm transition-shadow hover:shadow-md"
+              >
+                {/* Avatar */}
+                <div className="h-48 bg-[#F5EFE6] flex items-center justify-center">
+                  <div
+                    className="w-24 h-24 rounded-full bg-[#B85C38] flex items-center justify-center text-white text-2xl font-semibold"
+                    style={{ fontFamily: "var(--font-serif)" }}
+                  >
+                    {person.initials}
+                  </div>
+                </div>
+
+                <div className="p-6">
+                  <h3
+                    className="text-xl font-semibold text-[#1C1410] mb-2"
+                    style={{ fontFamily: "var(--font-serif)" }}
+                  >
+                    {person.name}
+                  </h3>
+                  <div className="flex flex-wrap gap-1.5 mb-4">
+                    {person.roles.map((role) => (
+                      <span
+                        key={role}
+                        className="inline-block text-xs font-medium px-2.5 py-1 rounded-full bg-[#EDD9B4] text-[#8B3E23]"
+                      >
+                        {role}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="text-[#8C7B72] text-sm leading-relaxed">{person.bio}</p>
+                </div>
               </motion.div>
             ))}
           </motion.div>
         </div>
       </section>
 
-      {/* Trust / Commitments */}
-      <section className="py-24 px-4 bg-[#F5EFE6]">
+      {/* Commitments */}
+      <section className="py-20 px-4 bg-[#F5EFE6]">
         <div className="max-w-4xl mx-auto">
-          <motion.p
-            className="text-[#B85C38] text-sm uppercase tracking-widest mb-4 font-medium"
+          <motion.div
+            className="mb-12"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.3 }}
             variants={fadeUp}
           >
-            Our commitments
-          </motion.p>
-          <motion.h2
-            className="text-4xl font-light text-[#1C1410] mb-12"
-            style={{ fontFamily: "var(--font-serif)" }}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-          >
-            Why you can trust us with your giving
-          </motion.h2>
+            <p className="text-[#B85C38] text-sm uppercase tracking-widest mb-3 font-medium">Our commitments</p>
+            <h2
+              className="text-4xl font-light text-[#1C1410]"
+              style={{ fontFamily: "var(--font-serif)" }}
+            >
+              Why you can trust us with your giving
+            </h2>
+          </motion.div>
+
           <motion.div
             className="grid grid-cols-1 sm:grid-cols-2 gap-8"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-60px" }}
-            variants={staggerContainer}
+            viewport={{ once: true, amount: 0.2 }}
+            variants={stagger}
           >
             {COMMITMENTS.map((item) => (
-              <motion.div key={item.title} className="flex gap-4" variants={fadeLeft}>
+              <motion.div key={item.title} variants={fadeLeft} className="flex gap-4">
                 <div className="w-2 h-2 rounded-full bg-[#C9952A] mt-2.5 flex-shrink-0" />
                 <div>
                   <h3 className="font-semibold text-[#1C1410] mb-1">{item.title}</h3>
@@ -273,24 +275,27 @@ export default function AboutPage() {
       <TrustStrip />
 
       {/* CTA */}
-      <section className="py-24 px-4 text-center">
+      <section className="py-20 px-4 text-center">
         <motion.div
           className="max-w-xl mx-auto"
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true }}
-          variants={fadeUp}
+          viewport={{ once: true, amount: 0.4 }}
+          variants={stagger}
         >
-          <h2
+          <motion.h2
+            variants={fadeUp}
             className="text-3xl font-light text-[#1C1410] mb-6"
             style={{ fontFamily: "var(--font-serif)" }}
           >
-            Join us. Walk this path.
-          </h2>
-          <p className="text-[#8C7B72] mb-8">
+            Support our missions.
+          </motion.h2>
+          <motion.p variants={fadeUp} className="text-[#8C7B72] mb-8">
             Whether you give once, give monthly, or give your time — you are part of this story.
-          </p>
-          <DonateButton size="lg">Give to Kapoeta</DonateButton>
+          </motion.p>
+          <motion.div variants={fadeUp}>
+            <DonateButton size="lg">Give to Our Missions</DonateButton>
+          </motion.div>
         </motion.div>
       </section>
     </div>
