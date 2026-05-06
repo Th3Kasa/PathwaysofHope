@@ -1,9 +1,21 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 export function Footer() {
   return (
-    <footer className="bg-[#1C1410] text-[#C4AE9A] mt-auto">
+    <motion.footer
+      className="bg-[#1C1410] text-[#C4AE9A] mt-auto relative"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+    >
+      {/* Gold accent line */}
+      <div className="h-[2px] w-full bg-[#C9952A]" />
+
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           {/* Brand */}
@@ -23,19 +35,19 @@ export function Footer() {
                 Pathways of Hope
               </span>
             </div>
-            <p className="text-sm leading-relaxed text-[#9A8578]">
+            <p className="text-sm leading-relaxed text-[#9A8578] mb-4">
               A faith-driven charity partnering with local leaders to bring
               safety, dignity, and a future to children in South Sudan.
             </p>
-            <p className="text-xs mt-4 text-[#9A8578]">Registered Australian Charity · ABN TBC</p>
+            <p className="text-xs text-[#6B5A52]">Registered Australian Charity · ABN TBC</p>
           </div>
 
-          {/* Links */}
+          {/* Navigate */}
           <div>
-            <h3 className="text-white text-sm font-semibold uppercase tracking-widest mb-4">
+            <h3 className="text-white text-xs font-semibold uppercase tracking-widest mb-5">
               Navigate
             </h3>
-            <nav className="flex flex-col gap-2">
+            <nav className="flex flex-col gap-2.5">
               {[
                 { href: "/", label: "Home" },
                 { href: "/missions", label: "Missions" },
@@ -46,7 +58,7 @@ export function Footer() {
                 <Link
                   key={l.href}
                   href={l.href}
-                  className="text-sm text-[#C4AE9A] hover:text-white transition-colors"
+                  className="text-sm text-[#9A8578] hover:text-white transition-colors duration-200"
                 >
                   {l.label}
                 </Link>
@@ -54,28 +66,36 @@ export function Footer() {
             </nav>
           </div>
 
-          {/* Trust */}
+          {/* Our Promise */}
           <div>
-            <h3 className="text-white text-sm font-semibold uppercase tracking-widest mb-4">
+            <h3 className="text-white text-xs font-semibold uppercase tracking-widest mb-5">
               Our Promise
             </h3>
-            <ul className="flex flex-col gap-2 text-sm text-[#9A8578]">
-              <li>✓ 100% of donations reach the children</li>
-              <li>✓ All travel costs self-funded by volunteers</li>
-              <li>✓ Registered charity — donations tax-deductible</li>
-              <li>✓ Full financial transparency on request</li>
-              <li>✓ Led by Brother Hakim Peter — on the ground in Kapoeta</li>
+            <ul className="flex flex-col gap-3 text-sm text-[#9A8578]">
+              {[
+                "100% of donations reach the children",
+                "All travel costs self-funded by volunteers",
+                "Registered charity — donations tax-deductible",
+                "Full financial transparency on request",
+                "Led by Brother Hakim Peter — on the ground in Kapoeta",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-2">
+                  <span className="text-[#C9952A] mt-0.5 flex-shrink-0">✓</span>
+                  <span>{item}</span>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-[#3D2B1F] pt-8 text-xs text-[#6B5A52] text-center">
-          © {new Date().getFullYear()} Pathways of Hope. All rights reserved. ·{" "}
-          <Link href="/donate" className="hover:text-[#C4AE9A] transition-colors">
+        <div className="border-t border-[#2C1F18] pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#6B5A52]">
+          <span>© {new Date().getFullYear()} Pathways of Hope. All rights reserved.</span>
+          <span className="text-[#9A8578] font-medium">100% of donations reach the children</span>
+          <Link href="/donate" className="hover:text-[#C4AE9A] transition-colors duration-200">
             Donate
           </Link>
         </div>
       </div>
-    </footer>
+    </motion.footer>
   );
 }
