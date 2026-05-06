@@ -2,8 +2,17 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useInView, useScroll, useTransform, type Variants } from "framer-motion";
-import { useRef } from "react";
+import {
+  motion,
+  useInView,
+  useScroll,
+  useTransform,
+  useMotionValue,
+  useSpring,
+  animate,
+  type Variants,
+} from "framer-motion";
+import { useRef, useEffect } from "react";
 import { GoalMeter } from "@/components/goal-meter";
 import { DonateButton } from "@/components/donate-button";
 import { TrustStrip } from "@/components/trust-strip";
@@ -25,71 +34,90 @@ const staggerContainer: Variants = {
 };
 
 const scaleIn: Variants = {
-  hidden: { opacity: 0, scale: 0.93 },
+  hidden: { opacity: 0, scale: 0.95 },
   visible: { opacity: 1, scale: 1, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
 };
 
+/* ─── Verified timeline (from KAPOETA-FACTS.md) ─────────────── */
+
 const TIMELINE = [
   {
-    year: "2020",
-    title: "The Calling",
-    body: "Brother Hakim Peter left a stable life in America and returned to Kapoeta — one of South Sudan's most remote and conflict-scarred towns — after a call he could not ignore.",
-    icon: "✦",
+    period: "Before 2024",
+    title: "The Land & First Foundations",
+    body: "Triple L Orphanage and Vulnerable Children Organization, the local entity in Kapoeta, was granted a 10,000 m² parcel (100 m × 100 m) by local authorities. The site was fenced, a water well was drilled — funded by Toongabbie Church and its supporters — and toilets and a small initial structure were built.",
   },
   {
-    year: "2021",
-    title: "320 Children, No Resources",
-    body: "He found more than 320 children without shelter, families, or food. With faith and borrowed space he began feeding and housing them, drawing on whatever the local community could spare.",
-    icon: "◉",
+    period: "May–June 2024",
+    title: "The Sydney Fundraiser",
+    body: "Brother Hakim's calling drew the attention of believers in Australian churches. On 8 June 2024, Toongabbie Church hosted a fundraising event in Sydney. Within weeks, approximately AU$85,000 was raised — enough to commission a 40-foot shipping container.",
   },
   {
-    year: "2022",
-    title: "The Container Arrives",
-    body: "Supporters in Sydney organised a 40-foot shipping container filled with beds, clothing, medical supplies, and educational materials. It crossed two oceans to reach Kapoeta.",
-    icon: "⬡",
+    period: "September–October 2024",
+    title: "Container Dispatched from Sydney",
+    body: "The container was packed in Sydney by volunteers including Elders Mamdouh Mansour, Philip Hanna, engineer Michael Elmasri, Emil Girgis and many others — and shipped via Mombasa, Kenya, then by road through Nadapal to Kapoeta South.",
   },
   {
-    year: "2023",
-    title: "Water Well & Livestock",
-    body: "Toongabbie Evangelical Church funded a water well. Sudanese Grace Church Melbourne donated livestock — the shelter's first sustainable food source and small income stream.",
-    icon: "◈",
+    period: "December 2024",
+    title: "Construction & Completion",
+    body: "A team from Sydney travelled to Kapoeta — joined by 2 supporters from the United States, 1 from the United Kingdom, and 1 from Egypt. All trip expenses were paid by the individuals themselves. Together they completed the 16 m × 9 m main building and put the container's contents to use.",
   },
   {
-    year: "2024",
-    title: "Tuk-Tuk & UK Partnership",
-    body: "British supporters funded the shelter's first vehicle, allowing Hakim to transport children to medical care and collect supplies from the market 12 km away.",
-    icon: "◎",
+    period: "January 2025",
+    title: "Sustainability Projects",
+    body: "Beyond the building, donations funded 5 cows and a young bull for a small dairy, a domestic oven for the on-site bakery, a tuk-tuk for transport, and two manual cement-block machines. Foundations were laid for a future water tank tower.",
   },
   {
-    year: "2026",
-    title: "46 Students Enrolled",
-    body: "As of early 2026, 46 children are formally enrolled in the shelter's education programme. The goal: all 60 in school by year's end.",
-    icon: "★",
+    period: "Today",
+    title: "44 Children in Education",
+    body: "18 preschool-age children are taught at the centre during the week. 26 older children, aged 8 to 16, are enrolled at a local Catholic school — uniforms, fees and registration paid through the shelter. The goal is to grow this to 60.",
   },
 ];
 
 const GOAL_META: Record<string, { emoji: string; priority: number; why: string }> = {
-  "water-tower": {
-    emoji: "🏗️",
-    priority: 1,
-    why: "Children currently walk long distances to collect water from unsafe sources. A solar-powered tower on-site would end that daily risk and give them clean water on tap — forever.",
-  },
-  "poultry-project": {
-    emoji: "🐔",
-    priority: 2,
-    why: "200 chickens mean daily eggs for 60 growing children and a sustainable income stream the shelter can rely on — making it less dependent on external donations.",
-  },
   "sponsor-a-child": {
     emoji: "👧",
+    priority: 1,
+    why: "A$600 covers one child's full year — meals, shelter, schooling, and the dignity of belonging. Of 45 children in our care, 10 are already sponsored. 35 names are still waiting.",
+  },
+  "water-tower": {
+    emoji: "🏗️",
+    priority: 2,
+    why: "The foundation is poured. A water tank, solar pump, and irrigation lines will end the daily walk for water and feed the gardens that feed the children.",
+  },
+  "chicken-coop": {
+    emoji: "🐔",
     priority: 3,
-    why: "A$600 covers one child's entire year: meals, shelter, schooling, and belonging. Right now 14 children remain unsponsored. Your name can change that.",
+    why: "A modest coop with 10 hens and a rooster. Daily eggs for growing children. A small project, but one that produces food and a little income every day.",
   },
   "general-support": {
     emoji: "🤲",
     priority: 4,
-    why: "Staff wages, utilities, transport, and medical care are the invisible costs that keep 60 children alive and cared for every single day of the year.",
+    why: "Stipends for the matron and evangelist, school fees and uniforms, food, medical care — the day-to-day costs of a children's shelter, beyond any single project.",
   },
 };
+
+/* ─── Animated counter ───────────────────────────────────────── */
+
+function Counter({ value, suffix = "" }: { value: number; suffix?: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const motionVal = useMotionValue(0);
+  const spring = useSpring(motionVal, { stiffness: 60, damping: 20 });
+  const inView = useInView(ref, { once: true, amount: 0.6 });
+
+  useEffect(() => {
+    if (inView) animate(motionVal, value, { duration: 1.8 });
+  }, [inView, motionVal, value]);
+
+  useEffect(() => {
+    return spring.on("change", (v) => {
+      if (ref.current) ref.current.textContent = Math.floor(v).toLocaleString() + suffix;
+    });
+  }, [spring, suffix]);
+
+  return <span ref={ref}>0{suffix}</span>;
+}
+
+/* ─── Hero ───────────────────────────────────────────────────── */
 
 function HeroSection() {
   const ref = useRef<HTMLDivElement>(null);
@@ -101,7 +129,7 @@ function HeroSection() {
       <motion.div className="absolute inset-0" style={{ y: imageY }}>
         <Image
           src="/images/kapoeta/shelter-exterior.jpg"
-          alt="The Kapoeta children's shelter exterior"
+          alt="The Kapoeta children's shelter"
           fill
           priority
           className="object-cover"
@@ -111,11 +139,7 @@ function HeroSection() {
       </motion.div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 w-full">
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          animate="visible"
-        >
+        <motion.div variants={staggerContainer} initial="hidden" animate="visible">
           <motion.div variants={fadeUp} className="flex items-center gap-2 mb-6">
             <Link href="/missions" className="text-[#C4AE9A] text-sm hover:text-white transition-colors">
               Missions
@@ -133,13 +157,15 @@ function HeroSection() {
           </motion.h1>
 
           <motion.p variants={fadeUp} className="text-[#C4AE9A] text-xl sm:text-2xl max-w-xl leading-relaxed font-light">
-            60 children. One pastor&apos;s calling. A community that refused to let them fall.
+            A children&apos;s home in South Sudan — built by a community of believers across four continents.
           </motion.p>
         </motion.div>
       </div>
     </section>
   );
 }
+
+/* ─── Chapter 1: The Calling ─────────────────────────────────── */
 
 function StoryChapter1() {
   const ref = useRef<HTMLDivElement>(null);
@@ -149,7 +175,6 @@ function StoryChapter1() {
   return (
     <section ref={ref} className="py-24 px-4 bg-[#F5EFE6]">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-        {/* Image with subtle parallax */}
         <motion.div
           className="relative h-[520px] rounded-2xl overflow-hidden shadow-2xl"
           initial={{ opacity: 0, x: -40 }}
@@ -160,61 +185,52 @@ function StoryChapter1() {
           <motion.div className="absolute inset-0" style={{ y: imageY }}>
             <Image
               src="/images/kapoeta/hakim.png"
-              alt="Brother Hakim Peter, founder of the Kapoeta Children's Shelter"
+              alt="Brother Hakim, founder of the Kapoeta Children's Shelter"
               fill
               className="object-cover object-top"
               sizes="(max-width: 768px) 100vw, 50vw"
             />
           </motion.div>
           <div className="absolute inset-0 bg-gradient-to-t from-[#1C1410]/40 to-transparent" />
-          <div className="absolute bottom-6 left-6">
-            <p className="text-white/90 text-sm font-medium">Brother Hakim Peter</p>
-            <p className="text-white/60 text-xs">Founder & Director, Kapoeta</p>
-          </div>
         </motion.div>
 
-        {/* Text */}
         <motion.div
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
         >
-          <motion.p variants={fadeUp} className="text-[#B85C38] text-sm uppercase tracking-widest mb-4 font-medium">
+          <motion.p
+            variants={fadeUp}
+            className="text-[#B85C38] text-sm uppercase tracking-widest mb-3 font-medium"
+          >
             Chapter 1 — The Calling
           </motion.p>
-
           <motion.h2
             variants={fadeUp}
-            className="text-4xl font-light text-[#1C1410] mb-6 leading-tight"
+            className="text-4xl sm:text-5xl font-light text-[#1C1410] mb-6 leading-tight"
             style={{ fontFamily: "var(--font-serif)" }}
           >
-            He left a comfortable life in America. He came home.
+            A native son returns home.
           </motion.h2>
-
-          <motion.div variants={staggerContainer} className="space-y-4 text-[#3D2B1F] leading-relaxed">
-            <motion.p variants={fadeUp}>
-              In 2020, Brother Hakim Peter was living well. A South Sudanese pastor with a stable ministry in the United States, a community that loved him, a life that made sense. But something wouldn't leave him alone — the faces of children he'd seen on visits back to Kapoeta.
-            </motion.p>
-            <motion.p variants={fadeUp}>
-              Children who had survived South Sudan's decades of civil war, only to be left without parents, without shelter, without any adult to notice when they were hungry. He tried to ignore the call. He couldn't.
-            </motion.p>
-            <motion.p variants={fadeUp}>
-              He went back. He arrived with no funding, no building, no government support. What he had was faith, a knowledge of the community, and the trust of local elders who recognised a man who had come to stay — not to visit.
-            </motion.p>
+          <motion.div variants={fadeUp} className="space-y-5 text-[#3D2B1F] text-lg leading-relaxed">
+            <p>
+              Brother Hakim is a native of Kapoeta who, like so many in his generation, had migrated to the United States in search of a different life. With the encouragement of Pastor Aman — a Sudanese pastor based in the US — Hakim returned to the streets where he had grown up.
+            </p>
+            <p>
+              He found children there: between 150 and 200 of them, aged 2 to 18, sleeping near the local market, wearing tattered clothes, eating from trash bins, with no access to school. Hakim began with what he had — gathering them by day to teach Bible stories and hymns, share one meal, and offer the safety of presence.
+            </p>
           </motion.div>
 
           <motion.blockquote
             variants={fadeUp}
-            className="mt-8 pl-6 border-l-4 border-[#B85C38]"
+            className="mt-8 pl-6 border-l-2 border-[#C9952A] italic text-[#3D2B1F] text-lg"
+            style={{ fontFamily: "var(--font-serif)" }}
           >
-            <p
-              className="text-xl font-light text-[#1C1410] italic leading-relaxed"
-              style={{ fontFamily: "var(--font-serif)" }}
-            >
-              &ldquo;I left a comfortable life. But when God calls you, comfort is not the point.&rdquo;
-            </p>
-            <cite className="block mt-3 text-[#8C7B72] text-sm not-italic">— Brother Hakim Peter</cite>
+            &ldquo;What began as an effort to help children living on the streets — wearing tattered clothes, eating from trash bins, and with no access to education — has now become a thriving centre of hope and transformation.&rdquo;
+            <cite className="block mt-3 text-sm text-[#8C7B72] not-italic">
+              — Vision of Hope, Kapoeta
+            </cite>
           </motion.blockquote>
         </motion.div>
       </div>
@@ -222,38 +238,43 @@ function StoryChapter1() {
   );
 }
 
+/* ─── Stats strip ────────────────────────────────────────────── */
+
 function StatsStrip() {
   const stats = [
-    { value: 320, label: "First children found", suffix: "" },
-    { value: 60, label: "Currently sheltered", suffix: "" },
-    { value: 46, label: "In school today", suffix: "" },
-    { value: 2020, label: "Year founded", suffix: "" },
+    { value: 10000, suffix: " m²", label: "Land granted by local authorities" },
+    { value: 45, suffix: "", label: "Children in our care" },
+    { value: 44, suffix: "", label: "Children in formal education" },
+    { value: 16, suffix: " × 9 m", label: "Main building completed" },
   ];
 
   return (
     <section className="bg-[#1C1410] py-16 px-4">
       <motion.div
-        className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8"
-        variants={staggerContainer}
+        className="max-w-6xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-8 text-center"
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.4 }}
+        viewport={{ once: true, amount: 0.3 }}
+        variants={staggerContainer}
       >
-        {stats.map((stat) => (
-          <motion.div key={stat.label} variants={fadeUp} className="text-center">
-            <p
-              className="text-5xl sm:text-6xl font-light mb-2"
-              style={{
-                fontFamily: "var(--font-serif)",
-                background: "linear-gradient(90deg, #C9952A, #E4B84A)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
+        {stats.map((s) => (
+          <motion.div key={s.label} variants={fadeUp}>
+            <div
+              className="text-3xl sm:text-4xl font-light mb-2"
+              style={{ fontFamily: "var(--font-serif)", color: "#C9952A" }}
             >
-              {stat.value.toLocaleString()}{stat.suffix}
-            </p>
-            <p className="text-[#8C7B72] text-sm uppercase tracking-widest">{stat.label}</p>
+              {typeof s.value === "number" && s.value < 100 && !s.suffix.includes("m") ? (
+                <Counter value={s.value} suffix={s.suffix} />
+              ) : (
+                <>
+                  <Counter value={s.value} />
+                  {s.suffix}
+                </>
+              )}
+            </div>
+            <div className="text-xs sm:text-sm text-[#9A8578] uppercase tracking-wider">
+              {s.label}
+            </div>
           </motion.div>
         ))}
       </motion.div>
@@ -261,235 +282,231 @@ function StatsStrip() {
   );
 }
 
+/* ─── Chapter 2: The Container ───────────────────────────────── */
+
 function StoryChapter2() {
-  const images = [
-    { src: "/images/kapoeta/container.png", alt: "The 40-foot container from Sydney", span: "md:col-span-2 md:row-span-2" },
-    { src: "/images/kapoeta/children-2025.jpg", alt: "Children at the shelter in 2025", span: "" },
-    { src: "/images/kapoeta/children-learning.jpg", alt: "Children engaged in learning", span: "" },
+  const containerContents = [
+    "Building materials — steel structure, zinc roofing, 8 windows for the main 16 m × 9 m building",
+    "33 bunk beds, mattresses, sheets and blankets",
+    "Clothing for all ages",
+    "Solar-powered lamps and an electricity generator",
+    "Medical supplies, including 6 wheelchairs",
+    "Educational materials — books, stationery, toys",
+    "Food supplies sufficient for 4–6 months",
+    "120 chairs, folding tables, TV and PA system",
   ];
 
   return (
     <section className="py-24 px-4 bg-[#FDFAF6]">
       <div className="max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-          {/* Image grid */}
-          <motion.div
-            className="grid grid-cols-2 md:grid-cols-3 gap-3 h-[480px]"
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
+        <motion.div
+          className="max-w-3xl mb-14"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={staggerContainer}
+        >
+          <motion.p
+            variants={fadeUp}
+            className="text-[#B85C38] text-sm uppercase tracking-widest mb-3 font-medium"
           >
-            {images.map((img, i) => (
-              <motion.div
-                key={img.src}
-                variants={scaleIn}
-                custom={i}
-                className={`relative rounded-xl overflow-hidden ${img.span}`}
-              >
-                <Image
-                  src={img.src}
-                  alt={img.alt}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 50vw, 33vw"
-                />
-              </motion.div>
-            ))}
+            Chapter 2 — The Container
+          </motion.p>
+          <motion.h2
+            variants={fadeUp}
+            className="text-4xl sm:text-5xl font-light text-[#1C1410] mb-6 leading-tight"
+            style={{ fontFamily: "var(--font-serif)" }}
+          >
+            A 40-foot box, packed in Sydney.
+          </motion.h2>
+          <motion.p variants={fadeUp} className="text-[#3D2B1F] text-lg leading-relaxed">
+            From May 2024, believers in Australia raised approximately AU$85,000 in a few weeks. The funds were used to purchase, fill, and ship a 40-foot container from Sydney to Mombasa, Kenya — and onward by road through Nadapal to Kapoeta South. Engineer Michael Elmasri designed the on-site building. Elders Mamdouh Mansour and Philip Hanna, along with many other Sydney volunteers, organised the loading and logistics.
+          </motion.p>
+        </motion.div>
+
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={staggerContainer}
+        >
+          <motion.div variants={scaleIn} className="relative h-[420px] rounded-2xl overflow-hidden shadow-xl">
+            <Image
+              src="/images/kapoeta/container.png"
+              alt="The 40-foot shipping container packed in Sydney"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
           </motion.div>
 
-          {/* Text */}
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-          >
-            <motion.p variants={fadeUp} className="text-[#B85C38] text-sm uppercase tracking-widest mb-4 font-medium">
-              Chapter 2 — The Container
-            </motion.p>
-            <motion.h2
-              variants={fadeUp}
-              className="text-4xl font-light text-[#1C1410] mb-6 leading-tight"
+          <motion.div variants={fadeUp}>
+            <h3
+              className="text-2xl font-semibold text-[#1C1410] mb-5"
               style={{ fontFamily: "var(--font-serif)" }}
             >
-              A shipping container from Sydney. A transformation in Kapoeta.
-            </motion.h2>
-            <motion.div variants={staggerContainer} className="space-y-4 text-[#3D2B1F] leading-relaxed">
-              <motion.p variants={fadeUp}>
-                In 2022, Elder Mamdouh Mansour and Philip Hanna — members of the Australian church community — began organising something extraordinary. A 40-foot shipping container, packed in Sydney with beds, blankets, clothing, solar lamps, medical supplies, and educational materials.
-              </motion.p>
-              <motion.p variants={fadeUp}>
-                It crossed two oceans and the customs processes of three countries. When it finally arrived in Kapoeta, children who had been sleeping on bare ground in rags helped unload it. Within days the shelter was transformed.
-              </motion.p>
-              <motion.p variants={fadeUp}>
-                Children who once slept on bare ground in rags now sleep in beds with covers. Children who studied under torchlight now have solar lamps. That container didn't just bring supplies — it told sixty children they were worth the effort of sending it.
-              </motion.p>
-            </motion.div>
+              What was inside
+            </h3>
+            <ul className="space-y-3">
+              {containerContents.map((item) => (
+                <li key={item} className="flex gap-3 text-[#3D2B1F] leading-relaxed">
+                  <span className="text-[#C9952A] flex-shrink-0 mt-1">●</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
           </motion.div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
 }
 
-function StoryChapter3() {
-  const lineRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: lineRef, offset: ["start 80%", "end 20%"] });
-  const lineScaleY = useTransform(scrollYProgress, [0, 1], [0, 1]);
+/* ─── Chapter 3: Building & Growth (verified timeline) ───────── */
 
+function StoryChapter3() {
   return (
     <section className="py-24 px-4 bg-[#F5EFE6]">
       <div className="max-w-5xl mx-auto">
         <motion.div
-          variants={staggerContainer}
+          className="mb-14 max-w-2xl"
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          className="mb-16"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={staggerContainer}
         >
-          <motion.p variants={fadeUp} className="text-[#B85C38] text-sm uppercase tracking-widest mb-4 font-medium">
-            Chapter 3 — Growing Roots
+          <motion.p
+            variants={fadeUp}
+            className="text-[#B85C38] text-sm uppercase tracking-widest mb-3 font-medium"
+          >
+            Chapter 3 — Building &amp; Growth
           </motion.p>
           <motion.h2
             variants={fadeUp}
-            className="text-4xl font-light text-[#1C1410] leading-tight"
+            className="text-4xl sm:text-5xl font-light text-[#1C1410] mb-5 leading-tight"
             style={{ fontFamily: "var(--font-serif)" }}
           >
-            Six years of tangible transformation
+            How a building rose, and a shelter took shape.
           </motion.h2>
+          <motion.p variants={fadeUp} className="text-[#8C7B72] leading-relaxed">
+            Each step is taken from the project&apos;s own documents — the Vision report, sponsor letters, and the January 2025 Final Report.
+          </motion.p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Timeline */}
-          <div className="lg:col-span-2" ref={lineRef}>
-            <div className="relative">
-              {/* Animated vertical line */}
-              <div className="absolute left-6 top-0 bottom-0 w-px bg-[#DDD0C0] hidden sm:block">
-                <motion.div
-                  className="absolute inset-x-0 top-0 bg-[#B85C38] origin-top"
-                  style={{ scaleY: lineScaleY, height: "100%" }}
-                />
+        <motion.ol
+          className="relative space-y-10 border-l-2 border-[#C9952A]/30 pl-8"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.15 }}
+          variants={staggerContainer}
+        >
+          {TIMELINE.map((step) => (
+            <motion.li key={step.period} variants={fadeUp} className="relative">
+              <span className="absolute -left-[42px] top-1.5 w-4 h-4 rounded-full bg-[#C9952A] ring-4 ring-[#F5EFE6]" />
+              <div className="text-xs uppercase tracking-widest text-[#B85C38] font-semibold mb-1">
+                {step.period}
               </div>
-
-              <div className="flex flex-col gap-10">
-                {TIMELINE.map((m, i) => (
-                  <motion.div
-                    key={m.year}
-                    className="flex gap-6 sm:gap-10"
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, amount: 0.5 }}
-                    transition={{ duration: 0.6, delay: i * 0.05, ease: [0.22, 1, 0.36, 1] }}
-                  >
-                    <div className="flex-shrink-0 flex flex-col items-center">
-                      <div className="w-12 h-12 rounded-full bg-[#B85C38] flex items-center justify-center text-white text-base z-10 relative shadow-md">
-                        {m.icon}
-                      </div>
-                    </div>
-                    <div className="pb-2 pt-1">
-                      <span className="text-xs font-bold text-[#B85C38] uppercase tracking-widest">
-                        {m.year}
-                      </span>
-                      <h3
-                        className="text-lg font-semibold text-[#1C1410] mt-1 mb-1.5"
-                        style={{ fontFamily: "var(--font-serif)" }}
-                      >
-                        {m.title}
-                      </h3>
-                      <p className="text-[#8C7B72] leading-relaxed text-sm">{m.body}</p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Side images */}
-          <div className="flex flex-col gap-4">
-            <motion.div
-              className="relative h-56 rounded-2xl overflow-hidden"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.4 }}
-              transition={{ duration: 0.7 }}
-            >
-              <Image
-                src="/images/kapoeta/water-well.jpg"
-                alt="The water well that changed daily life at the shelter"
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 33vw"
-              />
-              <div className="absolute bottom-3 left-3">
-                <span className="bg-[#1C1410]/70 text-white/90 text-xs px-2.5 py-1 rounded-full">Water well — 2023</span>
-              </div>
-            </motion.div>
-            <motion.div
-              className="relative h-56 rounded-2xl overflow-hidden"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.4 }}
-              transition={{ duration: 0.7, delay: 0.15 }}
-            >
-              <Image
-                src="/images/kapoeta/livestock.jpg"
-                alt="Livestock donated by Sudanese Grace Church Melbourne"
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 33vw"
-              />
-              <div className="absolute bottom-3 left-3">
-                <span className="bg-[#1C1410]/70 text-white/90 text-xs px-2.5 py-1 rounded-full">Livestock — 2023</span>
-              </div>
-            </motion.div>
-          </div>
-        </div>
+              <h3
+                className="text-xl sm:text-2xl text-[#1C1410] mb-2 font-semibold"
+                style={{ fontFamily: "var(--font-serif)" }}
+              >
+                {step.title}
+              </h3>
+              <p className="text-[#3D2B1F] leading-relaxed">{step.body}</p>
+            </motion.li>
+          ))}
+        </motion.ol>
       </div>
     </section>
   );
 }
 
-function GalleryStrip() {
-  const photos = [
-    { src: "/images/kapoeta/daily-life-1.jpg", alt: "Daily life at the shelter" },
-    { src: "/images/kapoeta/food-prep.jpg", alt: "Food preparation for sixty children" },
-    { src: "/images/kapoeta/children-meal.jpg", alt: "Children sharing a communal meal" },
-    { src: "/images/kapoeta/community-1.jpg", alt: "Community gathering in Kapoeta" },
-    { src: "/images/kapoeta/children-outdoor.jpg", alt: "Children outdoors at the shelter" },
+/* ─── On the ground today ────────────────────────────────────── */
+
+function OnTheGround() {
+  const items = [
+    {
+      title: "Madam Jackie",
+      role: "Matron",
+      body: "Serves as a maternal figure and mentor for the older girls and the youngest children. The presence the children miss most when she is not there.",
+    },
+    {
+      title: "Evangelist Simon",
+      role: "Spiritual Ministry",
+      body: "Leads spiritual formation at the centre and Sunday gatherings, with all of the surrounding community welcome.",
+    },
+    {
+      title: "Catholic School Partnership",
+      role: "Education",
+      body: "26 older children, aged 8–16, enrolled at a local Catholic school. Uniforms, fees and registration are funded through the shelter.",
+    },
+    {
+      title: "On-site Preschool",
+      role: "Early Years",
+      body: "18 preschool-age children are educated at the centre by the team during the week.",
+    },
+    {
+      title: "Dairy & Bakery",
+      role: "Sustainability",
+      body: "5 cows and a young bull supply milk; surplus is sold. A domestic oven bakes daily bread for the children, with surplus also sold.",
+    },
+    {
+      title: "Triple L Orphanage",
+      role: "Local Partner",
+      body: "The on-ground legal entity in Kapoeta — owners of the land — through whom the work is carried out, with Simon Dador as Legal Advisor.",
+    },
   ];
 
   return (
-    <section className="py-16 px-4 bg-[#FDFAF6] overflow-hidden">
+    <section className="py-24 px-4 bg-[#FDFAF6]">
       <div className="max-w-6xl mx-auto">
-        <motion.p
-          className="text-[#B85C38] text-sm uppercase tracking-widest mb-6 font-medium"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-        >
-          Life at the shelter
-        </motion.p>
         <motion.div
-          className="flex gap-4"
-          variants={staggerContainer}
+          className="mb-14 max-w-2xl"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
+          variants={staggerContainer}
         >
-          {photos.map((photo) => (
+          <motion.p
+            variants={fadeUp}
+            className="text-[#B85C38] text-sm uppercase tracking-widest mb-3 font-medium"
+          >
+            On the ground
+          </motion.p>
+          <motion.h2
+            variants={fadeUp}
+            className="text-4xl sm:text-5xl font-light text-[#1C1410] leading-tight"
+            style={{ fontFamily: "var(--font-serif)" }}
+          >
+            The people who make the days work.
+          </motion.h2>
+        </motion.div>
+
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.15 }}
+          variants={staggerContainer}
+        >
+          {items.map((it) => (
             <motion.div
-              key={photo.src}
-              variants={scaleIn}
-              className="relative flex-shrink-0 w-[260px] h-[340px] rounded-2xl overflow-hidden"
+              key={it.title}
+              variants={fadeUp}
+              whileHover={{ y: -4 }}
+              className="bg-white rounded-2xl p-6 border border-[#EDD9B4] shadow-sm transition-shadow hover:shadow-md"
             >
-              <Image
-                src={photo.src}
-                alt={photo.alt}
-                fill
-                className="object-cover hover:scale-105 transition-transform duration-700"
-                sizes="260px"
-              />
+              <div className="text-xs text-[#B85C38] uppercase tracking-widest font-semibold mb-2">
+                {it.role}
+              </div>
+              <h3
+                className="text-xl font-semibold text-[#1C1410] mb-3"
+                style={{ fontFamily: "var(--font-serif)" }}
+              >
+                {it.title}
+              </h3>
+              <p className="text-[#8C7B72] text-sm leading-relaxed">{it.body}</p>
             </motion.div>
           ))}
         </motion.div>
@@ -498,112 +515,145 @@ function GalleryStrip() {
   );
 }
 
-function DonationSection({
-  goals,
-  totals,
-}: {
-  goals: Props["goals"];
-  totals: Props["totals"];
-}) {
-  return (
-    <section
-      className="py-24 px-4 relative overflow-hidden"
-      style={{ background: "#1C1410" }}
-    >
-      {/* Warm radial overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(185,92,56,0.18) 0%, transparent 70%)",
-        }}
-      />
+/* ─── Gallery ────────────────────────────────────────────────── */
 
-      <div className="relative z-10 max-w-5xl mx-auto">
+function Gallery() {
+  const images = [
+    { src: "/images/kapoeta/children-meal.jpg", alt: "Children sharing a meal at the shelter" },
+    { src: "/images/kapoeta/water-well.jpg", alt: "The water well drilled before the container's arrival" },
+    { src: "/images/kapoeta/children-learning.jpg", alt: "Children at the on-site preschool" },
+    { src: "/images/kapoeta/livestock.jpg", alt: "The shelter's dairy cows" },
+    { src: "/images/kapoeta/children-outdoor.jpg", alt: "Children at play on the shelter grounds" },
+  ];
+
+  return (
+    <section className="py-20 px-4 bg-[#1C1410] overflow-hidden">
+      <motion.div
+        className="max-w-6xl mx-auto"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={staggerContainer}
+      >
+        <motion.div variants={fadeUp} className="mb-10">
+          <p className="text-[#C9952A] text-sm uppercase tracking-widest mb-3 font-medium">From the field</p>
+          <h2
+            className="text-3xl font-light text-white"
+            style={{ fontFamily: "var(--font-serif)" }}
+          >
+            A few moments from Kapoeta.
+          </h2>
+        </motion.div>
+
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+          {images.map((img) => (
+            <motion.div
+              key={img.src}
+              variants={scaleIn}
+              className="relative aspect-[3/4] rounded-xl overflow-hidden"
+            >
+              <Image
+                src={img.src}
+                alt={img.alt}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 50vw, 20vw"
+              />
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+    </section>
+  );
+}
+
+/* ─── Tiered donations ───────────────────────────────────────── */
+
+function DonationsSection({ goals, totals }: Props) {
+  const sorted = [...goals].sort(
+    (a, b) => (GOAL_META[a.id]?.priority ?? 99) - (GOAL_META[b.id]?.priority ?? 99)
+  );
+
+  return (
+    <section className="py-24 px-4 bg-[#1C1410] relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-[#1C1410] via-[#2A1F18] to-[#1C1410] opacity-90" />
+
+      <div className="relative max-w-6xl mx-auto">
         <motion.div
-          className="text-center mb-16"
-          variants={staggerContainer}
+          className="text-center mb-16 max-w-2xl mx-auto"
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.4 }}
+          viewport={{ once: true, amount: 0.3 }}
+          variants={staggerContainer}
         >
-          <motion.p variants={fadeUp} className="text-[#C9952A] text-sm uppercase tracking-widest mb-4 font-medium">
-            Support this mission
+          <motion.p
+            variants={fadeUp}
+            className="text-[#C9952A] text-sm uppercase tracking-widest mb-3 font-medium"
+          >
+            How to help
           </motion.p>
           <motion.h2
             variants={fadeUp}
-            className="text-4xl sm:text-5xl font-light text-white mb-4 leading-tight"
+            className="text-4xl sm:text-5xl font-light text-white mb-5 leading-tight"
             style={{ fontFamily: "var(--font-serif)" }}
           >
-            Four ways to change a life
+            Four ways to keep this work going.
           </motion.h2>
-          <motion.p variants={fadeUp} className="text-[#8C7B72] text-lg max-w-xl mx-auto leading-relaxed">
-            Each goal is critical. Together they make the shelter sustainable.
+          <motion.p variants={fadeUp} className="text-[#9A8578] leading-relaxed">
+            Each goal stands on its own. Together they sustain the shelter and grow it.
           </motion.p>
         </motion.div>
 
         <motion.div
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
-          variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
+          viewport={{ once: true, amount: 0.1 }}
+          variants={staggerContainer}
         >
-          {goals.map((goal) => {
+          {sorted.map((goal) => {
             const meta = GOAL_META[goal.id];
-            if (!meta) return null;
+            const live = totals?.[goal.id];
             return (
               <motion.div
                 key={goal.id}
                 variants={fadeUp}
-                className="bg-white rounded-2xl p-6 border border-[#EDD9B4] relative flex flex-col"
+                whileHover={{ y: -4 }}
+                className="relative bg-white rounded-2xl p-6 sm:p-8 border border-[#EDD9B4] shadow-lg flex flex-col"
               >
                 {/* Priority badge */}
-                <div className="absolute top-4 right-4">
-                  <span
-                    className="text-xs font-bold px-3 py-1 rounded-full"
-                    style={{
-                      background: "linear-gradient(90deg, #C9952A, #E4B84A)",
-                      color: "#1C1410",
-                    }}
-                  >
-                    PRIORITY {meta.priority}
-                  </span>
+                <div className="absolute -top-3 right-6 px-3 py-1 rounded-full bg-gradient-to-r from-[#C9952A] to-[#E4B84A] text-[#1C1410] text-xs font-bold tracking-wider uppercase shadow-md">
+                  Priority {meta.priority}
                 </div>
 
-                {/* Title */}
-                <div className="mb-4 pr-24">
-                  <p className="text-2xl mb-1">{meta.emoji}</p>
-                  <h3
-                    className="text-xl font-semibold text-[#1C1410]"
-                    style={{ fontFamily: "var(--font-serif)" }}
-                  >
-                    {goal.title}
-                  </h3>
+                <div className="flex items-start gap-3 mb-3">
+                  <span className="text-3xl">{meta.emoji}</span>
+                  <div>
+                    <h3
+                      className="text-xl sm:text-2xl font-semibold text-[#1C1410] leading-tight"
+                      style={{ fontFamily: "var(--font-serif)" }}
+                    >
+                      {goal.title}
+                    </h3>
+                  </div>
                 </div>
 
-                {/* Why description */}
-                <p className="text-sm text-[#8C7B72] leading-relaxed mb-5">{meta.why}</p>
+                <p className="text-[#8C7B72] text-sm leading-relaxed mb-5 flex-grow">{meta.why}</p>
 
-                {/* GoalMeter */}
-                <div className="mb-5">
+                <div className="mb-6">
                   <GoalMeter
                     goal={goal}
-                    raised={totals?.[goal.id]?.raised}
-                    supporters={totals?.[goal.id]?.supporters}
+                    raised={live?.raised}
+                    supporters={live?.supporters}
                   />
                 </div>
 
-                {/* Donate button */}
-                <div className="mt-auto">
-                  <Link
-                    href={`/donate?goal=${goal.id}`}
-                    className="block w-full text-center px-6 py-3.5 rounded-full font-semibold text-sm text-white transition-all hover:opacity-90 active:scale-[0.98]"
-                    style={{ background: "#B85C38" }}
-                  >
-                    Donate to This Goal
-                  </Link>
-                </div>
+                <Link
+                  href={`/donate?goal=${goal.id}`}
+                  className="inline-flex items-center justify-center w-full py-3.5 rounded-xl bg-[#B85C38] text-white text-sm font-semibold hover:bg-[#8B3E23] transition-colors"
+                >
+                  Donate to This Goal →
+                </Link>
               </motion.div>
             );
           })}
@@ -613,39 +663,40 @@ function DonationSection({
   );
 }
 
+/* ─── Final CTA ──────────────────────────────────────────────── */
+
 function FinalCTA() {
   return (
     <section className="py-24 px-4 bg-[#FDFAF6] text-center">
       <motion.div
         className="max-w-2xl mx-auto"
-        variants={staggerContainer}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.5 }}
+        viewport={{ once: true, amount: 0.4 }}
+        variants={staggerContainer}
       >
-        <motion.p variants={fadeUp} className="text-[#B85C38] text-sm uppercase tracking-widest mb-4 font-medium">
-          Join the story
-        </motion.p>
         <motion.h2
           variants={fadeUp}
-          className="text-4xl sm:text-5xl font-light text-[#1C1410] mb-6 leading-tight"
+          className="text-4xl sm:text-5xl font-light text-[#1C1410] mb-6"
           style={{ fontFamily: "var(--font-serif)" }}
         >
-          Sixty children are waiting to be seen.
+          Join the story.
         </motion.h2>
-        <motion.p variants={fadeUp} className="text-[#8C7B72] text-lg mb-10 leading-relaxed">
-          A$25 feeds a child for a week. A$600 sponsors a full year. Every dollar reaches Kapoeta directly.
+        <motion.p variants={fadeUp} className="text-[#8C7B72] text-lg mb-8 leading-relaxed">
+          A one-off gift, a monthly partnership, or a sponsored child — every contribution
+          becomes someone&apos;s breakfast, school uniform, or first safe night.
         </motion.p>
-        <motion.div variants={fadeUp} className="flex flex-wrap gap-4 justify-center">
-          <DonateButton />
+        <motion.div variants={fadeUp}>
+          <DonateButton size="lg" className="mx-auto">
+            Give to Kapoeta
+          </DonateButton>
         </motion.div>
-        <motion.p variants={fadeUp} className="text-[#8C7B72] text-xs mt-6">
-          All donations are tax-deductible. 100% reaches Kapoeta.
-        </motion.p>
       </motion.div>
     </section>
   );
 }
+
+/* ─── Page composition ───────────────────────────────────────── */
 
 export default function KapoetaClient({ totals, goals }: Props) {
   return (
@@ -655,8 +706,9 @@ export default function KapoetaClient({ totals, goals }: Props) {
       <StatsStrip />
       <StoryChapter2 />
       <StoryChapter3 />
-      <GalleryStrip />
-      <DonationSection goals={goals} totals={totals} />
+      <OnTheGround />
+      <Gallery />
+      <DonationsSection totals={totals} goals={goals} />
       <TrustStrip />
       <FinalCTA />
     </div>

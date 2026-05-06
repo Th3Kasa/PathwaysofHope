@@ -15,7 +15,7 @@ const FALLBACK_TOTALS: Record<string, { raised: number; supporters: number }> = 
     raised: parseInt(process.env.FALLBACK_RAISED_WATER_TOWER ?? "3200"),
     supporters: parseInt(process.env.FALLBACK_SUPPORTERS_WATER_TOWER ?? "28"),
   },
-  "poultry-project": {
+  "chicken-coop": {
     raised: parseInt(process.env.FALLBACK_RAISED_POULTRY ?? "1800"),
     supporters: parseInt(process.env.FALLBACK_SUPPORTERS_POULTRY ?? "14"),
   },
@@ -33,7 +33,7 @@ export async function GET() {
   try {
     const totals: Record<string, { raised: number; supporters: number }> = {
       "water-tower": { raised: 0, supporters: 0 },
-      "poultry-project": { raised: 0, supporters: 0 },
+      "chicken-coop": { raised: 0, supporters: 0 },
       "sponsor-a-child": { raised: 0, supporters: 0 },
       "general-support": { raised: 0, supporters: 0 },
     };

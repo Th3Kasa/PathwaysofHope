@@ -7,7 +7,7 @@ import KapoetaClient from "./kapoeta-client";
 export const metadata = {
   title: "Kapoeta Children's Shelter — Pathways of Hope",
   description:
-    "The full story of the Kapoeta mission: how one pastor's calling became a shelter for 60 children in South Sudan, and what it takes to keep it running.",
+    "A children's home in South Sudan, founded by Brother Hakim and built by a community of believers across four continents.",
 };
 
 async function getTotals() {

@@ -67,7 +67,7 @@ The checkout route creates prices on the fly. However, for clean Stripe reportin
 
 Dashboard → Products → Add Product for each goal:
 - "Water Tower & Solar Pump — Kapoeta" — add metadata key `goal_id` = `water-tower`
-- "Poultry Project (200 Chickens) — Kapoeta" — metadata `goal_id` = `poultry-project`
+- "Chicken Coop & Layers — Kapoeta" — metadata `goal_id` = `chicken-coop`
 - "Sponsor a Child — Kapoeta" — metadata `goal_id` = `sponsor-a-child`
 - "General Annual Support — Kapoeta" — metadata `goal_id` = `general-support`
 

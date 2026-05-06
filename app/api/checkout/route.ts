@@ -6,7 +6,7 @@ const getStripe = () =>
 
 const GOAL_LABELS: Record<string, string> = {
   "water-tower": "Water Tower & Solar Pump — Kapoeta",
-  "poultry-project": "Poultry Project (200 Chickens) — Kapoeta",
+  "chicken-coop": "Chicken Coop & Layers — Kapoeta",
   "sponsor-a-child": "Sponsor a Child — Kapoeta",
   "general-support": "General Annual Support — Kapoeta",
 };

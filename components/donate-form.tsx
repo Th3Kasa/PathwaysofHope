@@ -10,7 +10,7 @@ const PRESETS = [25, 50, 100, 250, 600];
 
 const GOAL_DESCRIPTIONS: Record<GoalId, string> = {
   "water-tower": "Fund a permanent water tower and solar-powered pump for all 60 children.",
-  "poultry-project": "Build a 200-chicken coop — nutrition and sustainable income in one project.",
+  "chicken-coop": "A simple coop with 10 hens and a rooster — daily eggs for the children, plus modest income from surplus.",
   "sponsor-a-child": "A$600 covers one child's full year: food, shelter, schooling, and belonging.",
   "general-support": "Keep the shelter running: food, staff, utilities, medical care.",
 };
