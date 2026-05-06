@@ -4,7 +4,7 @@ import Stripe from "stripe";
 // Cache totals for 60 seconds to avoid hammering Stripe
 export const revalidate = 60;
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+const getStripe = () => new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2026-04-22.dahlia",
 });
 
@@ -45,7 +45,7 @@ export async function GET() {
     // ──────────────────────────────────────────────────────────────────────────
 
     // Fetch one-off payments
-    const charges = await stripe.paymentIntents.list({ limit: 100 });
+    const charges = await getStripe().paymentIntents.list({ limit: 100 });
     for (const pi of charges.data) {
       if (pi.status !== "succeeded") continue;
       const goalId = pi.metadata?.goal_id;
@@ -56,7 +56,7 @@ export async function GET() {
     }
 
     // Fetch recurring payments via invoices
-    const invoices = await stripe.invoices.list({ limit: 100, status: "paid" });
+    const invoices = await getStripe().invoices.list({ limit: 100, status: "paid" });
     for (const inv of invoices.data) {
       const goalId = (inv as unknown as { subscription_details?: { metadata?: { goal_id?: string } } }).subscription_details?.metadata?.goal_id;
       if (goalId && goalId in totals) {

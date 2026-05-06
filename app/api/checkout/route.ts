@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2026-04-22.dahlia",
-});
+const getStripe = () =>
+  new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-04-22.dahlia" });
 
 const GOAL_LABELS: Record<string, string> = {
   "water-tower": "Water Tower & Solar Pump — Kapoeta",
@@ -37,7 +36,7 @@ export async function POST(req: NextRequest) {
 
     if (mode === "payment") {
       // One-off payment
-      session = await stripe.checkout.sessions.create({
+      session = await getStripe().checkout.sessions.create({
         mode: "payment",
         currency: "aud",
         line_items: [
@@ -67,7 +66,7 @@ export async function POST(req: NextRequest) {
       // Monthly subscription — create a price on the fly
       // In production you can pre-create prices per goal and reference them by env var
       // e.g. STRIPE_PRICE_WATER_TOWER=price_xxx  STRIPE_PRICE_GENERAL=price_yyy
-      const price = await stripe.prices.create({
+      const price = await getStripe().prices.create({
         currency: "aud",
         unit_amount: amountCents,
         recurring: { interval: "month" },
@@ -78,7 +77,7 @@ export async function POST(req: NextRequest) {
         metadata: { goal_id: goalId },
       });
 
-      session = await stripe.checkout.sessions.create({
+      session = await getStripe().checkout.sessions.create({
         mode: "subscription",
         line_items: [{ price: price.id, quantity: 1 }],
         subscription_data: {
