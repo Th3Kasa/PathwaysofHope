@@ -277,24 +277,6 @@ export default function AboutPage() {
 
       <TrustStrip />
 
-      {/* Contact info */}
-      <section className="py-16 px-4 bg-[#FDFAF6]">
-        <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8">
-          {[
-            { label: "Email", value: "stmarknubianfoundation@gmail.com", href: "mailto:stmarknubianfoundation@gmail.com" },
-            { label: "Mamdouh Mansour", value: "0402 747 292", href: "tel:+61402747292" },
-            { label: "Philip Hanna", value: "0411 401 217", href: "tel:+61411401217" },
-          ].map((c) => (
-            <div key={c.label} className="text-center">
-              <p className="text-xs font-semibold text-[#B85C38] uppercase tracking-widest mb-1">{c.label}</p>
-              <a href={c.href} className="text-[#1C1410] text-sm font-medium hover:text-[#B85C38] transition-colors">
-                {c.value}
-              </a>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* CTA */}
       <section className="py-20 px-4 text-center">
         <motion.div

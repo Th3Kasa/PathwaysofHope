@@ -722,6 +722,25 @@ function FinalCTA() {
             Give to Kapoeta
           </DonateButton>
         </motion.div>
+
+        {/* Kapoeta-specific contacts */}
+        <motion.div
+          variants={fadeUp}
+          className="mt-14 pt-10 border-t border-[#EDD9B4] grid grid-cols-1 sm:grid-cols-3 gap-6 text-left sm:text-center"
+        >
+          {[
+            { label: "Email", value: "stmarknubianfoundation@gmail.com", href: "mailto:stmarknubianfoundation@gmail.com" },
+            { label: "Mamdouh Mansour", value: "0402 747 292", href: "tel:+61402747292" },
+            { label: "Philip Hanna", value: "0411 401 217", href: "tel:+61411401217" },
+          ].map((c) => (
+            <div key={c.label}>
+              <p className="text-xs font-semibold text-[#B85C38] uppercase tracking-widest mb-1">{c.label}</p>
+              <a href={c.href} className="text-[#1C1410] text-sm font-medium hover:text-[#B85C38] transition-colors break-all">
+                {c.value}
+              </a>
+            </div>
+          ))}
+        </motion.div>
       </motion.div>
     </section>
   );
