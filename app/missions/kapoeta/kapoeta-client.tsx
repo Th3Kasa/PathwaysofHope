@@ -12,10 +12,11 @@ import {
   animate,
   type Variants,
 } from "framer-motion";
-import { useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { GoalMeter } from "@/components/goal-meter";
 import { DonateButton } from "@/components/donate-button";
 import { TrustStrip } from "@/components/trust-strip";
+import { Baby, Droplets, Egg, HeartHandshake } from "lucide-react";
 import type { Goal } from "@/lib/goals";
 
 interface Props {
@@ -73,24 +74,27 @@ const TIMELINE = [
   },
 ];
 
-const GOAL_META: Record<string, { emoji: string; priority: number; why: string }> = {
+const GOAL_ICONS: Record<string, React.ElementType> = {
+  "sponsor-a-child": Baby,
+  "water-tower": Droplets,
+  "chicken-coop": Egg,
+  "general-support": HeartHandshake,
+};
+
+const GOAL_META: Record<string, { priority: number; why: string }> = {
   "sponsor-a-child": {
-    emoji: "👧",
     priority: 1,
     why: "A$600 covers one child's full year — meals, shelter, schooling, and the dignity of belonging. Of 45 children in our care, 10 are already sponsored. 35 names are still waiting.",
   },
   "water-tower": {
-    emoji: "🏗️",
     priority: 2,
     why: "The foundation is poured. A water tank, solar pump, and irrigation lines will end the daily walk for water and feed the gardens that feed the children.",
   },
   "chicken-coop": {
-    emoji: "🐔",
     priority: 3,
-    why: "A modest coop with 10 hens and a rooster. Daily eggs for growing children. A small project, but one that produces food and a little income every day.",
+    why: "A modest coop with 10 hens and a rooster. Daily eggs for growing children. A small project, but one that produces food and a little income every single day.",
   },
   "general-support": {
-    emoji: "🤲",
     priority: 4,
     why: "Stipends for the matron and evangelist, school fees and uniforms, food, medical care — the day-to-day costs of a children's shelter, beyond any single project.",
   },
@@ -98,7 +102,7 @@ const GOAL_META: Record<string, { emoji: string; priority: number; why: string }
 
 /* ─── Animated counter ───────────────────────────────────────── */
 
-function Counter({ value, suffix = "" }: { value: number; suffix?: string }) {
+function Counter({ value, prefix = "", suffix = "" }: { value: number; prefix?: string; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const motionVal = useMotionValue(0);
   const spring = useSpring(motionVal, { stiffness: 60, damping: 20 });
@@ -110,11 +114,11 @@ function Counter({ value, suffix = "" }: { value: number; suffix?: string }) {
 
   useEffect(() => {
     return spring.on("change", (v) => {
-      if (ref.current) ref.current.textContent = Math.floor(v).toLocaleString() + suffix;
+      if (ref.current) ref.current.textContent = prefix + Math.floor(v).toLocaleString() + suffix;
     });
-  }, [spring, suffix]);
+  }, [spring, prefix, suffix]);
 
-  return <span ref={ref}>0{suffix}</span>;
+  return <span ref={ref}>{prefix}0{suffix}</span>;
 }
 
 /* ─── Hero ───────────────────────────────────────────────────── */
@@ -242,10 +246,10 @@ function StoryChapter1() {
 
 function StatsStrip() {
   const stats = [
-    { value: 10000, suffix: " m²", label: "Land granted by local authorities" },
-    { value: 45, suffix: "", label: "Children in our care" },
+    { value: 150, suffix: "+", label: "Children served since 2024" },
+    { value: 45, suffix: "", label: "Children currently in our care" },
     { value: 44, suffix: "", label: "Children in formal education" },
-    { value: 16, suffix: " × 9 m", label: "Main building completed" },
+    { value: 85000, prefix: "A$", suffix: "", label: "Raised in opening campaign" },
   ];
 
   return (
@@ -260,19 +264,12 @@ function StatsStrip() {
         {stats.map((s) => (
           <motion.div key={s.label} variants={fadeUp}>
             <div
-              className="text-3xl sm:text-4xl font-light mb-2"
+              className="text-3xl sm:text-4xl font-light mb-2 tabular-nums"
               style={{ fontFamily: "var(--font-serif)", color: "#C9952A" }}
             >
-              {typeof s.value === "number" && s.value < 100 && !s.suffix.includes("m") ? (
-                <Counter value={s.value} suffix={s.suffix} />
-              ) : (
-                <>
-                  <Counter value={s.value} />
-                  {s.suffix}
-                </>
-              )}
+              <Counter value={s.value} prefix={"prefix" in s ? (s as { prefix: string }).prefix : ""} suffix={s.suffix} />
             </div>
-            <div className="text-xs sm:text-sm text-[#9A8578] uppercase tracking-wider">
+            <div className="text-xs sm:text-sm text-[#9A8578] uppercase tracking-wider leading-snug">
               {s.label}
             </div>
           </motion.div>
@@ -519,11 +516,14 @@ function OnTheGround() {
 
 function Gallery() {
   const images = [
-    { src: "/images/kapoeta/children-meal.jpg", alt: "Children sharing a meal at the shelter" },
-    { src: "/images/kapoeta/water-well.jpg", alt: "The water well drilled before the container's arrival" },
-    { src: "/images/kapoeta/children-learning.jpg", alt: "Children at the on-site preschool" },
-    { src: "/images/kapoeta/livestock.jpg", alt: "The shelter's dairy cows" },
-    { src: "/images/kapoeta/children-outdoor.jpg", alt: "Children at play on the shelter grounds" },
+    { src: "/images/kapoeta/field/field-1.jpg", alt: "Children at the Kapoeta shelter, January 2025" },
+    { src: "/images/kapoeta/field/field-2.jpg", alt: "Life at the shelter" },
+    { src: "/images/kapoeta/field/field-3.jpg", alt: "Children together at the Kapoeta centre" },
+    { src: "/images/kapoeta/field/field-4.jpg", alt: "Daily activities at the shelter" },
+    { src: "/images/kapoeta/field/field-5.jpg", alt: "Children at the Kapoeta shelter" },
+    { src: "/images/kapoeta/field/field-6.jpg", alt: "Field visit, January 2025" },
+    { src: "/images/kapoeta/field/feb2025-1.jpg", alt: "Update from the shelter, February 2025" },
+    { src: "/images/kapoeta/field/feb2025-2.jpg", alt: "Shelter life, February 2025" },
   ];
 
   return (
@@ -545,19 +545,19 @@ function Gallery() {
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-          {images.map((img) => (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+          {images.map((img, i) => (
             <motion.div
               key={img.src}
               variants={scaleIn}
-              className="relative aspect-[3/4] rounded-xl overflow-hidden"
+              className={`relative overflow-hidden rounded-xl ${i === 0 || i === 4 ? "aspect-[3/4] sm:row-span-2" : "aspect-square"}`}
             >
               <Image
                 src={img.src}
                 alt={img.alt}
                 fill
-                className="object-cover"
-                sizes="(max-width: 768px) 50vw, 20vw"
+                className="object-cover hover:scale-105 transition-transform duration-700"
+                sizes="(max-width: 640px) 50vw, 25vw"
               />
             </motion.div>
           ))}
@@ -613,12 +613,13 @@ function DonationsSection({ goals, totals }: Props) {
         >
           {sorted.map((goal) => {
             const meta = GOAL_META[goal.id];
+            const GoalIcon = GOAL_ICONS[goal.id];
             const live = totals?.[goal.id];
             return (
               <motion.div
                 key={goal.id}
                 variants={fadeUp}
-                whileHover={{ y: -4 }}
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}
                 className="relative bg-white rounded-2xl p-6 sm:p-8 border border-[#EDD9B4] shadow-lg flex flex-col"
               >
                 {/* Priority badge */}
@@ -626,8 +627,10 @@ function DonationsSection({ goals, totals }: Props) {
                   Priority {meta.priority}
                 </div>
 
-                <div className="flex items-start gap-3 mb-3">
-                  <span className="text-3xl">{meta.emoji}</span>
+                <div className="flex items-start gap-4 mb-3">
+                  <div className="w-11 h-11 rounded-xl bg-[#B85C38]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    {GoalIcon && <GoalIcon size={20} className="text-[#B85C38]" strokeWidth={1.75} />}
+                  </div>
                   <div>
                     <h3
                       className="text-xl sm:text-2xl font-semibold text-[#1C1410] leading-tight"

@@ -145,7 +145,7 @@ export default function AboutPage() {
       </section>
 
       {/* Pull Quote */}
-      <section className="bg-[#EDD9B4] py-20 px-4">
+      <section className="bg-[#B85C38] py-20 px-4">
         <motion.div
           className="max-w-3xl mx-auto text-center"
           initial="hidden"
@@ -154,11 +154,14 @@ export default function AboutPage() {
           variants={fadeUp}
         >
           <blockquote
-            className="text-3xl sm:text-4xl font-light text-[#1C1410] leading-relaxed italic"
+            className="text-2xl sm:text-3xl font-light text-white leading-relaxed italic"
             style={{ fontFamily: "var(--font-serif)" }}
           >
-            &ldquo;We exist to remove every barrier between a generous heart and a child in need.&rdquo;
+            &ldquo;Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver.&rdquo;
           </blockquote>
+          <cite className="block mt-5 text-[#EDD9B4] text-sm not-italic tracking-wide">
+            — 2 Corinthians 9:7
+          </cite>
         </motion.div>
       </section>
 
@@ -273,6 +276,24 @@ export default function AboutPage() {
       </section>
 
       <TrustStrip />
+
+      {/* Contact info */}
+      <section className="py-16 px-4 bg-[#FDFAF6]">
+        <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8">
+          {[
+            { label: "Email", value: "stmarknubianfoundation@gmail.com", href: "mailto:stmarknubianfoundation@gmail.com" },
+            { label: "Mamdouh Mansour", value: "0402 747 292", href: "tel:+61402747292" },
+            { label: "Philip Hanna", value: "0411 401 217", href: "tel:+61411401217" },
+          ].map((c) => (
+            <div key={c.label} className="text-center">
+              <p className="text-xs font-semibold text-[#B85C38] uppercase tracking-widest mb-1">{c.label}</p>
+              <a href={c.href} className="text-[#1C1410] text-sm font-medium hover:text-[#B85C38] transition-colors">
+                {c.value}
+              </a>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* CTA */}
       <section className="py-20 px-4 text-center">

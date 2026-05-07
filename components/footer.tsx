@@ -39,7 +39,8 @@ export function Footer() {
               A faith-driven charity partnering with local leaders to bring
               safety, dignity, and a future to children in South Sudan.
             </p>
-            <p className="text-xs text-[#6B5A52]">Registered Australian Charity · ABN TBC</p>
+            <p className="text-xs text-[#6B5A52]">Registered Australian Charity · ABN 29 168 959 966</p>
+            <p className="text-xs text-[#6B5A52] mt-1">stmarknubianfoundation@gmail.com</p>
           </div>
 
           {/* Navigate */}
@@ -77,7 +78,7 @@ export function Footer() {
                 "All travel costs self-funded by volunteers",
                 "Registered charity — donations tax-deductible",
                 "Full financial transparency on request",
-                "Led by Brother Hakim Peter — on the ground in Kapoeta",
+                "Led by Brother Hakim — on the ground in Kapoeta",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-2">
                   <span className="text-[#C9952A] mt-0.5 flex-shrink-0">✓</span>
