@@ -188,8 +188,8 @@ function StoryChapter1() {
         >
           <motion.div className="absolute inset-0" style={{ y: imageY }}>
             <Image
-              src="/images/kapoeta/field/field-1.jpg"
-              alt="A team member sitting with children of Kapoeta under a tree — the calling that started it all"
+              src="/images/kapoeta/hakim-founder.png"
+              alt="Brother Hakim, founder and leader of the Kapoeta Children's Shelter, at the site in Kapoeta, South Sudan"
               fill
               className="object-cover object-center"
               sizes="(max-width: 768px) 100vw, 50vw"
