@@ -132,7 +132,7 @@ function HeroSection() {
     <section ref={ref} className="relative h-screen min-h-[600px] flex items-end overflow-hidden">
       <motion.div className="absolute inset-0" style={{ y: imageY }}>
         <Image
-          src="/images/kapoeta/field/feb2025-3.jpg"
+          src="/images/kapoeta/field/children-group-portrait-shelter.jpg"
           alt="Children waving in front of the completed Kapoeta Children's Shelter, 2025"
           fill
           priority
@@ -188,7 +188,7 @@ function StoryChapter1() {
         >
           <motion.div className="absolute inset-0" style={{ y: imageY }}>
             <Image
-              src="/images/kapoeta/hakim-founder.png"
+              src="/images/kapoeta/field/children-sitting-bench-kapoeta.jpg"
               alt="Brother Hakim, founder and leader of the Kapoeta Children's Shelter, at the site in Kapoeta, South Sudan"
               fill
               className="object-cover object-center"
@@ -518,33 +518,33 @@ function Gallery() {
   // Each image is a distinct moment — ordered as a story arc
   const images = [
     {
-      src: "/images/kapoeta/field/field-3.jpg",
+      src: "/images/kapoeta/field/children-playing-field-kapoeta.jpg",
       alt: "The children of Kapoeta — before the shelter existed, gathered together outdoors",
       caption: "The children we found",
     },
     {
-      src: "/images/kapoeta/field/feb2025-2.jpg",
-      alt: "Children standing in front of the Kapoeta shelter framework during construction, 2024",
+      src: "/images/kapoeta/field/shelter-steel-frame-construction-kapoeta.jpg",
+      alt: "The Kapoeta shelter steel frame under construction, 2024",
       caption: "The building going up",
     },
     {
-      src: "/images/kapoeta/field/feb2025-3.jpg",
+      src: "/images/kapoeta/field/children-group-portrait-shelter.jpg",
       alt: "Children waving in front of the completed shelter wall, Kapoeta 2025",
       caption: "Home — finished",
     },
     {
-      src: "/images/kapoeta/field/feb2025-1.jpg",
-      alt: "Children waving from their new bunk beds inside the shelter, shipped from Sydney",
+      src: "/images/kapoeta/field/bunkbeds-dormitory-interior-kapoeta.jpg",
+      alt: "Rows of white bunk beds inside the completed Kapoeta Children's Shelter dormitory",
       caption: "Their first beds",
     },
     {
-      src: "/images/kapoeta/field/field-2.jpg",
-      alt: "A child harvesting vegetables from the shelter's garden — the sustainability program at work",
+      src: "/images/kapoeta/field/children-sitting-bench-kapoeta.jpg",
+      alt: "Children sitting on bamboo benches at the shelter compound, Kapoeta",
       caption: "Growing their own food",
     },
     {
-      src: "/images/kapoeta/field/june2025-1.jpg",
-      alt: "Children in school uniforms waving, one child in a wheelchair — 26 enrolled in formal education, June 2025",
+      src: "/images/kapoeta/field/children-school-uniforms-group-kapoeta.jpg",
+      alt: "Children in school uniforms waving, one child in a wheelchair — enrolled in formal education, June 2025",
       caption: "Going to school",
     },
   ];

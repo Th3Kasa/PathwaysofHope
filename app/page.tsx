@@ -75,7 +75,7 @@ export default function Home() {
       <section className="relative min-h-[92dvh] flex items-end" aria-label="Hero">
         <div className="absolute inset-0">
           <Image
-            src="/images/kapoeta/field/june2025-1.jpg"
+            src="/images/kapoeta/field/children-school-uniforms-group-kapoeta.jpg"
             alt="Children in school uniforms — 26 children enrolled in formal education through Pathways of Hope"
             fill
             priority
@@ -262,7 +262,7 @@ export default function Home() {
               country="South Sudan"
               title="Kapoeta Children's Shelter"
               summary="150 children given safety, meals, and schooling in one of South Sudan's most remote towns — through the work of a local leader and a global community of believers."
-              imageSrc="/images/kapoeta/field/feb2025-3.jpg"
+              imageSrc="/images/kapoeta/field/children-group-portrait-shelter.jpg"
               imageAlt="Children waving in front of the completed Kapoeta shelter"
               childCount={45}
               status="active"
@@ -286,27 +286,27 @@ export default function Home() {
         <div className="grid grid-cols-2 sm:grid-cols-5 h-56 sm:h-72">
           {[
             {
-              src: "/images/kapoeta/field/field-3.jpg",
+              src: "/images/kapoeta/field/children-playing-field-kapoeta.jpg",
               alt: "The children found on the streets of Kapoeta — hungry, homeless, without school",
               caption: "The children we found",
             },
             {
-              src: "/images/kapoeta/field/feb2025-2.jpg",
-              alt: "Children standing in front of the Kapoeta shelter during construction, 2024",
+              src: "/images/kapoeta/field/shelter-steel-frame-construction-kapoeta.jpg",
+              alt: "The Kapoeta shelter steel frame under construction, 2024",
               caption: "The building going up",
             },
             {
-              src: "/images/kapoeta/field/feb2025-3.jpg",
+              src: "/images/kapoeta/field/children-group-portrait-shelter.jpg",
               alt: "Children waving in front of the completed shelter wall, Kapoeta",
               caption: "Home",
             },
             {
-              src: "/images/kapoeta/field/feb2025-1.jpg",
-              alt: "Children waving from their new bunk beds inside the Kapoeta shelter",
+              src: "/images/kapoeta/field/bunkbeds-dormitory-interior-kapoeta.jpg",
+              alt: "Rows of white bunk beds inside the completed Kapoeta Children's Shelter dormitory",
               caption: "Their first safe beds",
             },
             {
-              src: "/images/kapoeta/field/june2025-1.jpg",
+              src: "/images/kapoeta/field/children-school-uniforms-group-kapoeta.jpg",
               alt: "Children in school uniforms, including a child in a wheelchair, Kapoeta 2025",
               caption: "Going to school",
             },

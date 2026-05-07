@@ -34,7 +34,7 @@ export default function MissionsPage() {
               country="South Sudan"
               title="Kapoeta Children's Shelter"
               summary="Brother Hakim Peter shelters 60 children in Kapoeta — providing food, safety, and schooling to children who had none. Supported by communities across Australia, the UK, and Egypt."
-              imageSrc="/images/kapoeta/children-group.jpg"
+              imageSrc="/images/kapoeta/field/children-group-portrait-shelter.jpg"
               imageAlt="Children gathered at the Kapoeta shelter"
               childCount={60}
               status="active"
