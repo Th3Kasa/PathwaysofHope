@@ -36,11 +36,11 @@ export function Nav() {
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-3" onClick={() => setOpen(false)}>
             <Image
-              src="/images/kapoeta/logo.jpg"
-              alt="Pathways of Hope logo"
+              src="/logo.png"
+              alt="Pathways of Hope logo — tree with children"
               width={40}
               height={40}
-              className="rounded-full object-cover"
+              className="object-contain"
             />
             <span
               className="text-lg font-semibold tracking-tight transition-colors duration-300"

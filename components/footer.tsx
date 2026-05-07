@@ -22,11 +22,11 @@ export function Footer() {
           <div>
             <div className="flex items-center gap-3 mb-4">
               <Image
-                src="/images/kapoeta/logo.jpg"
-                alt="Pathways of Hope"
+                src="/logo.png"
+                alt="Pathways of Hope logo"
                 width={40}
                 height={40}
-                className="rounded-full object-cover opacity-90"
+                className="object-contain opacity-90"
               />
               <span
                 className="text-white text-lg font-semibold"

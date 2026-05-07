@@ -14,8 +14,8 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://pathwaysofhope.org.au"),
   openGraph: {
     title: "Pathways of Hope",
-    description: "60 children. One shelter. 100% to the children.",
-    images: ["/images/kapoeta/children-group.jpg"],
+    description: "150 children. One shelter. 100% to the children.",
+    images: ["/logo.png"],
   },
 };
 
@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn("h-full", "font-sans", geist.variable)}>
       <head>
-        <link rel="icon" href="/images/kapoeta/logo.jpg" type="image/jpeg" />
+        <link rel="icon" href="/logo.png" type="image/png" />
       </head>
       <body className="min-h-full flex flex-col antialiased">
         <Nav />
