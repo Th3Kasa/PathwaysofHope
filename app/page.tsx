@@ -75,14 +75,14 @@ export default function Home() {
       <section className="relative min-h-[92dvh] flex items-end" aria-label="Hero">
         <div className="absolute inset-0">
           <Image
-            src="/images/kapoeta/children-group.jpg"
-            alt="Children cared for through Pathways of Hope"
+            src="/images/kapoeta/field/june2025-1.jpg"
+            alt="Children in school uniforms — 26 children enrolled in formal education through Pathways of Hope"
             fill
             priority
-            className="object-cover object-center"
+            className="object-cover object-top"
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#1C1410]/92 via-[#1C1410]/45 to-[#1C1410]/10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1C1410]/90 via-[#1C1410]/50 to-[#1C1410]/20" />
         </div>
 
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 pt-32 w-full">
@@ -262,8 +262,8 @@ export default function Home() {
               country="South Sudan"
               title="Kapoeta Children's Shelter"
               summary="150 children given safety, meals, and schooling in one of South Sudan's most remote towns — through the work of a local leader and a global community of believers."
-              imageSrc="/images/kapoeta/children-group.jpg"
-              imageAlt="Children at the Kapoeta shelter"
+              imageSrc="/images/kapoeta/field/feb2025-3.jpg"
+              imageAlt="Children waving in front of the completed Kapoeta shelter"
               childCount={45}
               status="active"
             />
@@ -281,31 +281,55 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Photo strip from the field */}
-      <section className="py-0 overflow-hidden bg-[#1C1410]">
-        <div className="grid grid-cols-3 sm:grid-cols-5 h-48 sm:h-64">
+      {/* Photo strip — 5 images telling the arc: before → building → home → beds → school */}
+      <section className="overflow-hidden bg-[#1C1410]">
+        <div className="grid grid-cols-2 sm:grid-cols-5 h-56 sm:h-72">
           {[
-            { src: "/images/kapoeta/field/field-1.jpg", alt: "Children at the Kapoeta shelter" },
-            { src: "/images/kapoeta/field/field-2.jpg", alt: "Shelter activities" },
-            { src: "/images/kapoeta/children-group.jpg", alt: "Group of children" },
-            { src: "/images/kapoeta/field/field-4.jpg", alt: "Children learning" },
-            { src: "/images/kapoeta/field/field-5.jpg", alt: "Daily life at the shelter" },
+            {
+              src: "/images/kapoeta/field/field-3.jpg",
+              alt: "The children found on the streets of Kapoeta — hungry, homeless, without school",
+              caption: "The children we found",
+            },
+            {
+              src: "/images/kapoeta/field/feb2025-2.jpg",
+              alt: "Children standing in front of the Kapoeta shelter during construction, 2024",
+              caption: "The building going up",
+            },
+            {
+              src: "/images/kapoeta/field/feb2025-3.jpg",
+              alt: "Children waving in front of the completed shelter wall, Kapoeta",
+              caption: "Home",
+            },
+            {
+              src: "/images/kapoeta/field/feb2025-1.jpg",
+              alt: "Children waving from their new bunk beds inside the Kapoeta shelter",
+              caption: "Their first safe beds",
+            },
+            {
+              src: "/images/kapoeta/field/june2025-1.jpg",
+              alt: "Children in school uniforms, including a child in a wheelchair, Kapoeta 2025",
+              caption: "Going to school",
+            },
           ].map((img, i) => (
             <motion.div
               key={img.src}
-              className="relative overflow-hidden"
+              className="relative overflow-hidden group"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
+              transition={{ duration: 0.6, delay: i * 0.08 }}
             >
               <Image
                 src={img.src}
                 alt={img.alt}
                 fill
-                className="object-cover hover:scale-105 transition-transform duration-700"
-                sizes="(max-width: 640px) 33vw, 20vw"
+                className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
+                sizes="(max-width: 640px) 50vw, 20vw"
               />
+              {/* Caption on hover */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#1C1410]/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+                <p className="text-white text-xs font-medium leading-tight">{img.caption}</p>
+              </div>
             </motion.div>
           ))}
         </div>

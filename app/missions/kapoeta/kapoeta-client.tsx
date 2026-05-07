@@ -132,11 +132,11 @@ function HeroSection() {
     <section ref={ref} className="relative h-screen min-h-[600px] flex items-end overflow-hidden">
       <motion.div className="absolute inset-0" style={{ y: imageY }}>
         <Image
-          src="/images/kapoeta/shelter-exterior.jpg"
-          alt="The Kapoeta children's shelter"
+          src="/images/kapoeta/field/feb2025-3.jpg"
+          alt="Children waving in front of the completed Kapoeta Children's Shelter, 2025"
           fill
           priority
-          className="object-cover"
+          className="object-cover object-center"
           sizes="100vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#1C1410]/90 via-[#1C1410]/40 to-[#1C1410]/10" />
@@ -188,10 +188,10 @@ function StoryChapter1() {
         >
           <motion.div className="absolute inset-0" style={{ y: imageY }}>
             <Image
-              src="/images/kapoeta/hakim.png"
-              alt="Brother Hakim, founder of the Kapoeta Children's Shelter"
+              src="/images/kapoeta/field/field-1.jpg"
+              alt="A team member sitting with children of Kapoeta under a tree — the calling that started it all"
               fill
-              className="object-cover object-top"
+              className="object-cover object-center"
               sizes="(max-width: 768px) 100vw, 50vw"
             />
           </motion.div>
@@ -330,10 +330,10 @@ function StoryChapter2() {
         >
           <motion.div variants={scaleIn} className="relative h-[420px] rounded-2xl overflow-hidden shadow-xl">
             <Image
-              src="/images/kapoeta/container.png"
-              alt="The 40-foot shipping container packed in Sydney"
+              src="/images/kapoeta/classroom-1.jpg"
+              alt="Bunk mattresses being loaded in Sydney — packed by volunteers and shipped to Kapoeta"
               fill
-              className="object-cover"
+              className="object-cover object-center"
               sizes="(max-width: 768px) 100vw, 50vw"
             />
           </motion.div>
@@ -515,15 +515,38 @@ function OnTheGround() {
 /* ─── Gallery ────────────────────────────────────────────────── */
 
 function Gallery() {
+  // Each image is a distinct moment — ordered as a story arc
   const images = [
-    { src: "/images/kapoeta/field/field-1.jpg", alt: "Children at the Kapoeta shelter, January 2025" },
-    { src: "/images/kapoeta/field/field-2.jpg", alt: "Life at the shelter" },
-    { src: "/images/kapoeta/field/field-3.jpg", alt: "Children together at the Kapoeta centre" },
-    { src: "/images/kapoeta/field/field-4.jpg", alt: "Daily activities at the shelter" },
-    { src: "/images/kapoeta/field/field-5.jpg", alt: "Children at the Kapoeta shelter" },
-    { src: "/images/kapoeta/field/field-6.jpg", alt: "Field visit, January 2025" },
-    { src: "/images/kapoeta/field/feb2025-1.jpg", alt: "Update from the shelter, February 2025" },
-    { src: "/images/kapoeta/field/feb2025-2.jpg", alt: "Shelter life, February 2025" },
+    {
+      src: "/images/kapoeta/field/field-3.jpg",
+      alt: "The children of Kapoeta — before the shelter existed, gathered together outdoors",
+      caption: "The children we found",
+    },
+    {
+      src: "/images/kapoeta/field/feb2025-2.jpg",
+      alt: "Children standing in front of the Kapoeta shelter framework during construction, 2024",
+      caption: "The building going up",
+    },
+    {
+      src: "/images/kapoeta/field/feb2025-3.jpg",
+      alt: "Children waving in front of the completed shelter wall, Kapoeta 2025",
+      caption: "Home — finished",
+    },
+    {
+      src: "/images/kapoeta/field/feb2025-1.jpg",
+      alt: "Children waving from their new bunk beds inside the shelter, shipped from Sydney",
+      caption: "Their first beds",
+    },
+    {
+      src: "/images/kapoeta/field/field-2.jpg",
+      alt: "A child harvesting vegetables from the shelter's garden — the sustainability program at work",
+      caption: "Growing their own food",
+    },
+    {
+      src: "/images/kapoeta/field/june2025-1.jpg",
+      alt: "Children in school uniforms waving, one child in a wheelchair — 26 enrolled in formal education, June 2025",
+      caption: "Going to school",
+    },
   ];
 
   return (
@@ -545,20 +568,25 @@ function Gallery() {
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+        {/* 6-image story grid: 2 tall flanking 4 square */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
           {images.map((img, i) => (
             <motion.div
               key={img.src}
               variants={scaleIn}
-              className={`relative overflow-hidden rounded-xl ${i === 0 || i === 4 ? "aspect-[3/4] sm:row-span-2" : "aspect-square"}`}
+              className="relative overflow-hidden rounded-xl group aspect-[4/3] sm:aspect-[3/2]"
             >
               <Image
                 src={img.src}
                 alt={img.alt}
                 fill
-                className="object-cover hover:scale-105 transition-transform duration-700"
-                sizes="(max-width: 640px) 50vw, 25vw"
+                className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
+                sizes="(max-width: 640px) 50vw, 33vw"
               />
+              {/* Persistent caption strip at bottom */}
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#1C1410]/85 to-transparent pt-8 pb-3 px-3">
+                <p className="text-white text-xs font-medium">{img.caption}</p>
+              </div>
             </motion.div>
           ))}
         </div>
