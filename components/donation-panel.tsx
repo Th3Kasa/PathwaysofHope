@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
 import { Loader2, Minus, Plus } from "lucide-react";
 import { cn, formatAUDFull } from "@/lib/utils";
 import type { BreakdownPart, Frequency, Goal } from "@/lib/goals";
@@ -104,7 +105,12 @@ export function DonationPanel({ goal, part }: Props) {
   const fact = funFact(goal.id, base);
 
   return (
-    <div className="bg-white rounded-3xl shadow-sm border border-[#EDD9B4] overflow-hidden">
+    <motion.div
+      initial={{ opacity: 0, y: 18 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      className="bg-white rounded-3xl shadow-sm border border-[#EDD9B4] overflow-hidden"
+    >
       {/* Header image + title */}
       <div className="relative h-44 sm:h-52">
         <Image src={goal.image} alt={goal.imageAlt} fill className="object-cover object-center" sizes="(max-width: 768px) 100vw, 768px" priority />
@@ -146,19 +152,28 @@ export function DonationPanel({ goal, part }: Props) {
           </div>
 
           {/* Recurring consent — only when a recurring frequency is chosen */}
-          {recurring && (
-            <label className="mt-4 flex items-start gap-3 rounded-xl bg-[#FDF5F0] border border-[#EDD9B4] p-4 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={recurringConsent}
-                onChange={(e) => { setRecurringConsent(e.target.checked); setError(null); }}
-                className="mt-0.5 w-4 h-4 accent-[#B85C38]"
-              />
-              <span className="text-sm text-[#3D2B1F] leading-relaxed">
-                I understand this will be set up as a recurring payment, starting today.
-              </span>
-            </label>
-          )}
+          <AnimatePresence initial={false}>
+            {recurring && (
+              <motion.label
+                key="recurring-consent"
+                initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                animate={{ opacity: 1, height: "auto", marginTop: 16 }}
+                exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                className="flex items-start gap-3 rounded-xl bg-[#FDF5F0] border border-[#EDD9B4] p-4 cursor-pointer overflow-hidden"
+              >
+                <input
+                  type="checkbox"
+                  checked={recurringConsent}
+                  onChange={(e) => { setRecurringConsent(e.target.checked); setError(null); }}
+                  className="mt-0.5 w-4 h-4 accent-[#B85C38]"
+                />
+                <span className="text-sm text-[#3D2B1F] leading-relaxed">
+                  I understand this will be set up as a recurring payment, starting today.
+                </span>
+              </motion.label>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Sponsor-a-child quantity selector */}
@@ -242,12 +257,21 @@ export function DonationPanel({ goal, part }: Props) {
         )}
 
         {/* Fun fact */}
-        {fact && (
-          <div className="rounded-xl bg-[#F5EFE6] border border-[#EDD9B4] px-4 py-3 flex gap-2.5">
-            <span className="text-base leading-none">💡</span>
-            <p className="text-sm text-[#3D2B1F] leading-relaxed">{fact}</p>
-          </div>
-        )}
+        <AnimatePresence mode="wait">
+          {fact && (
+            <motion.div
+              key={fact}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.25 }}
+              className="rounded-xl bg-[#F5EFE6] border border-[#EDD9B4] px-4 py-3 flex gap-2.5"
+            >
+              <span className="text-base leading-none">💡</span>
+              <p className="text-sm text-[#3D2B1F] leading-relaxed">{fact}</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Fee opt-in */}
         <label className="flex items-start gap-3 cursor-pointer">
@@ -299,6 +323,6 @@ export function DonationPanel({ goal, part }: Props) {
 
         <BankTransferPanel />
       </div>
-    </div>
+    </motion.div>
   );
 }

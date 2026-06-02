@@ -39,8 +39,8 @@ export function Footer() {
               A faith-driven charity partnering with local leaders to bring
               safety, dignity, and a future to children in South Sudan.
             </p>
-            <p className="text-xs text-[#6B5A52]">Registered Australian Charity · ABN 29 168 959 966</p>
-            <p className="text-xs text-[#6B5A52] mt-1">stmarknubianfoundation@gmail.com</p>
+            <p className="text-xs text-[#6B5A52]">Pathways of Hope Ltd · ABN 40 686 574 630</p>
+            <p className="text-xs text-[#6B5A52] mt-1">Registered with the ACNC · Public company limited by guarantee</p>
           </div>
 
           {/* Navigate */}
@@ -54,6 +54,8 @@ export function Footer() {
                 { href: "/missions", label: "Missions" },
                 { href: "/missions/kapoeta", label: "Kapoeta Shelter" },
                 { href: "/about", label: "About Us" },
+                { href: "/governance", label: "Governance" },
+                { href: "/financials", label: "Transparency" },
                 { href: "/donate", label: "Give Now" },
               ].map((l) => (
                 <Link

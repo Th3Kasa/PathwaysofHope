@@ -10,6 +10,8 @@ const links = [
   { href: "/", label: "Home" },
   { href: "/missions", label: "Missions" },
   { href: "/about", label: "About" },
+  { href: "/governance", label: "Governance" },
+  { href: "/financials", label: "Transparency" },
 ];
 
 export function Nav() {

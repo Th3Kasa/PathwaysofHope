@@ -9,7 +9,7 @@ const items = [
   {
     icon: ShieldCheck,
     heading: "Registered Australian charity",
-    body: "ABN 29 168 959 966. Donations are tax-deductible for Australian taxpayers.",
+    body: "Pathways of Hope Ltd · ABN 40 686 574 630. Registered with the ACNC; donations are tax-deductible.",
   },
   {
     icon: Users,

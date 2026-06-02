@@ -7,28 +7,28 @@ import { motion, type Variants } from "framer-motion";
 const BOARD = [
   {
     name: "Waleed Mansour",
-    roles: ["Director"],
+    roles: ["Chairman", "Director"],
     initials: "WM",
-    bio: "Waleed brings a deep commitment to transparent governance and community-driven charity. As a director of Pathways of Hope, he ensures the organisation's mission remains accountable to those it serves.",
-  },
-  {
-    name: "Hanan Mansour",
-    roles: ["Director"],
-    initials: "HM",
-    bio: "Hanan is committed to building sustainable charitable structures that honour both donors and recipients. Her focus is on long-term impact over short-term visibility.",
+    bio: "As Chairman of Pathways of Hope, Waleed brings a deep commitment to transparent governance and community-driven charity, ensuring the organisation's mission remains accountable to those it serves.",
   },
   {
     name: "Sylvia Mansour",
-    roles: ["Director", "Public Officer", "Secretary"],
+    roles: ["Director", "Legal Advisor", "Public Officer"],
     initials: "SM",
-    bio: "Sylvia holds responsibility for the organisation's public obligations and governance records. Her diligence ensures Pathways of Hope meets all regulatory requirements as a registered Australian charity.",
+    bio: "Sylvia holds responsibility for the organisation's legal and public obligations and governance records. Her diligence ensures Pathways of Hope meets all regulatory requirements as a registered Australian charity.",
+  },
+  {
+    name: "Hanan Mansour",
+    roles: ["Director", "Coordinator"],
+    initials: "HM",
+    bio: "As Coordinator, Hanan is committed to building sustainable charitable structures that honour both donors and recipients. Her focus is on long-term impact over short-term visibility.",
   },
 ];
 
 const COMMITMENTS = [
   {
     title: "Registered Australian Charity",
-    body: "Pathways of Hope is registered with the Australian Charities and Not-for-profits Commission (ACNC). Donations are tax-deductible for Australian taxpayers.",
+    body: "Pathways of Hope Ltd (ABN 40 686 574 630) is a public company limited by guarantee, registered with the Australian Charities and Not-for-profits Commission (ACNC). Donations are tax-deductible for Australian taxpayers.",
   },
   {
     title: "100% to the field — structurally guaranteed",
