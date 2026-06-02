@@ -8,13 +8,24 @@ import { cn } from "@/lib/utils";
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
-  title: "Pathways of Hope — Kapoeta Children's Shelter",
+  title: {
+    default: "Pathways of Hope — Kapoeta Children's Shelter",
+    template: "%s · Pathways of Hope",
+  },
   description:
-    "A faith-driven charity bringing restored dignity, safety, and opportunity to 60 children in Kapoeta, South Sudan. 100% of donations reach the children.",
+    "A faith-driven Australian charity partnering with local leaders to bring safety, education and a sustainable future to children in Kapoeta, South Sudan. 100% of donations reach the children.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://pathwaysofhope.org.au"),
   openGraph: {
-    title: "Pathways of Hope",
-    description: "150 children. One shelter. 100% to the children.",
+    type: "website",
+    siteName: "Pathways of Hope",
+    title: "Pathways of Hope — Kapoeta Children's Shelter",
+    description: "Safety, education and a future for children in Kapoeta, South Sudan. 100% of donations reach the children.",
+    images: ["/logo.png"],
+  },
+  twitter: {
+    card: "summary",
+    title: "Pathways of Hope — Kapoeta Children's Shelter",
+    description: "Safety, education and a future for children in Kapoeta, South Sudan. 100% of donations reach the children.",
     images: ["/logo.png"],
   },
 };
