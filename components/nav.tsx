@@ -5,19 +5,24 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useT } from "@/lib/i18n";
+import { LanguageToggle } from "@/components/language-toggle";
 
 const links = [
-  { href: "/", label: "Home" },
-  { href: "/missions", label: "Missions" },
-  { href: "/impact", label: "Impact" },
-  { href: "/about", label: "About" },
-  { href: "/governance", label: "Governance" },
-  { href: "/financials", label: "Transparency" },
+  { href: "/", label: { en: "Home", ar: "الرئيسية" } },
+  { href: "/missions", label: { en: "Missions", ar: "مهامنا" } },
+  { href: "/impact", label: { en: "Impact", ar: "الأثر" } },
+  { href: "/about", label: { en: "About", ar: "من نحن" } },
+  { href: "/governance", label: { en: "Governance", ar: "الحوكمة" } },
+  { href: "/financials", label: { en: "Transparency", ar: "الشفافية" } },
 ];
+
+const GIVE_NOW = { en: "Give Now", ar: "تبرّع الآن" };
 
 export function Nav() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const t = useT();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
@@ -57,7 +62,7 @@ export function Nav() {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-7">
             {links.map((l) => (
               <Link
                 key={l.href}
@@ -69,26 +74,30 @@ export function Nav() {
                   (e.currentTarget.style.color = scrolled ? "#3D2B1F" : "rgba(255,255,255,0.9)")
                 }
               >
-                {l.label}
+                {t(l.label)}
               </Link>
             ))}
             <Link
               href="/donate"
               className="inline-flex items-center justify-center px-5 py-2 text-sm font-semibold rounded-full bg-[#B85C38] text-white hover:bg-[#8B3E23] transition-colors duration-200"
             >
-              Give Now
+              {t(GIVE_NOW)}
             </Link>
+            <LanguageToggle scrolled={scrolled} />
           </nav>
 
-          {/* Mobile hamburger */}
-          <button
-            className="md:hidden p-2 transition-colors duration-300"
-            style={{ color: scrolled ? "#3D2B1F" : "#ffffff" }}
-            onClick={() => setOpen(!open)}
-            aria-label="Toggle navigation"
-          >
-            {open ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          {/* Mobile: language toggle + hamburger */}
+          <div className="md:hidden flex items-center gap-2">
+            <LanguageToggle scrolled={scrolled} />
+            <button
+              className="p-2 transition-colors duration-300"
+              style={{ color: scrolled ? "#3D2B1F" : "#ffffff" }}
+              onClick={() => setOpen(!open)}
+              aria-label="Toggle navigation"
+            >
+              {open ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -111,7 +120,7 @@ export function Nav() {
                   className="text-base font-medium text-[#3D2B1F] hover:text-[#B85C38] transition-colors py-1"
                   onClick={() => setOpen(false)}
                 >
-                  {l.label}
+                  {t(l.label)}
                 </Link>
               ))}
               <Link
@@ -119,7 +128,7 @@ export function Nav() {
                 className="inline-flex items-center justify-center px-5 py-3 text-sm font-semibold rounded-full bg-[#B85C38] text-white hover:bg-[#8B3E23] transition-colors"
                 onClick={() => setOpen(false)}
               >
-                Give Now
+                {t(GIVE_NOW)}
               </Link>
             </nav>
           </motion.div>
