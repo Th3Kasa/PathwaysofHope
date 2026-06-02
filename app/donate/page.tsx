@@ -1,16 +1,28 @@
-import { Suspense } from "react";
-import { DonateForm } from "@/components/donate-form";
+import { DonateHub } from "@/components/donate-hub";
 
 export const metadata = {
   title: "Donate — Pathways of Hope",
   description:
-    "Choose how you want to give. One-off or monthly, every dollar reaches Kapoeta. Tax-deductible for Australian taxpayers.",
+    "Choose where your gift goes. Give once or set up recurring giving — every dollar reaches the Kapoeta Children's Shelter. Tax-deductible for Australian taxpayers.",
 };
 
-export default function DonatePage() {
+async function getTotals() {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+    const res = await fetch(`${baseUrl}/api/totals`, { next: { revalidate: 60 } });
+    if (!res.ok) throw new Error("fetch failed");
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+export default async function DonatePage() {
+  const totals = await getTotals();
+
   return (
     <div className="bg-[#FDFAF6] min-h-screen">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 pt-28">
         <div className="text-center mb-14">
           <p className="text-[#B85C38] text-sm uppercase tracking-widest mb-4 font-medium">
             Give with confidence
@@ -19,18 +31,15 @@ export default function DonatePage() {
             className="text-5xl sm:text-6xl font-light text-[#1C1410] mb-4"
             style={{ fontFamily: "var(--font-serif)" }}
           >
-            Every dollar reaches Kapoeta.
+            Choose where your gift goes.
           </h1>
           <p className="text-[#8C7B72] text-lg max-w-lg mx-auto">
-            No overhead. No management fees. 100% to the children — structurally guaranteed.
+            Every dollar reaches the Kapoeta Children&apos;s Shelter. Pick a project below to give.
           </p>
         </div>
 
-        <Suspense fallback={<div className="text-center py-10 text-[#8C7B72]">Loading...</div>}>
-          <DonateForm />
-        </Suspense>
+        <DonateHub totals={totals} />
 
-        {/* Trust signals below form */}
         <div className="mt-14 grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
           {[
             { icon: "🔒", label: "Secure checkout via Stripe" },

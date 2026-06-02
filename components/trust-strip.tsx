@@ -19,7 +19,7 @@ const items = [
   {
     icon: Globe,
     heading: "Multi-continental partnership",
-    body: "Toongabbie Evangelical Church, Sudanese Grace Church Melbourne, and partners across Australia, the US, UK, and Egypt.",
+    body: "Toongabbie Church and a community of partners across Australia, the US, UK, and Egypt.",
   },
 ];
 

@@ -1,51 +1,29 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
+import { KAPOETA_GOALS } from "@/lib/goals";
 
-// Cache totals for 60 seconds to avoid hammering Stripe
+// Cache totals for 60 seconds to avoid hammering Stripe.
 export const revalidate = 60;
 
-const getStripe = () => new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2026-04-22.dahlia",
-});
+const getStripe = () =>
+  new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-04-22.dahlia" });
 
-// Fallback values used when Stripe is unavailable or keys aren't set
-// Configure these in .env.local to reflect your actual starting totals
-const FALLBACK_TOTALS: Record<string, { raised: number; supporters: number }> = {
-  "water-tower": {
-    raised: parseInt(process.env.FALLBACK_RAISED_WATER_TOWER ?? "3200"),
-    supporters: parseInt(process.env.FALLBACK_SUPPORTERS_WATER_TOWER ?? "28"),
-  },
-  "chicken-coop": {
-    raised: parseInt(process.env.FALLBACK_RAISED_POULTRY ?? "1800"),
-    supporters: parseInt(process.env.FALLBACK_SUPPORTERS_POULTRY ?? "14"),
-  },
-  "sponsor-a-child": {
-    raised: parseInt(process.env.FALLBACK_RAISED_SPONSOR ?? "7800"),
-    supporters: parseInt(process.env.FALLBACK_SUPPORTERS_SPONSOR ?? "13"),
-  },
-  "general-support": {
-    raised: parseInt(process.env.FALLBACK_RAISED_GENERAL ?? "12400"),
-    supporters: parseInt(process.env.FALLBACK_SUPPORTERS_GENERAL ?? "67"),
-  },
-};
+type Totals = Record<string, { raised: number; supporters: number }>;
+
+function emptyTotals(): Totals {
+  const t: Totals = {};
+  for (const g of KAPOETA_GOALS) t[g.id] = { raised: 0, supporters: 0 };
+  return t;
+}
 
 export async function GET() {
+  const totals = emptyTotals();
+
   try {
-    const totals: Record<string, { raised: number; supporters: number }> = {
-      "water-tower": { raised: 0, supporters: 0 },
-      "chicken-coop": { raised: 0, supporters: 0 },
-      "sponsor-a-child": { raised: 0, supporters: 0 },
-      "general-support": { raised: 0, supporters: 0 },
-    };
+    const stripe = getStripe();
 
-    // ──────────────────────────────────────────────────────────────────────────
-    // PLUG REAL STRIPE DATA HERE
-    // We query all succeeded payment intents and group by metadata.goal_id.
-    // For subscriptions, we query invoices similarly.
-    // ──────────────────────────────────────────────────────────────────────────
-
-    // Fetch one-off payments
-    const charges = await getStripe().paymentIntents.list({ limit: 100 });
+    // One-off payments
+    const charges = await stripe.paymentIntents.list({ limit: 100 });
     for (const pi of charges.data) {
       if (pi.status !== "succeeded") continue;
       const goalId = pi.metadata?.goal_id;
@@ -55,33 +33,30 @@ export async function GET() {
       }
     }
 
-    // Fetch recurring payments via invoices
-    const invoices = await getStripe().invoices.list({ limit: 100, status: "paid" });
+    // Recurring payments via paid invoices
+    const invoices = await stripe.invoices.list({ limit: 100, status: "paid" });
     for (const inv of invoices.data) {
-      const goalId = (inv as unknown as { subscription_details?: { metadata?: { goal_id?: string } } }).subscription_details?.metadata?.goal_id;
+      const goalId = (
+        inv as unknown as { subscription_details?: { metadata?: { goal_id?: string } } }
+      ).subscription_details?.metadata?.goal_id;
       if (goalId && goalId in totals) {
         totals[goalId].raised += (inv.amount_paid ?? 0) / 100;
-        // Don't double-count supporters for monthly — we count unique subscriptions
+        // Supporters counted from the originating payment, not each invoice.
       }
     }
 
-    // Merge with fallback: add fallback as a base offset for pre-Stripe donations
-    const merged: Record<string, { raised: number; supporters: number }> = {};
-    for (const goalId of Object.keys(totals)) {
-      const fb = FALLBACK_TOTALS[goalId] ?? { raised: 0, supporters: 0 };
-      merged[goalId] = {
-        raised: Math.round(totals[goalId].raised + fb.raised),
-        supporters: totals[goalId].supporters + fb.supporters,
-      };
+    // Round raised figures.
+    for (const id of Object.keys(totals)) {
+      totals[id].raised = Math.round(totals[id].raised);
     }
 
-    return NextResponse.json(merged, {
+    return NextResponse.json(totals, {
       headers: { "Cache-Control": "s-maxage=60, stale-while-revalidate" },
     });
   } catch (err) {
-    console.warn("[totals] Stripe fetch failed, returning fallback:", err);
-    // Return fallback totals so the UI never breaks
-    return NextResponse.json(FALLBACK_TOTALS, {
+    console.warn("[totals] Stripe fetch failed, returning zeroed totals:", err);
+    // Never inflate figures — on failure, everything reads A$0.
+    return NextResponse.json(emptyTotals(), {
       headers: { "Cache-Control": "s-maxage=30, stale-while-revalidate" },
     });
   }

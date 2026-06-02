@@ -261,10 +261,10 @@ export default function Home() {
               slug="kapoeta"
               country="South Sudan"
               title="Kapoeta Children's Shelter"
-              summary="150 children given safety, meals, and schooling in one of South Sudan's most remote towns — through the work of a local leader and a global community of believers."
+              summary="Children given safety, meals, and schooling in one of South Sudan's most remote towns — through the work of a local leader and a global community of believers."
               imageSrc="/images/kapoeta/field/children-group-portrait-shelter.jpg"
               imageAlt="Children waving in front of the completed Kapoeta shelter"
-              childCount={45}
+              childCount={70}
               status="active"
             />
           </motion.div>

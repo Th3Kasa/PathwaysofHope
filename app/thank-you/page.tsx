@@ -14,10 +14,10 @@ export default function ThankYouPage() {
         <div className="flex justify-center mb-8">
           <div className="relative w-20 h-20 rounded-full overflow-hidden">
             <Image
-              src="/images/kapoeta/logo.jpg"
+              src="/logo.png"
               alt="Pathways of Hope"
               fill
-              className="object-cover"
+              className="object-contain"
             />
           </div>
         </div>
@@ -37,7 +37,7 @@ export default function ThankYouPage() {
         </h1>
 
         <p className="text-[#3D2B1F] text-lg leading-relaxed mb-4">
-          A receipt has been sent to your email. Your donation goes directly to Brother Hakim Peter and the sixty children in his care — not to administration, not to travel, not to anything except the children themselves.
+          A receipt has been sent to your email. Your donation goes directly to Brother Hakim Peter and the children in his care — not to administration, not to travel, not to anything except the children themselves.
         </p>
 
         <p className="text-[#8C7B72] leading-relaxed mb-10">
@@ -67,7 +67,7 @@ export default function ThankYouPage() {
             </li>
             <li className="flex gap-3">
               <span className="text-[#B85C38] flex-shrink-0">✓</span>
-              <span>A$12,500 funds the water tower and solar pump</span>
+              <span>A$5,000 builds the chicken coop and stocks 200 chicks</span>
             </li>
           </ul>
         </div>

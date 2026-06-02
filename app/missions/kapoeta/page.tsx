@@ -1,7 +1,4 @@
-import Image from "next/image";
-import Link from "next/link";
 import { KAPOETA_GOALS } from "@/lib/goals";
-import { TrustStrip } from "@/components/trust-strip";
 import KapoetaClient from "./kapoeta-client";
 
 export const metadata = {

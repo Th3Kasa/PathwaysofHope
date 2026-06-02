@@ -1,44 +1,84 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
+import { getGoalById, getPart, type Frequency } from "@/lib/goals";
+import { feeFor, stripeRecurring, isRecurring } from "@/lib/donation";
 
 const getStripe = () =>
   new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-04-22.dahlia" });
 
-const GOAL_LABELS: Record<string, string> = {
-  "water-tower": "Water Tower & Solar Pump — Kapoeta",
-  "chicken-coop": "Chicken Coop & Layers — Kapoeta",
-  "sponsor-a-child": "Sponsor a Child — Kapoeta",
-  "general-support": "General Annual Support — Kapoeta",
-};
+interface CheckoutBody {
+  goalId: string;
+  partId?: string;
+  amountAud: number; // base gift amount, per period for recurring
+  frequency: Frequency;
+  quantity?: number; // sponsor-a-child only
+  coverFee?: boolean;
+}
+
+const VALID_FREQUENCIES: Frequency[] = ["once", "weekly", "fortnightly", "monthly"];
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const {
-      goalId,
-      amountAud,
-      mode,
-    }: { goalId: string; amountAud: number; mode: "payment" | "subscription" } = body;
+    const body = (await req.json()) as CheckoutBody;
+    const { goalId, partId, amountAud, frequency, quantity, coverFee } = body;
 
-    if (!goalId || !amountAud || !mode) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    const goal = getGoalById(goalId);
+    if (!goal) {
+      return NextResponse.json({ error: "Unknown donation goal" }, { status: 400 });
+    }
+    if (!VALID_FREQUENCIES.includes(frequency)) {
+      return NextResponse.json({ error: "Invalid frequency" }, { status: 400 });
+    }
+    if (typeof amountAud !== "number" || amountAud < 1 || amountAud > 50000) {
+      return NextResponse.json(
+        { error: "Amount must be between A$1 and A$50,000. For larger gifts, contact us directly." },
+        { status: 400 }
+      );
     }
 
-    if (amountAud < 1 || amountAud > 50000) {
-      return NextResponse.json({ error: "Amount must be between $1 and $50,000 AUD" }, { status: 400 });
+    // Resolve the human-readable label (goal, or goal → part for bundles).
+    const part = partId ? getPart(goal, partId) : undefined;
+    if (partId && !part) {
+      return NextResponse.json({ error: "Unknown project part" }, { status: 400 });
     }
+    // Product label shown in Stripe dashboard, receipts and invoices.
+    const label = part
+      ? `POH-${goal.title}: ${part.title}`
+      : `POH-${goal.title}`;
 
-    const label = GOAL_LABELS[goalId] ?? `Pathways of Hope — ${goalId}`;
-    const amountCents = Math.round(amountAud * 100);
+    // Bank/card statement descriptor — alphanumerics + spaces only, max 22 chars.
+    const statementDescriptor = `POH ${goal.title}`
+      .replace(/[^a-zA-Z0-9 ]/g, "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 22);
+
+    // Recompute the fee server-side — never trust a client-sent total.
+    const base = Math.round(amountAud * 100) / 100;
+    const fee = coverFee ? feeFor(base) : 0;
+    const totalAud = Math.round((base + fee) * 100) / 100;
+    const amountCents = Math.round(totalAud * 100);
+
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+    const cancelUrl = part
+      ? `${siteUrl}/donate/${goalId}?part=${partId}`
+      : `${siteUrl}/donate/${goalId}`;
 
+    const metadata: Record<string, string> = {
+      goal_id: goalId,
+      mission: "kapoeta",
+      cover_fee: coverFee ? "yes" : "no",
+    };
+    if (partId) metadata.part_id = partId;
+    if (quantity && quantity > 1) metadata.quantity = String(quantity);
+
+    const stripe = getStripe();
     let session: Stripe.Checkout.Session;
 
-    if (mode === "payment") {
+    if (!isRecurring(frequency)) {
       // One-off payment
-      session = await getStripe().checkout.sessions.create({
+      session = await stripe.checkout.sessions.create({
         mode: "payment",
-        currency: "aud",
         line_items: [
           {
             price_data: {
@@ -46,46 +86,40 @@ export async function POST(req: NextRequest) {
               unit_amount: amountCents,
               product_data: {
                 name: label,
-                description: "Pathways of Hope — 100% reaches the children",
-                images: [`${siteUrl}/images/kapoeta/logo.jpg`],
-                metadata: { goal_id: goalId },
+                description: "Pathways of Hope — Kapoeta Children's Shelter",
               },
             },
             quantity: 1,
           },
         ],
-        payment_intent_data: {
-          // metadata on payment intent so Stripe charges carry goal_id
-          metadata: { goal_id: goalId, mission: "kapoeta" },
-        },
+        payment_intent_data: { metadata, statement_descriptor: statementDescriptor },
         success_url: `${siteUrl}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${siteUrl}/donate?goal=${goalId}`,
-        metadata: { goal_id: goalId, mission: "kapoeta" },
+        cancel_url: cancelUrl,
+        metadata,
       });
     } else {
-      // Monthly subscription — create a price on the fly
-      // In production you can pre-create prices per goal and reference them by env var
-      // e.g. STRIPE_PRICE_WATER_TOWER=price_xxx  STRIPE_PRICE_GENERAL=price_yyy
-      const price = await getStripe().prices.create({
-        currency: "aud",
-        unit_amount: amountCents,
-        recurring: { interval: "month" },
-        product_data: {
-          name: label,
-          metadata: { goal_id: goalId },
-        },
-        metadata: { goal_id: goalId },
-      });
-
-      session = await getStripe().checkout.sessions.create({
+      // Recurring — weekly / fortnightly (week×2) / monthly
+      const recurring = stripeRecurring(frequency)!;
+      session = await stripe.checkout.sessions.create({
         mode: "subscription",
-        line_items: [{ price: price.id, quantity: 1 }],
-        subscription_data: {
-          metadata: { goal_id: goalId, mission: "kapoeta" },
-        },
+        line_items: [
+          {
+            price_data: {
+              currency: "aud",
+              unit_amount: amountCents,
+              recurring,
+              product_data: {
+                name: label,
+                description: "Pathways of Hope — recurring gift to Kapoeta",
+              },
+            },
+            quantity: 1,
+          },
+        ],
+        subscription_data: { metadata },
         success_url: `${siteUrl}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${siteUrl}/donate?goal=${goalId}`,
-        metadata: { goal_id: goalId, mission: "kapoeta" },
+        cancel_url: cancelUrl,
+        metadata,
       });
     }
 

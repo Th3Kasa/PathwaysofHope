@@ -22,8 +22,8 @@ export function GoalMeter({
   raised: raisedProp,
   supporters: supportersProp,
 }: GoalMeterProps) {
-  const raised = raisedProp ?? goal.fallbackRaised;
-  const supporters = supportersProp ?? goal.fallbackSupporters;
+  const raised = raisedProp ?? 0;
+  const supporters = supportersProp ?? 0;
   const percentage = Math.min(Math.round((raised / goal.goalAmount) * 100), 100);
 
   const ref = useRef(null);

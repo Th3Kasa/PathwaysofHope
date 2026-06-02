@@ -16,8 +16,9 @@ import React, { useRef, useEffect } from "react";
 import { GoalMeter } from "@/components/goal-meter";
 import { DonateButton } from "@/components/donate-button";
 import { TrustStrip } from "@/components/trust-strip";
-import { Baby, Droplets, Egg, HeartHandshake } from "lucide-react";
-import type { Goal } from "@/lib/goals";
+import { Baby, Droplets, Egg, HeartHandshake, Sun, CheckCircle2 } from "lucide-react";
+import { DELIVERED, DELIVERED_TOTAL, type Goal, type GoalId } from "@/lib/goals";
+import { formatAUDFull } from "@/lib/utils";
 
 interface Props {
   totals: Record<string, { raised: number; supporters: number }> | null;
@@ -69,33 +70,38 @@ const TIMELINE = [
   },
   {
     period: "Today",
-    title: "44 Children in Education",
-    body: "18 preschool-age children are taught at the centre during the week. 26 older children, aged 8 to 16, are enrolled at a local Catholic school — uniforms, fees and registration paid through the shelter. The goal is to grow this to 60.",
+    title: "70 Children in Our Care",
+    body: "The shelter now cares for 70 children. 18 of the youngest are taught at the centre during the week, and 26 older children, aged 8 to 16, are enrolled at a local Catholic school — uniforms, fees and registration paid through the shelter. That number keeps growing.",
   },
 ];
 
-const GOAL_ICONS: Record<string, React.ElementType> = {
+const GOAL_ICONS: Record<GoalId, React.ElementType> = {
   "sponsor-a-child": Baby,
-  "water-tower": Droplets,
+  "solar-system": Sun,
   "chicken-coop": Egg,
-  "general-support": HeartHandshake,
+  "water-pump": Droplets,
+  "ongoing-operations": HeartHandshake,
 };
 
-const GOAL_META: Record<string, { priority: number; why: string }> = {
-  "sponsor-a-child": {
+const GOAL_META: Record<GoalId, { priority: number; why: string }> = {
+  "solar-system": {
     priority: 1,
-    why: "A$600 covers one child's full year — meals, shelter, schooling, and the dignity of belonging. Of 45 children in our care, 10 are already sponsored. 35 names are still waiting.",
+    why: "A complete solar system to power the deep-water pump and bring reliable light and electricity to the whole centre — the biggest step toward self-sufficiency.",
   },
-  "water-tower": {
+  "sponsor-a-child": {
     priority: 2,
-    why: "The foundation is poured. A water tank, solar pump, and irrigation lines will end the daily walk for water and feed the gardens that feed the children.",
+    why: "A$600 covers one child's full year — meals, shelter, schooling, and the dignity of belonging. Of the 70 children in our care, 10 are already sponsored. 60 names are still waiting.",
   },
   "chicken-coop": {
     priority: 3,
-    why: "A modest coop with 10 hens and a rooster. Daily eggs for growing children. A small project, but one that produces food and a little income every single day.",
+    why: "A predator-safe coop and 200 chicks. Daily eggs for growing children and a little income from the surplus — food that renews itself every day.",
   },
-  "general-support": {
+  "water-pump": {
     priority: 4,
+    why: "The deep well is already drilled. An electric pump will draw clean water for drinking, cooking and the gardens — ending the daily haul by hand.",
+  },
+  "ongoing-operations": {
+    priority: 5,
     why: "Stipends for the matron and evangelist, school fees and uniforms, food, medical care — the day-to-day costs of a children's shelter, beyond any single project.",
   },
 };
@@ -247,7 +253,7 @@ function StoryChapter1() {
 function StatsStrip() {
   const stats = [
     { value: 150, suffix: "+", label: "Children served since 2024" },
-    { value: 45, suffix: "", label: "Children currently in our care" },
+    { value: 70, suffix: "", label: "Children currently in our care" },
     { value: 44, suffix: "", label: "Children in formal education" },
     { value: 85000, prefix: "A$", suffix: "", label: "Raised in opening campaign" },
   ];
@@ -330,8 +336,8 @@ function StoryChapter2() {
         >
           <motion.div variants={scaleIn} className="relative h-[420px] rounded-2xl overflow-hidden shadow-xl">
             <Image
-              src="/images/kapoeta/classroom-1.jpg"
-              alt="Bunk mattresses being loaded in Sydney — packed by volunteers and shipped to Kapoeta"
+              src="/images/kapoeta/field/container-contents-mattresses-materials.jpg"
+              alt="Mattresses and materials from the container — packed by volunteers in Sydney and shipped to Kapoeta"
               fill
               className="object-cover object-center"
               sizes="(max-width: 768px) 100vw, 50vw"
@@ -570,7 +576,7 @@ function Gallery() {
 
         {/* 6-image story grid: 2 tall flanking 4 square */}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
-          {images.map((img, i) => (
+          {images.map((img) => (
             <motion.div
               key={img.src}
               variants={scaleIn}
@@ -591,6 +597,62 @@ function Gallery() {
           ))}
         </div>
       </motion.div>
+    </section>
+  );
+}
+
+/* ─── Already delivered (achievements) ───────────────────────── */
+
+function Achievements() {
+  return (
+    <section className="py-24 px-4 bg-[#F5EFE6]">
+      <div className="max-w-5xl mx-auto">
+        <motion.div
+          className="mb-12 max-w-2xl"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={staggerContainer}
+        >
+          <motion.p variants={fadeUp} className="text-[#B85C38] text-sm uppercase tracking-widest mb-3 font-medium">
+            Already delivered
+          </motion.p>
+          <motion.h2
+            variants={fadeUp}
+            className="text-4xl sm:text-5xl font-light text-[#1C1410] mb-4 leading-tight"
+            style={{ fontFamily: "var(--font-serif)" }}
+          >
+            {formatAUDFull(DELIVERED_TOTAL)} already turned into a real home.
+          </motion.h2>
+          <motion.p variants={fadeUp} className="text-[#8C7B72] leading-relaxed">
+            Every figure below is a project the community has already funded and completed. This is the track record behind the 2026 goals.
+          </motion.p>
+        </motion.div>
+
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
+          variants={staggerContainer}
+        >
+          {DELIVERED.map((d) => (
+            <motion.div
+              key={d.title}
+              variants={fadeUp}
+              className="flex items-center justify-between gap-4 rounded-xl bg-white border border-[#EDD9B4] px-5 py-4"
+            >
+              <div className="flex items-center gap-3">
+                <CheckCircle2 size={18} className="text-[#C9952A] flex-shrink-0" strokeWidth={2} />
+                <span className="text-[#3D2B1F] text-sm leading-snug">{d.title}</span>
+              </div>
+              <span className="text-sm font-semibold text-[#1C1410] tabular-nums flex-shrink-0">
+                {formatAUDFull(d.amount)}
+              </span>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
     </section>
   );
 }
@@ -625,7 +687,7 @@ function DonationsSection({ goals, totals }: Props) {
             className="text-4xl sm:text-5xl font-light text-white mb-5 leading-tight"
             style={{ fontFamily: "var(--font-serif)" }}
           >
-            Four ways to keep this work going.
+            The 2026 goals.
           </motion.h2>
           <motion.p variants={fadeUp} className="text-[#9A8578] leading-relaxed">
             Each goal stands on its own. Together they sustain the shelter and grow it.
@@ -680,10 +742,10 @@ function DonationsSection({ goals, totals }: Props) {
                 </div>
 
                 <Link
-                  href={`/donate?goal=${goal.id}`}
+                  href={goal.kind === "bundle" ? `/donate/${goal.id}/parts` : `/donate/${goal.id}`}
                   className="inline-flex items-center justify-center w-full py-3.5 rounded-xl bg-[#B85C38] text-white text-sm font-semibold hover:bg-[#8B3E23] transition-colors"
                 >
-                  Donate to This Goal →
+                  {goal.kind === "bundle" ? "See the breakdown →" : "Donate to This Goal →"}
                 </Link>
               </motion.div>
             );
@@ -758,6 +820,7 @@ export default function KapoetaClient({ totals, goals }: Props) {
       <StoryChapter3 />
       <OnTheGround />
       <Gallery />
+      <Achievements />
       <DonationsSection totals={totals} goals={goals} />
       <TrustStrip />
       <FinalCTA />
