@@ -51,11 +51,12 @@ export function Footer() {
             <nav className="flex flex-col gap-2.5">
               {[
                 { href: "/", label: "Home" },
-                { href: "/missions", label: "Missions" },
                 { href: "/missions/kapoeta", label: "Kapoeta Shelter" },
+                { href: "/impact", label: "Impact" },
                 { href: "/about", label: "About Us" },
                 { href: "/governance", label: "Governance" },
                 { href: "/financials", label: "Transparency" },
+                { href: "/faq", label: "FAQ" },
                 { href: "/donate", label: "Give Now" },
               ].map((l) => (
                 <Link
@@ -93,10 +94,17 @@ export function Footer() {
 
         <div className="border-t border-[#2C1F18] pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#6B5A52]">
           <span>© {new Date().getFullYear()} Pathways of Hope. All rights reserved.</span>
-          <span className="text-[#9A8578] font-medium">100% of donations reach the children</span>
-          <Link href="/donate" className="hover:text-[#C4AE9A] transition-colors duration-200">
-            Donate
-          </Link>
+          <div className="flex items-center gap-5">
+            <Link href="/faq" className="hover:text-[#C4AE9A] transition-colors duration-200">
+              FAQ
+            </Link>
+            <Link href="/privacy" className="hover:text-[#C4AE9A] transition-colors duration-200">
+              Privacy
+            </Link>
+            <Link href="/donate" className="hover:text-[#C4AE9A] transition-colors duration-200">
+              Donate
+            </Link>
+          </div>
         </div>
       </div>
     </motion.footer>
