@@ -19,6 +19,16 @@ const VALID_FREQUENCIES: Frequency[] = ["once", "weekly", "fortnightly", "monthl
 
 export async function POST(req: NextRequest) {
   try {
+    // Fail clearly (not with a cryptic Stripe SDK error) if the server is
+    // missing its Stripe credentials — e.g. env vars not set on the host.
+    if (!process.env.STRIPE_SECRET_KEY) {
+      console.error("[checkout] STRIPE_SECRET_KEY is not set");
+      return NextResponse.json(
+        { error: "Donations are temporarily unavailable. Please try again shortly or contact us." },
+        { status: 503 }
+      );
+    }
+
     const body = (await req.json()) as CheckoutBody;
     const { goalId, partId, amountAud, frequency, quantity, coverFee } = body;
 
