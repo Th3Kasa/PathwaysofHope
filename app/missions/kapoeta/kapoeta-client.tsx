@@ -19,6 +19,7 @@ import { TrustStrip } from "@/components/trust-strip";
 import { Baby, Droplets, Egg, HeartHandshake, Sun, CheckCircle2 } from "lucide-react";
 import { DELIVERED, DELIVERED_TOTAL, type Goal, type GoalId } from "@/lib/goals";
 import { formatAUDFull } from "@/lib/utils";
+import { useT, type Dict } from "@/lib/i18n";
 
 interface Props {
   totals: Record<string, { raised: number; supporters: number }> | null;
@@ -42,36 +43,54 @@ const scaleIn: Variants = {
 
 /* ─── Verified timeline (from KAPOETA-FACTS.md) ─────────────── */
 
-const TIMELINE = [
+const TIMELINE: { period: Dict<string>; title: Dict<string>; body: Dict<string> }[] = [
   {
-    period: "Before 2024",
-    title: "The Land & First Foundations",
-    body: "Triple L Orphanage and Vulnerable Children Organization, the local entity in Kapoeta, was granted a 10,000 m² parcel (100 m × 100 m) by local authorities. The site was fenced, a water well was drilled — funded by Toongabbie Church and its supporters — and toilets and a small initial structure were built.",
+    period: { en: "Before 2024", ar: "قبل 2024" },
+    title: { en: "The Land & First Foundations", ar: "الأرض والأسس الأولى" },
+    body: {
+      en: "Triple L Orphanage and Vulnerable Children Organization, the local entity in Kapoeta, was granted a 10,000 m² parcel (100 m × 100 m) by local authorities. The site was fenced, a water well was drilled — funded by Toongabbie Church and its supporters — and toilets and a small initial structure were built.",
+      ar: "مُنحت منظمة Triple L للأيتام والأطفال المستضعفين، وهي الجهة المحلية في كاپويتا، قطعة أرض مساحتها 10,000 م² (100 م × 100 م) من السلطات المحلية. سُيّجت الأرض، وحُفر بئر للمياه — بتمويل من كنيسة تونغابي وداعميها — وبُنيت دورات مياه ومبنى أوّليّ صغير.",
+    },
   },
   {
-    period: "May–June 2024",
-    title: "The Sydney Fundraiser",
-    body: "Brother Hakim's calling drew the attention of believers in Australian churches. On 8 June 2024, Toongabbie Church hosted a fundraising event in Sydney. Within weeks, approximately AU$85,000 was raised — enough to commission a 40-foot shipping container.",
+    period: { en: "May–June 2024", ar: "مايو–يونيو 2024" },
+    title: { en: "The Sydney Fundraiser", ar: "حملة التبرّعات في سيدني" },
+    body: {
+      en: "Brother Hakim's calling drew the attention of believers in Australian churches. On 8 June 2024, Toongabbie Church hosted a fundraising event in Sydney. Within weeks, approximately AU$85,000 was raised — enough to commission a 40-foot shipping container.",
+      ar: "لفتت دعوة الأخ حكيم انتباه المؤمنين في الكنائس الأسترالية. وفي 8 يونيو 2024، استضافت كنيسة تونغابي فعالية لجمع التبرّعات في سيدني. وخلال أسابيع، جُمع نحو AU$85,000 — ما يكفي لتجهيز حاوية شحن طولها 40 قدمًا.",
+    },
   },
   {
-    period: "September–October 2024",
-    title: "Container Dispatched from Sydney",
-    body: "The container was packed in Sydney by volunteers including Elders Mamdouh Mansour, Philip Hanna, engineer Michael Elmasri, Emil Girgis and many others — and shipped via Mombasa, Kenya, then by road through Nadapal to Kapoeta South.",
+    period: { en: "September–October 2024", ar: "سبتمبر–أكتوبر 2024" },
+    title: { en: "Container Dispatched from Sydney", ar: "إرسال الحاوية من سيدني" },
+    body: {
+      en: "The container was packed in Sydney by volunteers including Elders Mamdouh Mansour, Philip Hanna, engineer Michael Elmasri, Emil Girgis and many others — and shipped via Mombasa, Kenya, then by road through Nadapal to Kapoeta South.",
+      ar: "عبّأ المتطوّعون الحاوية في سيدني، ومنهم الشيخان Mamdouh Mansour وPhilip Hanna، والمهندس Michael Elmasri، وEmil Girgis وكثيرون غيرهم — ثم شُحنت عبر مومباسا في كينيا، ومنها برًّا عبر نادابال إلى كاپويتا الجنوبية.",
+    },
   },
   {
-    period: "December 2024",
-    title: "Construction & Completion",
-    body: "A team from Sydney travelled to Kapoeta — joined by 2 supporters from the United States, 1 from the United Kingdom, and 1 from Egypt. All trip expenses were paid by the individuals themselves. Together they completed the 16 m × 9 m main building and put the container's contents to use.",
+    period: { en: "December 2024", ar: "ديسمبر 2024" },
+    title: { en: "Construction & Completion", ar: "البناء والإنجاز" },
+    body: {
+      en: "A team from Sydney travelled to Kapoeta — joined by 2 supporters from the United States, 1 from the United Kingdom, and 1 from Egypt. All trip expenses were paid by the individuals themselves. Together they completed the 16 m × 9 m main building and put the container's contents to use.",
+      ar: "سافر فريق من سيدني إلى كاپويتا — انضمّ إليه 2 من الداعمين من الولايات المتحدة، و1 من المملكة المتحدة، و1 من مصر. ودفع كلٌّ منهم نفقات رحلته بنفسه. وأنجزوا معًا المبنى الرئيسي بمساحة 16 م × 9 م، ووضعوا محتويات الحاوية قيد الاستخدام.",
+    },
   },
   {
-    period: "January 2025",
-    title: "Sustainability Projects",
-    body: "Beyond the building, donations funded 5 cows and a young bull for a small dairy, a domestic oven for the on-site bakery, a tuk-tuk for transport, and two manual cement-block machines. Foundations were laid for a future water tank tower.",
+    period: { en: "January 2025", ar: "يناير 2025" },
+    title: { en: "Sustainability Projects", ar: "مشاريع الاستدامة" },
+    body: {
+      en: "Beyond the building, donations funded 5 cows and a young bull for a small dairy, a domestic oven for the on-site bakery, a tuk-tuk for transport, and two manual cement-block machines. Foundations were laid for a future water tank tower.",
+      ar: "إلى جانب المبنى، موّلت التبرّعات 5 أبقار وعجلًا صغيرًا لمزرعة ألبان صغيرة، وفرنًا منزليًا لمخبز الموقع، وتُكتُك للنقل، وآلتين يدويّتين لصناعة الطوب الإسمنتي. ووُضعت الأسس لبرج خزان مياه مستقبلي.",
+    },
   },
   {
-    period: "Today",
-    title: "70 Children in Our Care",
-    body: "The shelter now cares for 70 children. 18 of the youngest are taught at the centre during the week, and 26 older children, aged 8 to 16, are enrolled at a local Catholic school — uniforms, fees and registration paid through the shelter. That number keeps growing.",
+    period: { en: "Today", ar: "اليوم" },
+    title: { en: "70 Children in Our Care", ar: "70 طفلاً في رعايتنا" },
+    body: {
+      en: "The shelter now cares for 70 children. 18 of the youngest are taught at the centre during the week, and 26 older children, aged 8 to 16, are enrolled at a local Catholic school — uniforms, fees and registration paid through the shelter. That number keeps growing.",
+      ar: "يرعى الملجأ الآن 70 طفلاً. يتعلّم 18 من أصغرهم في المركز خلال الأسبوع، و26 من الأكبر سنًّا، تتراوح أعمارهم بين 8 و16 عامًا، مسجّلون في مدرسة كاثوليكية محلية — وتُدفع تكاليف الزيّ المدرسي والرسوم والتسجيل عبر الملجأ. وهذا العدد في ازدياد مستمر.",
+    },
   },
 ];
 
@@ -83,26 +102,41 @@ const GOAL_ICONS: Record<GoalId, React.ElementType> = {
   "ongoing-operations": HeartHandshake,
 };
 
-const GOAL_META: Record<GoalId, { priority: number; why: string }> = {
+const GOAL_META: Record<GoalId, { priority: number; why: Dict<string> }> = {
   "solar-system": {
     priority: 1,
-    why: "A complete solar system to power the deep-water pump and bring reliable light and electricity to the whole centre — the biggest step toward self-sufficiency.",
+    why: {
+      en: "A complete solar system to power the deep-water pump and bring reliable light and electricity to the whole centre — the biggest step toward self-sufficiency.",
+      ar: "نظام طاقة شمسية متكامل لتشغيل مضخة المياه العميقة وتوفير إضاءة وكهرباء موثوقة للمركز بأكمله — أكبر خطوة نحو الاكتفاء الذاتي.",
+    },
   },
   "sponsor-a-child": {
     priority: 2,
-    why: "A$600 covers one child's full year — meals, shelter, schooling, and the dignity of belonging. Of the 70 children in our care, 10 are already sponsored. 60 names are still waiting.",
+    why: {
+      en: "A$600 covers one child's full year — meals, shelter, schooling, and the dignity of belonging. Of the 70 children in our care, 10 are already sponsored. 60 names are still waiting.",
+      ar: "يغطّي مبلغ A$600 عامًا كاملاً لطفل واحد — الطعام والمأوى والتعليم وكرامة الانتماء. من بين 70 طفلاً في رعايتنا، يُكفل 10 بالفعل. وما زال 60 اسمًا في الانتظار.",
+    },
   },
   "chicken-coop": {
     priority: 3,
-    why: "A predator-safe coop and 200 chicks. Daily eggs for growing children and a little income from the surplus — food that renews itself every day.",
+    why: {
+      en: "A predator-safe coop and 200 chicks. Daily eggs for growing children and a little income from the surplus — food that renews itself every day.",
+      ar: "حظيرة آمنة من الحيوانات المفترسة و200 كتكوت. بيض يوميّ للأطفال الذين ينمون، ودخل بسيط من الفائض — غذاء يتجدّد كل يوم.",
+    },
   },
   "water-pump": {
     priority: 4,
-    why: "The deep well is already drilled. An electric pump will draw clean water for drinking, cooking and the gardens — ending the daily haul by hand.",
+    why: {
+      en: "The deep well is already drilled. An electric pump will draw clean water for drinking, cooking and the gardens — ending the daily haul by hand.",
+      ar: "البئر العميق محفور بالفعل. وستضخّ مضخة كهربائية مياهًا نظيفة للشرب والطهي والحدائق — منهيةً الجلب اليومي باليد.",
+    },
   },
   "ongoing-operations": {
     priority: 5,
-    why: "Stipends for the matron and evangelist, school fees and uniforms, food, medical care — the day-to-day costs of a children's shelter, beyond any single project.",
+    why: {
+      en: "Stipends for the matron and evangelist, school fees and uniforms, food, medical care — the day-to-day costs of a children's shelter, beyond any single project.",
+      ar: "رواتب للمشرفة والمبشّر، ورسوم مدرسية وأزياء، وطعام، ورعاية طبية — النفقات اليومية لملجأ أطفال، فيما يتجاوز أيّ مشروع بعينه.",
+    },
   },
 };
 
@@ -130,6 +164,7 @@ function Counter({ value, prefix = "", suffix = "" }: { value: number; prefix?: 
 /* ─── Hero ───────────────────────────────────────────────────── */
 
 function HeroSection() {
+  const t = useT();
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
@@ -139,7 +174,10 @@ function HeroSection() {
       <motion.div className="absolute inset-0" style={{ y: imageY }}>
         <Image
           src="/images/kapoeta/field/children-group-portrait-shelter.jpg"
-          alt="Children waving in front of the completed Kapoeta Children's Shelter, 2025"
+          alt={t({
+            en: "Children waving in front of the completed Kapoeta Children's Shelter, 2025",
+            ar: "أطفال يلوّحون أمام ملجأ كاپويتا للأطفال بعد اكتماله، 2025",
+          })}
           fill
           priority
           className="object-cover object-center"
@@ -152,10 +190,10 @@ function HeroSection() {
         <motion.div variants={staggerContainer} initial="hidden" animate="visible">
           <motion.div variants={fadeUp} className="flex items-center gap-2 mb-6">
             <Link href="/missions" className="text-[#C4AE9A] text-sm hover:text-white transition-colors">
-              Missions
+              {t({ en: "Missions", ar: "مهامّنا" })}
             </Link>
             <span className="text-[#6B5A52]">/</span>
-            <span className="text-white/80 text-sm">Kapoeta, South Sudan</span>
+            <span className="text-white/80 text-sm">{t({ en: "Kapoeta, South Sudan", ar: "كاپويتا، جنوب السودان" })}</span>
           </motion.div>
 
           <motion.h1
@@ -163,11 +201,17 @@ function HeroSection() {
             className="text-5xl sm:text-7xl font-light text-white leading-[1.05] mb-6 max-w-3xl"
             style={{ fontFamily: "var(--font-serif)" }}
           >
-            Kapoeta<br />Children&apos;s Shelter
+            {t({
+              en: <>Kapoeta<br />Children&apos;s Shelter</>,
+              ar: <>ملجأ كاپويتا<br />للأطفال</>,
+            })}
           </motion.h1>
 
           <motion.p variants={fadeUp} className="text-[#C4AE9A] text-xl sm:text-2xl max-w-xl leading-relaxed font-light">
-            A children&apos;s home in South Sudan — built by a community of believers across four continents.
+            {t({
+              en: "A children's home in South Sudan — built by a community of believers across four continents.",
+              ar: "بيت للأطفال في جنوب السودان — بناه مجتمع من المؤمنين عبر أربع قارّات.",
+            })}
           </motion.p>
         </motion.div>
       </div>
@@ -178,6 +222,7 @@ function HeroSection() {
 /* ─── Chapter 1: The Calling ─────────────────────────────────── */
 
 function StoryChapter1() {
+  const t = useT();
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const imageY = useTransform(scrollYProgress, [0, 1], ["-5%", "5%"]);
@@ -195,7 +240,10 @@ function StoryChapter1() {
           <motion.div className="absolute inset-0" style={{ y: imageY }}>
             <Image
               src="/images/kapoeta/field/children-sitting-bench-kapoeta.jpg"
-              alt="Brother Hakim, founder and leader of the Kapoeta Children's Shelter, at the site in Kapoeta, South Sudan"
+              alt={t({
+                en: "Brother Hakim, founder and leader of the Kapoeta Children's Shelter, at the site in Kapoeta, South Sudan",
+                ar: "الأخ حكيم، مؤسّس وقائد ملجأ كاپويتا للأطفال، في الموقع في كاپويتا، جنوب السودان",
+              })}
               fill
               className="object-cover object-center"
               sizes="(max-width: 768px) 100vw, 50vw"
@@ -214,21 +262,27 @@ function StoryChapter1() {
             variants={fadeUp}
             className="text-[#B85C38] text-sm uppercase tracking-widest mb-3 font-medium"
           >
-            Chapter 1 — The Calling
+            {t({ en: "Chapter 1 — The Calling", ar: "الفصل 1 — الدعوة" })}
           </motion.p>
           <motion.h2
             variants={fadeUp}
             className="text-4xl sm:text-5xl font-light text-[#1C1410] mb-6 leading-tight"
             style={{ fontFamily: "var(--font-serif)" }}
           >
-            A native son returns home.
+            {t({ en: "A native son returns home.", ar: "ابنٌ من أبناء البلد يعود إلى وطنه." })}
           </motion.h2>
           <motion.div variants={fadeUp} className="space-y-5 text-[#3D2B1F] text-lg leading-relaxed">
             <p>
-              Brother Hakim is a native of Kapoeta who, like so many in his generation, had migrated to the United States in search of a different life. With the encouragement of Pastor Aman — a Sudanese pastor based in the US — Hakim returned to the streets where he had grown up.
+              {t({
+                en: "Brother Hakim is a native of Kapoeta who, like so many in his generation, had migrated to the United States in search of a different life. With the encouragement of Pastor Aman — a Sudanese pastor based in the US — Hakim returned to the streets where he had grown up.",
+                ar: "الأخ حكيم من أبناء كاپويتا، وقد هاجر، مثل كثيرين من جيله، إلى الولايات المتحدة بحثًا عن حياة مختلفة. وبتشجيع من القس Aman — وهو قسّ سوداني مقيم في الولايات المتحدة — عاد حكيم إلى الشوارع التي نشأ فيها.",
+              })}
             </p>
             <p>
-              He found children there: between 150 and 200 of them, aged 2 to 18, sleeping near the local market, wearing tattered clothes, eating from trash bins, with no access to school. Hakim began with what he had — gathering them by day to teach Bible stories and hymns, share one meal, and offer the safety of presence.
+              {t({
+                en: "He found children there: between 150 and 200 of them, aged 2 to 18, sleeping near the local market, wearing tattered clothes, eating from trash bins, with no access to school. Hakim began with what he had — gathering them by day to teach Bible stories and hymns, share one meal, and offer the safety of presence.",
+                ar: "هناك وجد الأطفال: بين 150 و200 منهم، تتراوح أعمارهم بين 2 و18 عامًا، ينامون قرب السوق المحلي، يرتدون ثيابًا رثّة، يأكلون من صناديق القمامة، بلا فرصة للالتحاق بالمدرسة. وبدأ حكيم بما لديه — يجمعهم نهارًا ليعلّمهم قصص الكتاب المقدس والتراتيل، ويتقاسم معهم وجبة واحدة، ويمنحهم أمان الحضور.",
+              })}
             </p>
           </motion.div>
 
@@ -237,9 +291,12 @@ function StoryChapter1() {
             className="mt-8 pl-6 border-l-2 border-[#C9952A] italic text-[#3D2B1F] text-lg"
             style={{ fontFamily: "var(--font-serif)" }}
           >
-            &ldquo;What began as an effort to help children living on the streets — wearing tattered clothes, eating from trash bins, and with no access to education — has now become a thriving centre of hope and transformation.&rdquo;
+            {t({
+              en: "“What began as an effort to help children living on the streets — wearing tattered clothes, eating from trash bins, and with no access to education — has now become a thriving centre of hope and transformation.”",
+              ar: "«ما بدأ جهدًا لمساعدة أطفال يعيشون في الشوارع — يرتدون ثيابًا رثّة، ويأكلون من صناديق القمامة، بلا فرصة للتعليم — صار اليوم مركزًا مزدهرًا للأمل والتحوّل.»",
+            })}
             <cite className="block mt-3 text-sm text-[#8C7B72] not-italic">
-              — Vision of Hope, Kapoeta
+              {t({ en: "— Vision of Hope, Kapoeta", ar: "— رؤية الأمل، كاپويتا" })}
             </cite>
           </motion.blockquote>
         </motion.div>
@@ -251,11 +308,12 @@ function StoryChapter1() {
 /* ─── Stats strip ────────────────────────────────────────────── */
 
 function StatsStrip() {
+  const t = useT();
   const stats = [
-    { value: 150, suffix: "+", label: "Children served since 2024" },
-    { value: 70, suffix: "", label: "Children currently in our care" },
-    { value: 44, suffix: "", label: "Children in formal education" },
-    { value: 85000, prefix: "A$", suffix: "", label: "Raised in opening campaign" },
+    { value: 150, suffix: "+", label: { en: "Children served since 2024", ar: "أطفال شملتهم الرعاية منذ 2024" } },
+    { value: 70, suffix: "", label: { en: "Children currently in our care", ar: "أطفال في رعايتنا حاليًا" } },
+    { value: 44, suffix: "", label: { en: "Children in formal education", ar: "أطفال في التعليم النظامي" } },
+    { value: 85000, prefix: "A$", suffix: "", label: { en: "Raised in opening campaign", ar: "جُمعت في الحملة الافتتاحية" } },
   ];
 
   return (
@@ -268,7 +326,7 @@ function StatsStrip() {
         variants={staggerContainer}
       >
         {stats.map((s) => (
-          <motion.div key={s.label} variants={fadeUp}>
+          <motion.div key={s.label.en} variants={fadeUp}>
             <div
               className="text-3xl sm:text-4xl font-light mb-2 tabular-nums"
               style={{ fontFamily: "var(--font-serif)", color: "#C9952A" }}
@@ -276,7 +334,7 @@ function StatsStrip() {
               <Counter value={s.value} prefix={"prefix" in s ? (s as { prefix: string }).prefix : ""} suffix={s.suffix} />
             </div>
             <div className="text-xs sm:text-sm text-[#9A8578] uppercase tracking-wider leading-snug">
-              {s.label}
+              {t(s.label)}
             </div>
           </motion.div>
         ))}
@@ -288,15 +346,19 @@ function StatsStrip() {
 /* ─── Chapter 2: The Container ───────────────────────────────── */
 
 function StoryChapter2() {
-  const containerContents = [
-    "Building materials — steel structure, zinc roofing, 8 windows for the main 16 m × 9 m building",
-    "33 bunk beds, mattresses, sheets and blankets",
-    "Clothing for all ages",
-    "Solar-powered lamps and an electricity generator",
-    "Medical supplies, including 6 wheelchairs",
-    "Educational materials — books, stationery, toys",
-    "Food supplies sufficient for 4–6 months",
-    "120 chairs, folding tables, TV and PA system",
+  const t = useT();
+  const containerContents: Dict<string>[] = [
+    {
+      en: "Building materials — steel structure, zinc roofing, 8 windows for the main 16 m × 9 m building",
+      ar: "مواد بناء — هيكل فولاذي، وأسقف من الزنك، و8 نوافذ للمبنى الرئيسي بمساحة 16 م × 9 م",
+    },
+    { en: "33 bunk beds, mattresses, sheets and blankets", ar: "33 سريرًا بطابقين، ومراتب، وملاءات، وبطّانيات" },
+    { en: "Clothing for all ages", ar: "ملابس لجميع الأعمار" },
+    { en: "Solar-powered lamps and an electricity generator", ar: "مصابيح تعمل بالطاقة الشمسية ومولّد كهرباء" },
+    { en: "Medical supplies, including 6 wheelchairs", ar: "مستلزمات طبية، منها 6 كراسٍ متحرّكة" },
+    { en: "Educational materials — books, stationery, toys", ar: "مواد تعليمية — كتب، وقرطاسية، وألعاب" },
+    { en: "Food supplies sufficient for 4–6 months", ar: "مؤن غذائية تكفي 4–6 أشهر" },
+    { en: "120 chairs, folding tables, TV and PA system", ar: "120 كرسيًا، وطاولات قابلة للطيّ، وتلفاز، ونظام صوت" },
   ];
 
   return (
@@ -313,17 +375,20 @@ function StoryChapter2() {
             variants={fadeUp}
             className="text-[#B85C38] text-sm uppercase tracking-widest mb-3 font-medium"
           >
-            Chapter 2 — The Container
+            {t({ en: "Chapter 2 — The Container", ar: "الفصل 2 — الحاوية" })}
           </motion.p>
           <motion.h2
             variants={fadeUp}
             className="text-4xl sm:text-5xl font-light text-[#1C1410] mb-6 leading-tight"
             style={{ fontFamily: "var(--font-serif)" }}
           >
-            A 40-foot box, packed in Sydney.
+            {t({ en: "A 40-foot box, packed in Sydney.", ar: "صندوق طوله 40 قدمًا، عُبّئ في سيدني." })}
           </motion.h2>
           <motion.p variants={fadeUp} className="text-[#3D2B1F] text-lg leading-relaxed">
-            From May 2024, believers in Australia raised approximately AU$85,000 in a few weeks. The funds were used to purchase, fill, and ship a 40-foot container from Sydney to Mombasa, Kenya — and onward by road through Nadapal to Kapoeta South. Engineer Michael Elmasri designed the on-site building. Elders Mamdouh Mansour and Philip Hanna, along with many other Sydney volunteers, organised the loading and logistics.
+            {t({
+              en: "From May 2024, believers in Australia raised approximately AU$85,000 in a few weeks. The funds were used to purchase, fill, and ship a 40-foot container from Sydney to Mombasa, Kenya — and onward by road through Nadapal to Kapoeta South. Engineer Michael Elmasri designed the on-site building. Elders Mamdouh Mansour and Philip Hanna, along with many other Sydney volunteers, organised the loading and logistics.",
+              ar: "منذ مايو 2024، جمع المؤمنون في أستراليا نحو AU$85,000 في غضون أسابيع قليلة. واستُخدمت الأموال لشراء حاوية طولها 40 قدمًا وتعبئتها وشحنها من سيدني إلى مومباسا في كينيا — ومنها برًّا عبر نادابال إلى كاپويتا الجنوبية. صمّم المهندس Michael Elmasri مبنى الموقع. ونظّم الشيخان Mamdouh Mansour وPhilip Hanna، إلى جانب كثير من متطوّعي سيدني، عملية التحميل واللوجستيات.",
+            })}
           </motion.p>
         </motion.div>
 
@@ -337,7 +402,10 @@ function StoryChapter2() {
           <motion.div variants={scaleIn} className="relative h-[420px] rounded-2xl overflow-hidden shadow-xl">
             <Image
               src="/images/kapoeta/field/container-contents-mattresses-materials.jpg"
-              alt="Mattresses and materials from the container — packed by volunteers in Sydney and shipped to Kapoeta"
+              alt={t({
+                en: "Mattresses and materials from the container — packed by volunteers in Sydney and shipped to Kapoeta",
+                ar: "مراتب ومواد من الحاوية — عبّأها متطوّعون في سيدني وشُحنت إلى كاپويتا",
+              })}
               fill
               className="object-cover object-center"
               sizes="(max-width: 768px) 100vw, 50vw"
@@ -349,13 +417,13 @@ function StoryChapter2() {
               className="text-2xl font-semibold text-[#1C1410] mb-5"
               style={{ fontFamily: "var(--font-serif)" }}
             >
-              What was inside
+              {t({ en: "What was inside", ar: "ما كان بداخلها" })}
             </h3>
             <ul className="space-y-3">
               {containerContents.map((item) => (
-                <li key={item} className="flex gap-3 text-[#3D2B1F] leading-relaxed">
+                <li key={item.en} className="flex gap-3 text-[#3D2B1F] leading-relaxed">
                   <span className="text-[#C9952A] flex-shrink-0 mt-1">●</span>
-                  <span>{item}</span>
+                  <span>{t(item)}</span>
                 </li>
               ))}
             </ul>
@@ -369,6 +437,7 @@ function StoryChapter2() {
 /* ─── Chapter 3: Building & Growth (verified timeline) ───────── */
 
 function StoryChapter3() {
+  const t = useT();
   return (
     <section className="py-24 px-4 bg-[#F5EFE6]">
       <div className="max-w-5xl mx-auto">
@@ -383,17 +452,20 @@ function StoryChapter3() {
             variants={fadeUp}
             className="text-[#B85C38] text-sm uppercase tracking-widest mb-3 font-medium"
           >
-            Chapter 3 — Building &amp; Growth
+            {t({ en: "Chapter 3 — Building & Growth", ar: "الفصل 3 — البناء والنموّ" })}
           </motion.p>
           <motion.h2
             variants={fadeUp}
             className="text-4xl sm:text-5xl font-light text-[#1C1410] mb-5 leading-tight"
             style={{ fontFamily: "var(--font-serif)" }}
           >
-            How a building rose, and a shelter took shape.
+            {t({ en: "How a building rose, and a shelter took shape.", ar: "كيف نهض مبنى، وتشكّل ملجأ." })}
           </motion.h2>
           <motion.p variants={fadeUp} className="text-[#8C7B72] leading-relaxed">
-            Each step is taken from the project&apos;s own documents — the Vision report, sponsor letters, and the January 2025 Final Report.
+            {t({
+              en: "Each step is taken from the project's own documents — the Vision report, sponsor letters, and the January 2025 Final Report.",
+              ar: "كل خطوة مأخوذة من وثائق المشروع نفسها — تقرير الرؤية، ورسائل الكافلين، والتقرير الختامي لشهر يناير 2025.",
+            })}
           </motion.p>
         </motion.div>
 
@@ -405,18 +477,18 @@ function StoryChapter3() {
           variants={staggerContainer}
         >
           {TIMELINE.map((step) => (
-            <motion.li key={step.period} variants={fadeUp} className="relative">
+            <motion.li key={step.period.en} variants={fadeUp} className="relative">
               <span className="absolute -left-[42px] top-1.5 w-4 h-4 rounded-full bg-[#C9952A] ring-4 ring-[#F5EFE6]" />
               <div className="text-xs uppercase tracking-widest text-[#B85C38] font-semibold mb-1">
-                {step.period}
+                {t(step.period)}
               </div>
               <h3
                 className="text-xl sm:text-2xl text-[#1C1410] mb-2 font-semibold"
                 style={{ fontFamily: "var(--font-serif)" }}
               >
-                {step.title}
+                {t(step.title)}
               </h3>
-              <p className="text-[#3D2B1F] leading-relaxed">{step.body}</p>
+              <p className="text-[#3D2B1F] leading-relaxed">{t(step.body)}</p>
             </motion.li>
           ))}
         </motion.ol>
@@ -428,36 +500,55 @@ function StoryChapter3() {
 /* ─── On the ground today ────────────────────────────────────── */
 
 function OnTheGround() {
-  const items = [
+  const t = useT();
+  const items: { title: Dict<string>; role: Dict<string>; body: Dict<string> }[] = [
     {
-      title: "Madam Jackie",
-      role: "Matron",
-      body: "Serves as a maternal figure and mentor for the older girls and the youngest children. The presence the children miss most when she is not there.",
+      title: { en: "Madam Jackie", ar: "السيدة Jackie" },
+      role: { en: "Matron", ar: "المشرفة" },
+      body: {
+        en: "Serves as a maternal figure and mentor for the older girls and the youngest children. The presence the children miss most when she is not there.",
+        ar: "تقوم بدور الأمّ والمرشدة للفتيات الأكبر سنًّا وأصغر الأطفال. وهي الحضور الذي يفتقده الأطفال أكثر من غيره حين تغيب.",
+      },
     },
     {
-      title: "Evangelist Simon",
-      role: "Spiritual Ministry",
-      body: "Leads spiritual formation at the centre and Sunday gatherings, with all of the surrounding community welcome.",
+      title: { en: "Evangelist Simon", ar: "المبشّر Simon" },
+      role: { en: "Spiritual Ministry", ar: "الخدمة الروحية" },
+      body: {
+        en: "Leads spiritual formation at the centre and Sunday gatherings, with all of the surrounding community welcome.",
+        ar: "يقود التكوين الروحي في المركز ولقاءات الأحد، وأبواب المركز مفتوحة لكل أهل المنطقة المحيطة.",
+      },
     },
     {
-      title: "Catholic School Partnership",
-      role: "Education",
-      body: "26 older children, aged 8–16, enrolled at a local Catholic school. Uniforms, fees and registration are funded through the shelter.",
+      title: { en: "Catholic School Partnership", ar: "شراكة المدرسة الكاثوليكية" },
+      role: { en: "Education", ar: "التعليم" },
+      body: {
+        en: "26 older children, aged 8–16, enrolled at a local Catholic school. Uniforms, fees and registration are funded through the shelter.",
+        ar: "26 طفلاً من الأكبر سنًّا، تتراوح أعمارهم بين 8 و16 عامًا، مسجّلون في مدرسة كاثوليكية محلية. وتُموَّل تكاليف الزيّ المدرسي والرسوم والتسجيل عبر الملجأ.",
+      },
     },
     {
-      title: "On-site Preschool",
-      role: "Early Years",
-      body: "18 preschool-age children are educated at the centre by the team during the week.",
+      title: { en: "On-site Preschool", ar: "روضة في الموقع" },
+      role: { en: "Early Years", ar: "السنوات المبكرة" },
+      body: {
+        en: "18 preschool-age children are educated at the centre by the team during the week.",
+        ar: "يتعلّم 18 طفلاً في سنّ ما قبل المدرسة في المركز على يد الفريق خلال الأسبوع.",
+      },
     },
     {
-      title: "Dairy & Bakery",
-      role: "Sustainability",
-      body: "5 cows and a young bull supply milk; surplus is sold. A domestic oven bakes daily bread for the children, with surplus also sold.",
+      title: { en: "Dairy & Bakery", ar: "الألبان والمخبز" },
+      role: { en: "Sustainability", ar: "الاستدامة" },
+      body: {
+        en: "5 cows and a young bull supply milk; surplus is sold. A domestic oven bakes daily bread for the children, with surplus also sold.",
+        ar: "توفّر 5 أبقار وعجل صغير الحليب؛ ويُباع الفائض. ويخبز فرن منزلي خبزًا يوميًّا للأطفال، ويُباع الفائض أيضًا.",
+      },
     },
     {
-      title: "Triple L Orphanage",
-      role: "Local Partner",
-      body: "The on-ground legal entity in Kapoeta — owners of the land — through whom the work is carried out, with Simon Dador as Legal Advisor.",
+      title: { en: "Triple L Orphanage", ar: "منظمة Triple L للأيتام" },
+      role: { en: "Local Partner", ar: "الشريك المحلي" },
+      body: {
+        en: "The on-ground legal entity in Kapoeta — owners of the land — through whom the work is carried out, with Simon Dador as Legal Advisor.",
+        ar: "الجهة القانونية الميدانية في كاپويتا — وهي مالكة الأرض — التي يُنفَّذ العمل من خلالها، ويتولّى Simon Dador منصب المستشار القانوني.",
+      },
     },
   ];
 
@@ -475,14 +566,14 @@ function OnTheGround() {
             variants={fadeUp}
             className="text-[#B85C38] text-sm uppercase tracking-widest mb-3 font-medium"
           >
-            On the ground
+            {t({ en: "On the ground", ar: "في الميدان" })}
           </motion.p>
           <motion.h2
             variants={fadeUp}
             className="text-4xl sm:text-5xl font-light text-[#1C1410] leading-tight"
             style={{ fontFamily: "var(--font-serif)" }}
           >
-            The people who make the days work.
+            {t({ en: "The people who make the days work.", ar: "أناسٌ تسير الأيام بهم." })}
           </motion.h2>
         </motion.div>
 
@@ -495,21 +586,21 @@ function OnTheGround() {
         >
           {items.map((it) => (
             <motion.div
-              key={it.title}
+              key={it.title.en}
               variants={fadeUp}
               whileHover={{ y: -4 }}
               className="bg-white rounded-2xl p-6 border border-[#EDD9B4] shadow-sm transition-shadow hover:shadow-md"
             >
               <div className="text-xs text-[#B85C38] uppercase tracking-widest font-semibold mb-2">
-                {it.role}
+                {t(it.role)}
               </div>
               <h3
                 className="text-xl font-semibold text-[#1C1410] mb-3"
                 style={{ fontFamily: "var(--font-serif)" }}
               >
-                {it.title}
+                {t(it.title)}
               </h3>
-              <p className="text-[#8C7B72] text-sm leading-relaxed">{it.body}</p>
+              <p className="text-[#8C7B72] text-sm leading-relaxed">{t(it.body)}</p>
             </motion.div>
           ))}
         </motion.div>
@@ -521,37 +612,56 @@ function OnTheGround() {
 /* ─── Gallery ────────────────────────────────────────────────── */
 
 function Gallery() {
+  const t = useT();
   // Each image is a distinct moment — ordered as a story arc
-  const images = [
+  const images: { src: string; alt: Dict<string>; caption: Dict<string> }[] = [
     {
       src: "/images/kapoeta/field/children-playing-field-kapoeta.jpg",
-      alt: "The children of Kapoeta — before the shelter existed, gathered together outdoors",
-      caption: "The children we found",
+      alt: {
+        en: "The children of Kapoeta — before the shelter existed, gathered together outdoors",
+        ar: "أطفال كاپويتا — قبل وجود الملجأ، مجتمعين في العراء",
+      },
+      caption: { en: "The children we found", ar: "الأطفال الذين وجدناهم" },
     },
     {
       src: "/images/kapoeta/field/shelter-steel-frame-construction-kapoeta.jpg",
-      alt: "The Kapoeta shelter steel frame under construction, 2024",
-      caption: "The building going up",
+      alt: {
+        en: "The Kapoeta shelter steel frame under construction, 2024",
+        ar: "الهيكل الفولاذي لملجأ كاپويتا قيد الإنشاء، 2024",
+      },
+      caption: { en: "The building going up", ar: "المبنى يرتفع" },
     },
     {
       src: "/images/kapoeta/field/children-group-portrait-shelter.jpg",
-      alt: "Children waving in front of the completed shelter wall, Kapoeta 2025",
-      caption: "Home — finished",
+      alt: {
+        en: "Children waving in front of the completed shelter wall, Kapoeta 2025",
+        ar: "أطفال يلوّحون أمام جدار الملجأ بعد اكتماله، كاپويتا 2025",
+      },
+      caption: { en: "Home — finished", ar: "البيت — وقد اكتمل" },
     },
     {
       src: "/images/kapoeta/field/bunkbeds-dormitory-interior-kapoeta.jpg",
-      alt: "Rows of white bunk beds inside the completed Kapoeta Children's Shelter dormitory",
-      caption: "Their first beds",
+      alt: {
+        en: "Rows of white bunk beds inside the completed Kapoeta Children's Shelter dormitory",
+        ar: "صفوف من الأسرّة البيضاء بطابقين داخل مهجع ملجأ كاپويتا للأطفال بعد اكتماله",
+      },
+      caption: { en: "Their first beds", ar: "أسرّتهم الأولى" },
     },
     {
       src: "/images/kapoeta/field/children-sitting-bench-kapoeta.jpg",
-      alt: "Children sitting on bamboo benches at the shelter compound, Kapoeta",
-      caption: "Growing their own food",
+      alt: {
+        en: "Children sitting on bamboo benches at the shelter compound, Kapoeta",
+        ar: "أطفال يجلسون على مقاعد من الخيزران في باحة الملجأ، كاپويتا",
+      },
+      caption: { en: "Growing their own food", ar: "يزرعون طعامهم بأنفسهم" },
     },
     {
       src: "/images/kapoeta/field/children-school-uniforms-group-kapoeta.jpg",
-      alt: "Children in school uniforms waving, one child in a wheelchair — enrolled in formal education, June 2025",
-      caption: "Going to school",
+      alt: {
+        en: "Children in school uniforms waving, one child in a wheelchair — enrolled in formal education, June 2025",
+        ar: "أطفال بالزيّ المدرسي يلوّحون، وطفل على كرسيّ متحرّك — ملتحقون بالتعليم النظامي، يونيو 2025",
+      },
+      caption: { en: "Going to school", ar: "ذاهبون إلى المدرسة" },
     },
   ];
 
@@ -565,12 +675,12 @@ function Gallery() {
         variants={staggerContainer}
       >
         <motion.div variants={fadeUp} className="mb-10">
-          <p className="text-[#C9952A] text-sm uppercase tracking-widest mb-3 font-medium">From the field</p>
+          <p className="text-[#C9952A] text-sm uppercase tracking-widest mb-3 font-medium">{t({ en: "From the field", ar: "من الميدان" })}</p>
           <h2
             className="text-3xl font-light text-white"
             style={{ fontFamily: "var(--font-serif)" }}
           >
-            A few moments from Kapoeta.
+            {t({ en: "A few moments from Kapoeta.", ar: "لحظات قليلة من كاپويتا." })}
           </h2>
         </motion.div>
 
@@ -584,14 +694,14 @@ function Gallery() {
             >
               <Image
                 src={img.src}
-                alt={img.alt}
+                alt={t(img.alt)}
                 fill
                 className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
                 sizes="(max-width: 640px) 50vw, 33vw"
               />
               {/* Persistent caption strip at bottom */}
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#1C1410]/85 to-transparent pt-8 pb-3 px-3">
-                <p className="text-white text-xs font-medium">{img.caption}</p>
+                <p className="text-white text-xs font-medium">{t(img.caption)}</p>
               </div>
             </motion.div>
           ))}
@@ -604,6 +714,7 @@ function Gallery() {
 /* ─── Already delivered (achievements) ───────────────────────── */
 
 function Achievements() {
+  const t = useT();
   return (
     <section className="py-24 px-4 bg-[#F5EFE6]">
       <div className="max-w-5xl mx-auto">
@@ -615,17 +726,23 @@ function Achievements() {
           variants={staggerContainer}
         >
           <motion.p variants={fadeUp} className="text-[#B85C38] text-sm uppercase tracking-widest mb-3 font-medium">
-            Already delivered
+            {t({ en: "Already delivered", ar: "ما أُنجز فعلاً" })}
           </motion.p>
           <motion.h2
             variants={fadeUp}
             className="text-4xl sm:text-5xl font-light text-[#1C1410] mb-4 leading-tight"
             style={{ fontFamily: "var(--font-serif)" }}
           >
-            {formatAUDFull(DELIVERED_TOTAL)} already turned into a real home.
+            {t({
+              en: <>{formatAUDFull(DELIVERED_TOTAL)} already turned into a real home.</>,
+              ar: <>{formatAUDFull(DELIVERED_TOTAL)} تحوّلت بالفعل إلى بيت حقيقي.</>,
+            })}
           </motion.h2>
           <motion.p variants={fadeUp} className="text-[#8C7B72] leading-relaxed">
-            Every figure below is a project the community has already funded and completed. This is the track record behind the 2026 goals.
+            {t({
+              en: "Every figure below is a project the community has already funded and completed. This is the track record behind the 2026 goals.",
+              ar: "كل رقم في ما يلي يمثّل مشروعًا موّله المجتمع وأنجزه بالفعل. هذا هو السجلّ الذي تستند إليه أهداف 2026.",
+            })}
           </motion.p>
         </motion.div>
 
@@ -660,6 +777,7 @@ function Achievements() {
 /* ─── Tiered donations ───────────────────────────────────────── */
 
 function DonationsSection({ goals, totals }: Props) {
+  const t = useT();
   const sorted = [...goals].sort(
     (a, b) => (GOAL_META[a.id]?.priority ?? 99) - (GOAL_META[b.id]?.priority ?? 99)
   );
@@ -680,17 +798,20 @@ function DonationsSection({ goals, totals }: Props) {
             variants={fadeUp}
             className="text-[#C9952A] text-sm uppercase tracking-widest mb-3 font-medium"
           >
-            How to help
+            {t({ en: "How to help", ar: "كيف تساعد" })}
           </motion.p>
           <motion.h2
             variants={fadeUp}
             className="text-4xl sm:text-5xl font-light text-white mb-5 leading-tight"
             style={{ fontFamily: "var(--font-serif)" }}
           >
-            The 2026 goals.
+            {t({ en: "The 2026 goals.", ar: "أهداف 2026." })}
           </motion.h2>
           <motion.p variants={fadeUp} className="text-[#9A8578] leading-relaxed">
-            Each goal stands on its own. Together they sustain the shelter and grow it.
+            {t({
+              en: "Each goal stands on its own. Together they sustain the shelter and grow it.",
+              ar: "كل هدف قائم بذاته. ومعًا تُبقي هذه الأهداف الملجأ قائمًا وتنمّيه.",
+            })}
           </motion.p>
         </motion.div>
 
@@ -714,7 +835,7 @@ function DonationsSection({ goals, totals }: Props) {
               >
                 {/* Priority badge */}
                 <div className="absolute -top-3 right-6 px-3 py-1 rounded-full bg-gradient-to-r from-[#C9952A] to-[#E4B84A] text-[#1C1410] text-xs font-bold tracking-wider uppercase shadow-md">
-                  Priority {meta.priority}
+                  {t({ en: <>Priority {meta.priority}</>, ar: <>أولوية {meta.priority}</> })}
                 </div>
 
                 <div className="flex items-start gap-4 mb-3">
@@ -731,7 +852,7 @@ function DonationsSection({ goals, totals }: Props) {
                   </div>
                 </div>
 
-                <p className="text-[#8C7B72] text-sm leading-relaxed mb-5 flex-grow">{meta.why}</p>
+                <p className="text-[#8C7B72] text-sm leading-relaxed mb-5 flex-grow">{t(meta.why)}</p>
 
                 <div className="mb-6">
                   <GoalMeter
@@ -745,7 +866,9 @@ function DonationsSection({ goals, totals }: Props) {
                   href={goal.kind === "bundle" ? `/donate/${goal.id}/parts` : `/donate/${goal.id}`}
                   className="inline-flex items-center justify-center w-full py-3.5 rounded-xl bg-[#B85C38] text-white text-sm font-semibold hover:bg-[#8B3E23] transition-colors"
                 >
-                  {goal.kind === "bundle" ? "See the breakdown →" : "Donate to This Goal →"}
+                  {goal.kind === "bundle"
+                    ? t({ en: "See the breakdown →", ar: "اطّلع على التفاصيل ←" })
+                    : t({ en: "Donate to This Goal →", ar: "تبرّع لهذا الهدف ←" })}
                 </Link>
               </motion.div>
             );
@@ -759,6 +882,7 @@ function DonationsSection({ goals, totals }: Props) {
 /* ─── Final CTA ──────────────────────────────────────────────── */
 
 function FinalCTA() {
+  const t = useT();
   return (
     <section className="py-24 px-4 bg-[#FDFAF6] text-center">
       <motion.div
@@ -773,15 +897,17 @@ function FinalCTA() {
           className="text-4xl sm:text-5xl font-light text-[#1C1410] mb-6"
           style={{ fontFamily: "var(--font-serif)" }}
         >
-          Join the story.
+          {t({ en: "Join the story.", ar: "كن جزءًا من القصة." })}
         </motion.h2>
         <motion.p variants={fadeUp} className="text-[#8C7B72] text-lg mb-8 leading-relaxed">
-          A one-off gift, a monthly partnership, or a sponsored child — every contribution
-          becomes someone&apos;s breakfast, school uniform, or first safe night.
+          {t({
+            en: "A one-off gift, a monthly partnership, or a sponsored child — every contribution becomes someone's breakfast, school uniform, or first safe night.",
+            ar: "تبرّع لمرة واحدة، أو شراكة شهرية، أو كفالة طفل — كل مساهمة تصير فطور أحدهم، أو زيّه المدرسي، أو ليلته الأولى الآمنة.",
+          })}
         </motion.p>
         <motion.div variants={fadeUp}>
           <DonateButton size="lg" className="mx-auto">
-            Give to Kapoeta
+            {t({ en: "Give to Kapoeta", ar: "تبرّع لكاپويتا" })}
           </DonateButton>
         </motion.div>
 
@@ -791,12 +917,12 @@ function FinalCTA() {
           className="mt-14 pt-10 border-t border-[#EDD9B4] grid grid-cols-1 sm:grid-cols-3 gap-6 text-left sm:text-center"
         >
           {[
-            { label: "Email", value: "stmarknubianfoundation@gmail.com", href: "mailto:stmarknubianfoundation@gmail.com" },
-            { label: "Mamdouh Mansour", value: "0402 747 292", href: "tel:+61402747292" },
-            { label: "Philip Hanna", value: "0411 401 217", href: "tel:+61411401217" },
+            { label: { en: "Email", ar: "البريد الإلكتروني" }, value: "stmarknubianfoundation@gmail.com", href: "mailto:stmarknubianfoundation@gmail.com" },
+            { label: { en: "Mamdouh Mansour", ar: "Mamdouh Mansour" }, value: "0402 747 292", href: "tel:+61402747292" },
+            { label: { en: "Philip Hanna", ar: "Philip Hanna" }, value: "0411 401 217", href: "tel:+61411401217" },
           ].map((c) => (
-            <div key={c.label}>
-              <p className="text-xs font-semibold text-[#B85C38] uppercase tracking-widest mb-1">{c.label}</p>
+            <div key={c.label.en}>
+              <p className="text-xs font-semibold text-[#B85C38] uppercase tracking-widest mb-1">{t(c.label)}</p>
               <a href={c.href} className="text-[#1C1410] text-sm font-medium hover:text-[#B85C38] transition-colors break-all">
                 {c.value}
               </a>

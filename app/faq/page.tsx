@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { Plus, Minus } from "lucide-react";
 import { DonateButton } from "@/components/donate-button";
+import { useT, type Dict } from "@/lib/i18n";
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 26 },
@@ -13,168 +14,326 @@ const fadeUp: Variants = {
 const stagger: Variants = { hidden: {}, visible: { transition: { staggerChildren: 0.06 } } };
 
 interface QA {
-  q: string;
-  a: React.ReactNode;
+  q: Dict<string>;
+  a: Dict<React.ReactNode>;
 }
 
-const GROUPS: { heading: string; items: QA[] }[] = [
+const GROUPS: { heading: Dict<string>; items: QA[] }[] = [
   {
-    heading: "Your donation",
+    heading: { en: "Your donation", ar: "تبرّعك" },
     items: [
       {
-        q: "How much of my donation reaches the children?",
-        a: (
-          <>
-            100%. Every volunteer self-funds their own travel and accommodation, so administration
-            and travel are never paid from donations. The only deduction is the card processing fee —
-            and at checkout you can choose to cover that yourself so your full gift reaches Kapoeta.
-          </>
-        ),
+        q: {
+          en: "How much of my donation reaches the children?",
+          ar: "ما المقدار الذي يصل من تبرّعي إلى الأطفال؟",
+        },
+        a: {
+          en: (
+            <>
+              100%. Every volunteer self-funds their own travel and accommodation, so administration
+              and travel are never paid from donations. The only deduction is the card processing fee —
+              and at checkout you can choose to cover that yourself so your full gift reaches Kapoeta.
+            </>
+          ),
+          ar: (
+            <>
+              100%. يموّل كل متطوّع سفره وإقامته بنفسه، فلا تُدفع نفقات الإدارة والسفر من التبرّعات أبدًا.
+              والاقتطاع الوحيد هو رسم معالجة البطاقة — وعند إتمام الدفع يمكنك أن تختار تغطيته بنفسك كي يصل
+              تبرّعك كاملًا إلى كاپويتا.
+            </>
+          ),
+        },
       },
       {
-        q: "Is my donation tax-deductible?",
-        a: (
-          <>
-            Yes. Pathways of Hope Ltd is a registered charity, and a receipt is emailed to you
-            automatically as soon as your payment is confirmed. Keep it for your tax records.
-          </>
-        ),
+        q: {
+          en: "Is my donation tax-deductible?",
+          ar: "هل تبرّعي معفى من الضرائب؟",
+        },
+        a: {
+          en: (
+            <>
+              Yes. Pathways of Hope Ltd is a registered charity, and a receipt is emailed to you
+              automatically as soon as your payment is confirmed. Keep it for your tax records.
+            </>
+          ),
+          ar: (
+            <>
+              نعم. Pathways of Hope Ltd جمعية خيرية مسجّلة، ويُرسَل إليك إيصال عبر البريد الإلكتروني
+              تلقائيًا بمجرّد تأكيد دفعتك. احتفظ به لسجلّاتك الضريبية.
+            </>
+          ),
+        },
       },
       {
-        q: "How do I get a receipt?",
-        a: (
-          <>
-            A receipt is sent to your email address automatically by our secure payment provider,
-            Stripe, the moment your donation is processed. If you can&apos;t find it, check your spam
-            folder or email us and we&apos;ll resend it.
-          </>
-        ),
+        q: {
+          en: "How do I get a receipt?",
+          ar: "كيف أحصل على إيصال؟",
+        },
+        a: {
+          en: (
+            <>
+              A receipt is sent to your email address automatically by our secure payment provider,
+              Stripe, the moment your donation is processed. If you can&apos;t find it, check your spam
+              folder or email us and we&apos;ll resend it.
+            </>
+          ),
+          ar: (
+            <>
+              يُرسَل الإيصال إلى بريدك الإلكتروني تلقائيًا من مزوّد المدفوعات الآمن لدينا، Stripe، لحظة
+              معالجة تبرّعك. وإن لم تجده، فتفقّد مجلّد البريد غير المرغوب فيه أو راسلنا وسنعيد إرساله.
+            </>
+          ),
+        },
       },
       {
-        q: "Can I give monthly — and cancel later?",
-        a: (
-          <>
-            Yes. You can give once, or set up a recurring gift weekly, fortnightly or monthly. Recurring
-            giving is the steadiest way to support the shelter&apos;s running costs, and you can change
-            or cancel it at any time — just contact us and we&apos;ll take care of it.
-          </>
-        ),
+        q: {
+          en: "Can I give monthly — and cancel later?",
+          ar: "هل يمكنني التبرّع شهريًا — وإلغاؤه لاحقًا؟",
+        },
+        a: {
+          en: (
+            <>
+              Yes. You can give once, or set up a recurring gift weekly, fortnightly or monthly. Recurring
+              giving is the steadiest way to support the shelter&apos;s running costs, and you can change
+              or cancel it at any time — just contact us and we&apos;ll take care of it.
+            </>
+          ),
+          ar: (
+            <>
+              نعم. يمكنك التبرّع مرة واحدة، أو إعداد تبرّع متكرّر أسبوعيًا أو كل أسبوعين أو شهريًا. والتبرّع
+              المتكرّر هو أثبت وسيلة لدعم النفقات التشغيلية للملجأ، ويمكنك تغييره أو إلغاؤه في أيّ وقت —
+              تواصل معنا فحسب وسنتولّى الأمر.
+            </>
+          ),
+        },
       },
       {
-        q: "Can I donate by bank transfer instead of card?",
-        a: (
-          <>
-            Yes. On any donation page you&apos;ll find direct bank transfer details beneath the card
-            form. Bank transfers carry no processing fee, so every cent reaches the field.
-          </>
-        ),
+        q: {
+          en: "Can I donate by bank transfer instead of card?",
+          ar: "هل يمكنني التبرّع بالتحويل المصرفي بدلًا من البطاقة؟",
+        },
+        a: {
+          en: (
+            <>
+              Yes. On any donation page you&apos;ll find direct bank transfer details beneath the card
+              form. Bank transfers carry no processing fee, so every cent reaches the field.
+            </>
+          ),
+          ar: (
+            <>
+              نعم. في أيّ صفحة تبرّع ستجد بيانات التحويل المصرفي المباشر أسفل نموذج البطاقة. ولا تتحمّل
+              التحويلات المصرفية أيّ رسم معالجة، فيصل كل سنت إلى الميدان.
+            </>
+          ),
+        },
       },
       {
-        q: "Can I donate from outside Australia?",
-        a: (
-          <>
-            Yes. Donations are processed in Australian dollars (AUD) and most international cards are
-            accepted. Your bank may apply its own currency conversion.
-          </>
-        ),
+        q: {
+          en: "Can I donate from outside Australia?",
+          ar: "هل يمكنني التبرّع من خارج أستراليا؟",
+        },
+        a: {
+          en: (
+            <>
+              Yes. Donations are processed in Australian dollars (AUD) and most international cards are
+              accepted. Your bank may apply its own currency conversion.
+            </>
+          ),
+          ar: (
+            <>
+              نعم. تُعالَج التبرّعات بالدولار الأسترالي (AUD)، وتُقبل معظم البطاقات الدولية. وقد يطبّق
+              مصرفك تحويلًا خاصًا به للعملة.
+            </>
+          ),
+        },
       },
     ],
   },
   {
-    heading: "Where it goes",
+    heading: { en: "Where it goes", ar: "إلى أين يذهب" },
     items: [
       {
-        q: "What exactly does my money pay for?",
-        a: (
-          <>
-            Gifts go to clearly defined projects at the Kapoeta Children&apos;s Shelter — a solar power
-            system, an electric water pump, a chicken coop for eggs and income, the day-to-day running
-            of the home, and child sponsorship. You can give to a specific project, or to wherever the
-            need is greatest. See the{" "}
-            <Link href="/donate" className="text-[#B85C38] font-medium hover:underline">
-              donation page
-            </Link>{" "}
-            for each goal.
-          </>
-        ),
+        q: {
+          en: "What exactly does my money pay for?",
+          ar: "ما الذي تموّله أموالي تحديدًا؟",
+        },
+        a: {
+          en: (
+            <>
+              Gifts go to clearly defined projects at the Kapoeta Children&apos;s Shelter — a solar power
+              system, an electric water pump, a chicken coop for eggs and income, the day-to-day running
+              of the home, and child sponsorship. You can give to a specific project, or to wherever the
+              need is greatest. See the{" "}
+              <Link href="/donate" className="text-[#B85C38] font-medium hover:underline">
+                donation page
+              </Link>{" "}
+              for each goal.
+            </>
+          ),
+          ar: (
+            <>
+              تذهب التبرّعات إلى مشاريع محدّدة بوضوح في ملجأ كاپويتا للأطفال — نظام طاقة شمسية، ومضخة مياه
+              كهربائية، وحظيرة دجاج للبيض والدخل، والتشغيل اليومي للبيت، وكفالة الأطفال. ويمكنك التبرّع
+              لمشروع بعينه، أو حيث تشتدّ الحاجة أكثر. اطّلع على{" "}
+              <Link href="/donate" className="text-[#B85C38] font-medium hover:underline">
+                صفحة التبرّع
+              </Link>{" "}
+              لكل هدف.
+            </>
+          ),
+        },
       },
       {
-        q: "What does it cost to sponsor a child?",
-        a: (
-          <>
-            A$600 covers one child&apos;s full year — meals, a safe bed, schooling and the dignity of
-            belonging. You can sponsor one child or several.
-          </>
-        ),
+        q: {
+          en: "What does it cost to sponsor a child?",
+          ar: "كم تبلغ كلفة كفالة طفل؟",
+        },
+        a: {
+          en: (
+            <>
+              A$600 covers one child&apos;s full year — meals, a safe bed, schooling and the dignity of
+              belonging. You can sponsor one child or several.
+            </>
+          ),
+          ar: (
+            <>
+              يغطّي مبلغ A$600 سنة كاملة لطفل واحد — وجبات، وسرير آمن، وتعليم، وكرامة الانتماء. ويمكنك
+              كفالة طفل واحد أو عدّة أطفال.
+            </>
+          ),
+        },
       },
       {
-        q: "How will I hear about the impact of my gift?",
-        a: (
-          <>
-            We share milestones and news from Kapoeta on our{" "}
-            <Link href="/impact" className="text-[#B85C38] font-medium hover:underline">
-              Impact page
-            </Link>
-            , and you can follow the full story of the shelter on the{" "}
-            <Link href="/missions/kapoeta" className="text-[#B85C38] font-medium hover:underline">
-              Kapoeta mission page
-            </Link>
-            .
-          </>
-        ),
+        q: {
+          en: "How will I hear about the impact of my gift?",
+          ar: "كيف سأعرف عن أثر تبرّعي؟",
+        },
+        a: {
+          en: (
+            <>
+              We share milestones and news from Kapoeta on our{" "}
+              <Link href="/impact" className="text-[#B85C38] font-medium hover:underline">
+                Impact page
+              </Link>
+              , and you can follow the full story of the shelter on the{" "}
+              <Link href="/missions/kapoeta" className="text-[#B85C38] font-medium hover:underline">
+                Kapoeta mission page
+              </Link>
+              .
+            </>
+          ),
+          ar: (
+            <>
+              نشارك المحطّات والأخبار من كاپويتا على{" "}
+              <Link href="/impact" className="text-[#B85C38] font-medium hover:underline">
+                صفحة الأثر
+              </Link>
+              ، ويمكنك متابعة القصّة الكاملة للملجأ على{" "}
+              <Link href="/missions/kapoeta" className="text-[#B85C38] font-medium hover:underline">
+                صفحة مهمّة كاپويتا
+              </Link>
+              .
+            </>
+          ),
+        },
       },
     ],
   },
   {
-    heading: "Trust & security",
+    heading: { en: "Trust & security", ar: "الثقة والأمان" },
     items: [
       {
-        q: "Is my payment secure?",
-        a: (
-          <>
-            Yes. Payments are handled by Stripe, a globally trusted, PCI-DSS Level 1 certified provider,
-            over an encrypted connection. Your card details go directly to Stripe and are never stored
-            on our servers.
-          </>
-        ),
+        q: {
+          en: "Is my payment secure?",
+          ar: "هل دفعتي آمنة؟",
+        },
+        a: {
+          en: (
+            <>
+              Yes. Payments are handled by Stripe, a globally trusted, PCI-DSS Level 1 certified provider,
+              over an encrypted connection. Your card details go directly to Stripe and are never stored
+              on our servers.
+            </>
+          ),
+          ar: (
+            <>
+              نعم. تُعالَج المدفوعات عبر Stripe، وهو مزوّد موثوق عالميًا ومعتمد بمستوى PCI-DSS Level 1،
+              من خلال اتصال مشفّر. وتنتقل بيانات بطاقتك مباشرةً إلى Stripe ولا تُخزَّن أبدًا على خوادمنا.
+            </>
+          ),
+        },
       },
       {
-        q: "Who runs Pathways of Hope?",
-        a: (
-          <>
-            Pathways of Hope is an Australian charity governed by a volunteer Board, working in
-            partnership with Brother Hakim Peter — a native of Kapoeta who founded the shelter and leads
-            the work on the ground. You can read more on our{" "}
-            <Link href="/about" className="text-[#B85C38] font-medium hover:underline">
-              About
-            </Link>{" "}
-            and{" "}
-            <Link href="/governance" className="text-[#B85C38] font-medium hover:underline">
-              Governance
-            </Link>{" "}
-            pages.
-          </>
-        ),
+        q: {
+          en: "Who runs Pathways of Hope?",
+          ar: "من يدير دروب الأمل؟",
+        },
+        a: {
+          en: (
+            <>
+              Pathways of Hope is an Australian charity governed by a volunteer Board, working in
+              partnership with Brother Hakim Peter — a native of Kapoeta who founded the shelter and leads
+              the work on the ground. You can read more on our{" "}
+              <Link href="/about" className="text-[#B85C38] font-medium hover:underline">
+                About
+              </Link>{" "}
+              and{" "}
+              <Link href="/governance" className="text-[#B85C38] font-medium hover:underline">
+                Governance
+              </Link>{" "}
+              pages.
+            </>
+          ),
+          ar: (
+            <>
+              دروب الأمل جمعية خيرية أسترالية يديرها مجلس من المتطوّعين، بالشراكة مع الأخ حكيم بيتر — وهو
+              من أبناء كاپويتا، أسّس الملجأ ويقود العمل في الميدان. ويمكنك قراءة المزيد على صفحتَي{" "}
+              <Link href="/about" className="text-[#B85C38] font-medium hover:underline">
+                من نحن
+              </Link>{" "}
+              و
+              <Link href="/governance" className="text-[#B85C38] font-medium hover:underline">
+                الحوكمة
+              </Link>
+              .
+            </>
+          ),
+        },
       },
       {
-        q: "How do I know the money is well spent?",
-        a: (
-          <>
-            We publish what we&apos;ve raised, what we&apos;ve delivered, and real monthly operating
-            statements on our{" "}
-            <Link href="/financials" className="text-[#B85C38] font-medium hover:underline">
-              Transparency page
-            </Link>
-            . We operate under formal safeguarding, compliance, conflict-of-interest and
-            fraud-prevention policies.
-          </>
-        ),
+        q: {
+          en: "How do I know the money is well spent?",
+          ar: "كيف أتأكّد من حُسن إنفاق الأموال؟",
+        },
+        a: {
+          en: (
+            <>
+              We publish what we&apos;ve raised, what we&apos;ve delivered, and real monthly operating
+              statements on our{" "}
+              <Link href="/financials" className="text-[#B85C38] font-medium hover:underline">
+                Transparency page
+              </Link>
+              . We operate under formal safeguarding, compliance, conflict-of-interest and
+              fraud-prevention policies.
+            </>
+          ),
+          ar: (
+            <>
+              ننشر ما جمعناه، وما أنجزناه، وبيانات تشغيلية شهرية حقيقية على{" "}
+              <Link href="/financials" className="text-[#B85C38] font-medium hover:underline">
+                صفحة الشفافية
+              </Link>
+              . ونعمل وفق سياسات رسمية لحماية الطفل والامتثال وتعارض المصالح ومنع الاحتيال.
+            </>
+          ),
+        },
       },
     ],
   },
 ];
 
 function FaqItem({ item }: { item: QA }) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   return (
     <motion.div variants={fadeUp} className="bg-white rounded-2xl border border-[#EDD9B4] overflow-hidden">
@@ -184,7 +343,7 @@ function FaqItem({ item }: { item: QA }) {
         aria-expanded={open}
       >
         <span className="text-[#1C1410] font-medium text-base sm:text-lg" style={{ fontFamily: "var(--font-serif)" }}>
-          {item.q}
+          {t(item.q)}
         </span>
         <span className="w-8 h-8 rounded-full bg-[#B85C38]/10 flex items-center justify-center flex-shrink-0 text-[#B85C38]">
           {open ? <Minus size={16} /> : <Plus size={16} />}
@@ -199,7 +358,7 @@ function FaqItem({ item }: { item: QA }) {
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
             className="overflow-hidden"
           >
-            <p className="px-6 pb-6 text-[#8C7B72] text-sm sm:text-[0.95rem] leading-relaxed">{item.a}</p>
+            <p className="px-6 pb-6 text-[#8C7B72] text-sm sm:text-[0.95rem] leading-relaxed">{t(item.a)}</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -208,6 +367,7 @@ function FaqItem({ item }: { item: QA }) {
 }
 
 export default function FaqPage() {
+  const t = useT();
   return (
     <div className="bg-[#FDFAF6]">
       {/* Hero */}
@@ -219,7 +379,7 @@ export default function FaqPage() {
             variants={fadeUp}
             className="text-[#B85C38] text-sm uppercase tracking-widest mb-4 font-medium"
           >
-            Questions, answered
+            {t({ en: "Questions, answered", ar: "أسئلة وإجابات" })}
           </motion.p>
           <motion.h1
             initial="hidden"
@@ -231,7 +391,7 @@ export default function FaqPage() {
             className="text-5xl sm:text-6xl font-light text-[#1C1410] mb-6 leading-tight"
             style={{ fontFamily: "var(--font-serif)" }}
           >
-            Frequently asked questions.
+            {t({ en: "Frequently asked questions.", ar: "الأسئلة الشائعة." })}
           </motion.h1>
           <motion.p
             initial="hidden"
@@ -239,8 +399,10 @@ export default function FaqPage() {
             variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, delay: 0.2 } } }}
             className="text-[#3D2B1F] text-xl leading-relaxed max-w-2xl"
           >
-            Everything you might want to know before you give — about your donation, where it goes, and
-            how we keep your trust.
+            {t({
+              en: "Everything you might want to know before you give — about your donation, where it goes, and how we keep your trust.",
+              ar: "كل ما قد ترغب في معرفته قبل أن تتبرّع — عن تبرّعك، وإلى أين يذهب، وكيف نصون ثقتك.",
+            })}
           </motion.p>
         </div>
       </section>
@@ -249,7 +411,7 @@ export default function FaqPage() {
       <section className="py-16 px-4">
         <div className="max-w-3xl mx-auto space-y-14">
           {GROUPS.map((group) => (
-            <div key={group.heading}>
+            <div key={group.heading.en}>
               <motion.h2
                 initial="hidden"
                 whileInView="visible"
@@ -257,7 +419,7 @@ export default function FaqPage() {
                 variants={fadeUp}
                 className="text-[#C9952A] text-xs font-semibold uppercase tracking-widest mb-5"
               >
-                {group.heading}
+                {t(group.heading)}
               </motion.h2>
               <motion.div
                 className="space-y-3"
@@ -267,7 +429,7 @@ export default function FaqPage() {
                 variants={stagger}
               >
                 {group.items.map((item) => (
-                  <FaqItem key={item.q} item={item} />
+                  <FaqItem key={item.q.en} item={item} />
                 ))}
               </motion.div>
             </div>
@@ -289,17 +451,32 @@ export default function FaqPage() {
             className="text-3xl font-light text-[#1C1410] mb-4"
             style={{ fontFamily: "var(--font-serif)" }}
           >
-            Still have a question?
+            {t({ en: "Still have a question?", ar: "أمَا زال لديك سؤال؟" })}
           </motion.h2>
           <motion.p variants={fadeUp} className="text-[#8C7B72] mb-8">
-            Email us at{" "}
-            <a href="mailto:stmarknubianfoundation@gmail.com" className="text-[#B85C38] font-medium hover:underline">
-              stmarknubianfoundation@gmail.com
-            </a>{" "}
-            — we&apos;d love to hear from you.
+            {t({
+              en: (
+                <>
+                  Email us at{" "}
+                  <a href="mailto:stmarknubianfoundation@gmail.com" className="text-[#B85C38] font-medium hover:underline">
+                    stmarknubianfoundation@gmail.com
+                  </a>{" "}
+                  — we&apos;d love to hear from you.
+                </>
+              ),
+              ar: (
+                <>
+                  راسلنا على{" "}
+                  <a href="mailto:stmarknubianfoundation@gmail.com" className="text-[#B85C38] font-medium hover:underline">
+                    stmarknubianfoundation@gmail.com
+                  </a>{" "}
+                  — يسعدنا أن نسمع منك.
+                </>
+              ),
+            })}
           </motion.p>
           <motion.div variants={fadeUp}>
-            <DonateButton size="lg">Make a donation</DonateButton>
+            <DonateButton size="lg">{t({ en: "Make a donation", ar: "تبرّع الآن" })}</DonateButton>
           </motion.div>
         </motion.div>
       </section>

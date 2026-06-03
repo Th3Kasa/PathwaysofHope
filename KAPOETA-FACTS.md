@@ -353,3 +353,35 @@ The following claims from the website were checked against all documents read. I
 13. **Annual operating cost of $45,000** — not stated in any document. Cannot be verified.
 
 14. **"$36,000 sponsor goal"** — 45 × AU$600 = AU$27,000. The $36,000 figure does not appear in any document.
+
+---
+
+## 12. Owner Confirmations (2 June 2026)
+
+> The sections above are an extract from the original 2024–2025 source documents.
+> Several website figures are HIGHER than, or absent from, that extract. On
+> 2 June 2026 the charity owner reviewed these and provided the following
+> directions. Where an item is "owner-confirmed", treat it as accurate even though
+> it post-dates / exceeds the original document extract — it derives from newer
+> records the owner holds. **Do not flag these as fabricated.**
+
+- **"Already delivered" total of ~A$112,800** (and its line items): owner-confirmed as
+  real (newer figures than the Final Report's ~A$75,675 table). Exact per-line
+  amounts are still being verified by the owner via `docs/DATA-TO-FACT-CHECK.md`.
+- **"60 children still waiting for sponsorship"** and **70 children currently in care**:
+  owner-confirmed as the current numbers (the source extract's "45 need sponsorship,
+  10 sponsored" reflects an earlier point in time). Exact current count pending final
+  confirmation via the data document.
+- **Annual operating cost ~A$45,000** and the **2026 project goal figures**
+  (solar A$25,000; chicken coop A$5,000; water pump A$1,500; ongoing A$45,000;
+  sponsorship A$36,000): owner-confirmed as the charity's current working figures.
+- **Governance / legal entity** — owner-confirmed accurate and may be published:
+  Pathways of Hope Ltd; ABN 40 686 574 630 (passes ATO checksum); ACN 686 574 630;
+  public company limited by guarantee; registered NSW 28 April 2025; registered with
+  the ACNC; donations tax-deductible; Safeguarding Officer Sally Exander; Board:
+  Waleed Mansour (Chair), Sylvia Mansour, Hanan Mansour.
+
+**Status:** A full list of every on-site statistic is maintained in
+`docs/DATA-TO-FACT-CHECK.md` for the owner's line-by-line fact-check. As corrections
+come back, update both the website and this section.
+

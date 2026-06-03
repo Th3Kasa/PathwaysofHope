@@ -14,6 +14,8 @@ import {
   isRecurring,
 } from "@/lib/donation";
 import { BankTransferPanel } from "@/components/bank-transfer-panel";
+import { useLang, useT } from "@/lib/i18n";
+import { GOAL_AR } from "@/lib/goals-i18n";
 
 interface Props {
   goal: Goal;
@@ -26,6 +28,18 @@ function formatMoney(n: number): string {
 }
 
 export function DonationPanel({ goal, part }: Props) {
+  const { lang } = useLang();
+  const t = useT();
+  const arGoal = GOAL_AR[goal.id];
+  const goalTitle = lang === "ar" ? arGoal.title : goal.title;
+  const goalDesc = lang === "ar" ? arGoal.description : goal.description;
+  const partTitle = part
+    ? (lang === "ar" ? arGoal.parts?.[part.id]?.title ?? part.title : part.title)
+    : undefined;
+  const partNote = part
+    ? (lang === "ar" ? arGoal.parts?.[part.id]?.note ?? part.note : part.note)
+    : undefined;
+
   const isSponsor = goal.kind === "leaf-qty";
   const unit = goal.unitAmount ?? 600;
 
@@ -66,15 +80,18 @@ export function DonationPanel({ goal, part }: Props) {
 
   const handleSubmit = async () => {
     if (!base || base < 1) {
-      setError("Please choose an amount of at least A$1.");
+      setError(t({ en: "Please choose an amount of at least A$1.", ar: "يُرجى اختيار مبلغ لا يقلّ عن A$1." }));
       return;
     }
     if (base > 50000) {
-      setError("Maximum single gift is A$50,000. For larger gifts, please contact us directly.");
+      setError(t({
+        en: "Maximum single gift is A$50,000. For larger gifts, please contact us directly.",
+        ar: "الحدّ الأقصى للتبرّع الواحد هو A$50,000. للتبرّعات الأكبر، يُرجى التواصل معنا مباشرةً.",
+      }));
       return;
     }
     if (recurring && !recurringConsent) {
-      setError("Please confirm you understand this is a recurring payment.");
+      setError(t({ en: "Please confirm you understand this is a recurring payment.", ar: "يُرجى تأكيد فهمك أن هذا تبرّع متكرّر." }));
       return;
     }
 
@@ -94,15 +111,16 @@ export function DonationPanel({ goal, part }: Props) {
         }),
       });
       const data = await res.json();
-      if (!res.ok || !data.url) throw new Error(data.error || "Something went wrong. Please try again.");
+      const genericError = t({ en: "Something went wrong. Please try again.", ar: "حدث خطأ ما. يُرجى المحاولة مرة أخرى." });
+      if (!res.ok || !data.url) throw new Error(data.error || genericError);
       window.location.href = data.url;
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+      setError(err instanceof Error ? err.message : t({ en: "Something went wrong. Please try again.", ar: "حدث خطأ ما. يُرجى المحاولة مرة أخرى." }));
       setLoading(false);
     }
   };
 
-  const fact = funFact(goal.id, base);
+  const fact = funFact(goal.id, base, lang);
 
   return (
     <motion.div
@@ -117,23 +135,23 @@ export function DonationPanel({ goal, part }: Props) {
         <div className="absolute inset-0 bg-gradient-to-t from-[#1C1410]/85 via-[#1C1410]/30 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-6">
           {part && (
-            <p className="text-[#EDD9B4] text-xs uppercase tracking-widest mb-1">{goal.title}</p>
+            <p className="text-[#EDD9B4] text-xs uppercase tracking-widest mb-1">{goalTitle}</p>
           )}
           <h2 className="text-2xl sm:text-3xl font-light text-white" style={{ fontFamily: "var(--font-serif)" }}>
-            {part ? part.title : goal.title}
+            {part ? partTitle : goalTitle}
           </h2>
         </div>
       </div>
 
       <div className="p-6 sm:p-8 space-y-8">
         <p className="text-[#8C7B72] text-sm leading-relaxed">
-          {part ? part.note : goal.description}
+          {part ? partNote : goalDesc}
         </p>
 
         {/* Frequency */}
         <div>
           <h3 className="text-sm font-semibold uppercase tracking-widest text-[#8C7B72] mb-3">
-            Donation frequency
+            {t({ en: "Donation frequency", ar: "تكرار التبرّع" })}
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 rounded-xl overflow-hidden border border-[#DDD0C0]">
             {FREQUENCIES.map((f) => (
@@ -146,7 +164,7 @@ export function DonationPanel({ goal, part }: Props) {
                 )}
                 aria-pressed={frequency === f.value}
               >
-                {f.label}
+                {t(f.label)}
               </button>
             ))}
           </div>
@@ -169,7 +187,10 @@ export function DonationPanel({ goal, part }: Props) {
                   className="mt-0.5 w-4 h-4 accent-[#B85C38]"
                 />
                 <span className="text-sm text-[#3D2B1F] leading-relaxed">
-                  I understand this will be set up as a recurring payment, starting today.
+                  {t({
+                    en: "I understand this will be set up as a recurring payment, starting today.",
+                    ar: "أتفهّم أن هذا سيُنشأ كتبرّع متكرّر، يبدأ اليوم.",
+                  })}
                 </span>
               </motion.label>
             )}
@@ -180,7 +201,7 @@ export function DonationPanel({ goal, part }: Props) {
         {isSponsor ? (
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-widest text-[#8C7B72] mb-3">
-              How many children? (A$600 each)
+              {t({ en: "How many children? (A$600 each)", ar: "كم عدد الأطفال؟ (A$600 لكلٍّ منهم)" })}
             </h3>
             <div className="flex items-center gap-4">
               <button
@@ -195,7 +216,7 @@ export function DonationPanel({ goal, part }: Props) {
                 <span className="text-3xl font-light text-[#1C1410] tabular-nums" style={{ fontFamily: "var(--font-serif)" }}>
                   {quantity}
                 </span>
-                <span className="text-[#8C7B72] text-sm ml-2">{quantity === 1 ? "child" : "children"}</span>
+                <span className="text-[#8C7B72] text-sm ml-2">{quantity === 1 ? t({ en: "child", ar: "طفل" }) : t({ en: "children", ar: "أطفال" })}</span>
               </div>
               <button
                 onClick={() => setQuantity((q) => Math.min(35, q + 1))}
@@ -211,7 +232,7 @@ export function DonationPanel({ goal, part }: Props) {
           /* Amount selector */
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-widest text-[#8C7B72] mb-3">
-              Choose an amount (AUD)
+              {t({ en: "Choose an amount (AUD)", ar: "اختر مبلغًا (بالدولار الأسترالي)" })}
             </h3>
             <div className="grid grid-cols-3 gap-2 mb-3">
               {presets.map((p) => (
@@ -226,7 +247,7 @@ export function DonationPanel({ goal, part }: Props) {
                   )}
                 >
                   {formatAUDFull(p)}
-                  {part && p === part.amount && <span className="block text-[10px] font-normal opacity-80">full part</span>}
+                  {part && p === part.amount && <span className="block text-[10px] font-normal opacity-80">{t({ en: "full part", ar: "الجزء كاملًا" })}</span>}
                 </button>
               ))}
               <button
@@ -236,7 +257,7 @@ export function DonationPanel({ goal, part }: Props) {
                   customAmount ? "border-[#B85C38] bg-[#B85C38] text-white" : "border-[#DDD0C0] text-[#3D2B1F] hover:border-[#B85C38] hover:text-[#B85C38]"
                 )}
               >
-                Custom
+                {t({ en: "Custom", ar: "مبلغ آخر" })}
               </button>
             </div>
             <div className="relative">
@@ -246,7 +267,7 @@ export function DonationPanel({ goal, part }: Props) {
                 type="number"
                 min="1"
                 max="50000"
-                placeholder="Enter amount"
+                placeholder={t({ en: "Enter amount", ar: "أدخل مبلغًا" })}
                 value={customAmount}
                 onChange={(e) => { setCustomAmount(e.target.value); setSelectedPreset(null); setError(null); }}
                 className="w-full pl-10 pr-4 py-3 border-2 border-[#DDD0C0] rounded-xl text-sm text-[#1C1410] focus:outline-none focus:border-[#B85C38] transition-colors"
@@ -282,14 +303,17 @@ export function DonationPanel({ goal, part }: Props) {
             className="mt-0.5 w-4 h-4 accent-[#B85C38]"
           />
           <span className="text-sm text-[#3D2B1F] leading-relaxed">
-            Add the card processing fee ({formatMoney(fee || feeFor(base || 1))}) so 100% of my gift reaches the children.
+            {t({
+              en: `Add the card processing fee (${formatMoney(fee || feeFor(base || 1))}) so 100% of my gift reaches the children.`,
+              ar: `أضِف رسم معالجة البطاقة (${formatMoney(fee || feeFor(base || 1))}) ليصل 100% من تبرّعي إلى الأطفال.`,
+            })}
           </span>
         </label>
 
         {/* Total breakdown */}
         {coverFee && base > 0 && (
           <div className="text-xs text-[#8C7B72] -mt-4 pl-7">
-            Gift {formatMoney(base)} + fee {formatMoney(fee)} = <span className="font-semibold text-[#1C1410]">{formatMoney(total)}</span>
+            {t({ en: "Gift", ar: "التبرّع" })} {formatMoney(base)} + {t({ en: "fee", ar: "رسم" })} {formatMoney(fee)} = <span className="font-semibold text-[#1C1410]">{formatMoney(total)}</span>
           </div>
         )}
 
@@ -311,14 +335,15 @@ export function DonationPanel({ goal, part }: Props) {
         >
           {loading ? (
             <span className="flex items-center justify-center gap-2">
-              <Loader2 size={18} className="animate-spin" /> Redirecting to Stripe…
+              <Loader2 size={18} className="animate-spin" /> {t({ en: "Redirecting to Stripe…", ar: "يجري التحويل إلى Stripe…" })}
             </span>
           ) : (
-            `Continue — ${formatMoney(total || base)}${frequencySuffix(frequency)}`
+            `${t({ en: "Continue", ar: "متابعة" })} — ${formatMoney(total || base)}${frequencySuffix(frequency, lang)}`
           )}
         </button>
         <p className="text-xs text-center text-[#8C7B72] -mt-4">
-          Secure, encrypted checkout via Stripe.{recurring && " Cancel recurring giving anytime."}
+          {t({ en: "Secure, encrypted checkout via Stripe.", ar: "دفع آمن ومشفّر عبر Stripe." })}
+          {recurring && t({ en: " Cancel recurring giving anytime.", ar: " يمكنك إلغاء التبرّع المتكرّر في أيّ وقت." })}
         </p>
 
         <BankTransferPanel />
