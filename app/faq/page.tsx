@@ -72,15 +72,20 @@ const GROUPS: { heading: Dict<string>; items: QA[] }[] = [
         a: {
           en: (
             <>
-              A receipt is sent to your email address automatically by our secure payment provider,
-              Stripe, the moment your donation is processed. If you can&apos;t find it, check your spam
-              folder or email us and we&apos;ll resend it.
+              A branded receipt from Pathways of Hope is emailed to you automatically the moment
+              your donation is confirmed. For bank transfers, use the &ldquo;Email me a receipt&rdquo;
+              link on any donation page. If you can&apos;t find it, check your spam folder or{" "}
+              <a href="mailto:contact@pathwaysofhope.org.au" className="text-[#B85C38] underline">
+                email us
+              </a>{" "}
+              and we&apos;ll resend it.
             </>
           ),
           ar: (
             <>
-              يُرسَل الإيصال إلى بريدك الإلكتروني تلقائيًا من مزوّد المدفوعات الآمن لدينا، Stripe، لحظة
-              معالجة تبرّعك. وإن لم تجده، فتفقّد مجلّد البريد غير المرغوب فيه أو راسلنا وسنعيد إرساله.
+              يُرسَل إليك إيصال رسمي من Pathways of Hope تلقائيًا فور تأكيد تبرّعك.
+              أمّا للتحويلات المصرفية، فاستخدم رابط &quot;أرسِل لي إيصالًا&quot; في أيّ صفحة تبرّع.
+              وإن لم تجده، تفقّد مجلّد البريد غير المرغوب فيه أو راسلنا وسنعيد إرساله.
             </>
           ),
         },

@@ -167,8 +167,8 @@ export const KAPOETA_GOALS: Goal[] = [
     short:
       "A$600 covers one child's full year — meals, shelter, schooling and belonging.",
     description:
-      "A$600 covers one child's full year: meals, a safe bed, schooling and the dignity of belonging. Of the 70 children in our care, 10 are already sponsored — 60 are still waiting. Sponsor as many as you wish.",
-    goalAmount: 36000, // 60 children still needing sponsorship × A$600
+      "A$600 covers one child's full year: meals, a safe bed, schooling and the dignity of belonging. Of the 70 children in our care, 46 are now in school — 24 are still waiting for sponsorship. Sponsor as many as you wish.",
+    goalAmount: 14400, // 24 children still needing sponsorship × A$600
     kind: "leaf-qty",
     recurringByNature: true,
     unitLabel: "A$600 / child / year",
@@ -200,7 +200,6 @@ export const DELIVERED: Delivered[] = [
   { title: "Deep water well with manual pump", amount: 18000 },
   { title: "40-foot container, shipped Sydney → Kapoeta", amount: 45000 },
   { title: "Main shelter building", amount: 20000 },
-  { title: "Water tank tower", amount: 11000 },
   { title: "Bread oven & bakery", amount: 6000 },
   { title: "6 cows and a bull (dairy)", amount: 5000 },
   { title: "Tricycle for transport", amount: 3000 },
@@ -208,4 +207,4 @@ export const DELIVERED: Delivered[] = [
   { title: "Fencing the land", amount: 1800 },
 ];
 
-export const DELIVERED_TOTAL = DELIVERED.reduce((sum, d) => sum + d.amount, 0); // A$112,800
+export const DELIVERED_TOTAL = DELIVERED.reduce((sum, d) => sum + d.amount, 0); // A$101,800

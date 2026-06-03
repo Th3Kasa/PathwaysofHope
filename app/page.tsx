@@ -37,10 +37,10 @@ const fadeLeft: Variants = {
 /* ─── Bilingual content ──────────────────────────────────────── */
 
 const STATS: { value: number; prefix?: string; suffix?: string; label: Dict<string> }[] = [
-  { value: 150, suffix: "+", label: { en: "Children served since 2024", ar: "طفل خدمناهم منذ 2024" } },
+  { value: 320, suffix: "", label: { en: "Children first gathered from the streets", ar: "طفل جُمِعوا أوّلًا من الشوارع" } },
   { value: 85000, prefix: "A$", suffix: "", label: { en: "Raised in first campaign", ar: "جُمِعت في الحملة الأولى" } },
   { value: 100, suffix: "%", label: { en: "Of donations reach the field", ar: "من التبرّعات تصل إلى الميدان" } },
-  { value: 44, suffix: "", label: { en: "Children in education today", ar: "طفل في التعليم اليوم" } },
+  { value: 46, suffix: "", label: { en: "Children in school for 2026", ar: "طفل في المدرسة لعام 2026" } },
 ];
 
 const APPROACH: { icon: typeof Handshake; title: Dict<string>; body: Dict<string> }[] = [
@@ -172,7 +172,7 @@ export default function Home() {
         <div className="absolute inset-0">
           <Image
             src="/images/kapoeta/field/children-school-uniforms-group-kapoeta.jpg"
-            alt="Children in school uniforms — 26 children enrolled in formal education through Pathways of Hope"
+            alt="Children in school uniforms — 46 children enrolled in formal education through Pathways of Hope"
             fill
             priority
             className="object-cover object-top"

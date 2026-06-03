@@ -1,5 +1,31 @@
 # Statistics & Data on the Website — for your fact-check
 
+> ## ✅ VERIFIED CORRECTIONS APPLIED — 3 June 2026
+> The owner fact-checked every figure against the official Kapoeta newsletter
+> (EN + AR, signed by Elders Mamdouh Mansour & Philip Hanna) and confirmed the
+> corrections below. **All are now live on the site.** The tables further down
+> are the *original* pre-correction audit and are kept only for history.
+>
+> | What changed | Old (was on site) | New (verified & applied) |
+> |---|---|---|
+> | Children first gathered from the streets | 150–200 | **~320** |
+> | Children in school | 26 (+18 preschool) = 44 | **46** in the local Catholic school system for the 2026 academic year (preschoolers taught on-site, uncounted) |
+> | Children still waiting for sponsorship | 60 | **24** (70 in care − 46 in school) |
+> | Sponsor-a-Child goal total | A$36,000 | **A$14,400** (24 × A$600) |
+> | Founder Brother Hakim's return to Kapoeta | (year not stated) | **2020** |
+> | December 2024 build team countries | Australia, US, UK, **Egypt** | **Australia, US, UK** (Egypt was the nationality of the volunteer engineer Michael Elmasri, not a partner team) |
+> | Land parcel | 10,000 m² (100 × 100) | **20,000 m² (100 m × 200 m)** |
+> | "Water tank tower" | listed as Already Delivered (A$11,000) | **moved to 2026 goals** — only the foundation is built |
+> | Operating costs shown | two itemised monthly statements (Jul 2025, Mar 2026) | **verified annual budget**: Food A$30k/yr · Education A$6k/yr · Staff salaries A$7k/yr → **≈ A$45,000/yr for 70 children** |
+>
+> **Kept as-is** (owner confirmed correct): A$85,000 raised · 100% reaches the field ·
+> 70 children in care · 16 m × 9 m building · 6 cows + a young bull · bread oven ·
+> tuk-tuk · A$600/child/year · A$45,000/yr ongoing operations · all governance/legal
+> details · the five separate donation goals and their breakdowns (kept as fundraising
+> targets — "to collect the amount and more").
+
+---
+
 Every number, figure and factual claim currently shown on the site, grouped by
 page, with where it appears and how it lines up with `KAPOETA-FACTS.md` (your
 source-of-truth extract). Tick or correct each row; tell me the corrections and
