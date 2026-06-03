@@ -67,10 +67,10 @@ export function DonationPanel({ goal, part }: Props) {
   const fee = coverFee ? feeFor(base) : 0;
   const total = Math.round((base + fee) * 100) / 100;
 
-  // Presets, with the part total surfaced first when funding a bundle part.
+  // Always exactly 5 presets so the grid is 5 + Custom = 6 items (2 even rows of 3).
   const presets = part
-    ? [part.amount, ...goal.presets.filter((p) => p !== part.amount)]
-    : goal.presets;
+    ? [part.amount, ...goal.presets.filter((p) => p !== part.amount).slice(0, 4)]
+    : goal.presets.slice(0, 5);
 
   const handlePreset = (val: number) => {
     setSelectedPreset(val);

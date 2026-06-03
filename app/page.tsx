@@ -171,19 +171,25 @@ export default function Home() {
       <section className="relative min-h-[92dvh] flex items-end" aria-label="Hero">
         <div className="absolute inset-0">
           <Image
-            src="/images/kapoeta/field/children-school-uniforms-group-kapoeta.jpg"
-            alt="Children in school uniforms — 46 children enrolled in formal education through Pathways of Hope"
+            src="/images/kapoeta/field/children-group-sunset-kapoeta.jpg"
+            alt="Children at sunset in Kapoeta — safe, fed, and in school through Pathways of Hope"
             fill
             priority
-            className="object-cover object-top"
+            className="object-cover object-center"
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#1C1410]/90 via-[#1C1410]/50 to-[#1C1410]/20" />
+          {/* Top-to-bottom gradient so nav text is always readable */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#1C1410]/70 via-[#1C1410]/20 to-transparent" />
+          {/* Bottom-to-top gradient for hero text */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1C1410]/90 via-[#1C1410]/40 to-transparent" />
         </div>
 
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 pt-32 w-full">
           <motion.div initial="hidden" animate="show" variants={stagger}>
-            <motion.p variants={fadeUp} className="text-[#D4785A] text-xs font-semibold uppercase tracking-widest mb-5">
+            <motion.p
+              variants={fadeUp}
+              className="text-[#EDD9B4] text-xs font-bold uppercase tracking-[0.25em] mb-5 drop-shadow"
+            >
               {t({ en: "Faith · Partnership · Dignity", ar: "إيمان · شراكة · كرامة" })}
             </motion.p>
             <motion.h1
