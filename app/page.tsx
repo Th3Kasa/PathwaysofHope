@@ -179,16 +179,16 @@ export default function Home() {
             sizes="100vw"
           />
           {/* Top-to-bottom gradient so nav text is always readable */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#1C1410]/70 via-[#1C1410]/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#1e293b]/70 via-[#1e293b]/20 to-transparent" />
           {/* Bottom-to-top gradient for hero text */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#1C1410]/90 via-[#1C1410]/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1e293b]/90 via-[#1e293b]/40 to-transparent" />
         </div>
 
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 pt-32 w-full">
           <motion.div initial="hidden" animate="show" variants={stagger}>
             <motion.p
               variants={fadeUp}
-              className="text-[#EDD9B4] text-xs font-bold uppercase tracking-[0.25em] mb-5 drop-shadow"
+              className="text-[#d6d3d1] text-xs font-bold uppercase tracking-[0.25em] mb-5 drop-shadow"
             >
               {t({ en: "Faith · Partnership · Dignity", ar: "إيمان · شراكة · كرامة" })}
             </motion.p>
@@ -211,7 +211,7 @@ export default function Home() {
             <motion.div variants={fadeUp} className="flex flex-wrap gap-4">
               <Link
                 href="/missions/kapoeta"
-                className="inline-flex items-center gap-2 justify-center px-7 py-4 text-base font-semibold rounded-full bg-[#B85C38] text-white hover:bg-[#8B3E23] transition-colors duration-200"
+                className="inline-flex items-center gap-2 justify-center px-7 py-4 text-base font-semibold rounded-full bg-[#6366f1] text-white hover:bg-[#4f46e5] transition-colors duration-200"
               >
                 {t({ en: "See the mission", ar: "شاهد المهمّة" })} <ArrowRight size={16} />
               </Link>
@@ -224,7 +224,7 @@ export default function Home() {
       </section>
 
       {/* Stats bar — warm dark, directly below hero, intentional */}
-      <section className="bg-[#1C1410] py-14 px-4">
+      <section className="bg-[#1e293b] py-14 px-4">
         <div className="max-w-6xl mx-auto">
           <motion.div
             className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center"
@@ -249,7 +249,7 @@ export default function Home() {
       </section>
 
       {/* What We Do */}
-      <section className="py-24 px-4 bg-[#FDFAF6]">
+      <section className="py-24 px-4 bg-[#e7e5e4]">
         <div className="max-w-6xl mx-auto">
           <motion.div
             className="mb-16"
@@ -258,11 +258,11 @@ export default function Home() {
             viewport={{ once: true, amount: 0.3 }}
             variants={fadeUp}
           >
-            <p className="text-[#B85C38] text-xs font-semibold uppercase tracking-widest mb-4">
+            <p className="text-[#6366f1] text-xs font-semibold uppercase tracking-widest mb-4">
               {t({ en: "Our approach", ar: "نهجنا" })}
             </p>
             <h2
-              className="text-4xl sm:text-5xl font-light text-[#1C1410] max-w-2xl"
+              className="text-4xl sm:text-5xl font-light text-[#1e293b] max-w-2xl"
               style={{ fontFamily: "var(--font-serif)" }}
             >
               {t({ en: "Not aid from a distance. Partnership from within.", ar: "ليست مساعدةً من بعيد، بل شراكةٌ من الداخل." })}
@@ -281,18 +281,18 @@ export default function Home() {
                 key={title.en}
                 variants={fadeUp}
                 whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                className="bg-white rounded-2xl p-8 border border-[#EDD9B4] shadow-sm hover:shadow-md transition-shadow"
+                className="bg-white rounded-2xl p-8 border border-[#d6d3d1] shadow-sm hover:shadow-md transition-shadow"
               >
-                <div className="w-11 h-11 rounded-xl bg-[#B85C38]/10 flex items-center justify-center mb-5">
-                  <Icon size={20} className="text-[#B85C38]" strokeWidth={1.75} />
+                <div className="w-11 h-11 rounded-xl bg-[#6366f1]/10 flex items-center justify-center mb-5">
+                  <Icon size={20} className="text-[#6366f1]" strokeWidth={1.75} />
                 </div>
                 <h3
-                  className="text-xl font-semibold text-[#1C1410] mb-3"
+                  className="text-xl font-semibold text-[#1e293b] mb-3"
                   style={{ fontFamily: "var(--font-serif)" }}
                 >
                   {t(title)}
                 </h3>
-                <p className="text-[#8C7B72] leading-relaxed text-sm">{t(body)}</p>
+                <p className="text-[#6b7280] leading-relaxed text-sm">{t(body)}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -300,7 +300,7 @@ export default function Home() {
       </section>
 
       {/* Pull quote — terracotta accent band */}
-      <section className="bg-[#B85C38] py-16 px-4">
+      <section className="bg-[#6366f1] py-16 px-4">
         <motion.div
           className="max-w-3xl mx-auto text-center"
           initial="hidden"
@@ -317,14 +317,14 @@ export default function Home() {
               ar: "«ما بدأ جهدًا لمساعدة أطفالٍ يعيشون في الشوارع — بثيابٍ ممزّقة، يأكلون من صناديق القمامة — صار مركزًا مزدهرًا للأمل.»",
             })}
           </blockquote>
-          <cite className="block mt-6 text-[#EDD9B4] text-sm not-italic tracking-wide">
+          <cite className="block mt-6 text-[#d6d3d1] text-sm not-italic tracking-wide">
             {t({ en: "— Vision of Hope, Kapoeta", ar: "— رؤية الأمل، كاپويتا" })}
           </cite>
         </motion.div>
       </section>
 
       {/* Our Missions */}
-      <section className="py-24 px-4 bg-[#FDFAF6]">
+      <section className="py-24 px-4 bg-[#e7e5e4]">
         <div className="max-w-6xl mx-auto">
           <motion.div
             className="mb-12"
@@ -333,11 +333,11 @@ export default function Home() {
             viewport={{ once: true, amount: 0.3 }}
             variants={fadeUp}
           >
-            <p className="text-[#B85C38] text-xs font-semibold uppercase tracking-widest mb-4">
+            <p className="text-[#6366f1] text-xs font-semibold uppercase tracking-widest mb-4">
               {t({ en: "Where we work", ar: "أين نعمل" })}
             </p>
             <h2
-              className="text-4xl font-light text-[#1C1410]"
+              className="text-4xl font-light text-[#1e293b]"
               style={{ fontFamily: "var(--font-serif)" }}
             >
               {t({ en: "Our missions", ar: "مهامّنا" })}
@@ -367,7 +367,7 @@ export default function Home() {
           </motion.div>
 
           <motion.p
-            className="text-[#8C7B72] text-sm italic mt-10"
+            className="text-[#6b7280] text-sm italic mt-10"
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
@@ -382,7 +382,7 @@ export default function Home() {
       </section>
 
       {/* Photo strip — 5 images telling the arc: before → building → home → beds → school */}
-      <section className="overflow-hidden bg-[#1C1410]">
+      <section className="overflow-hidden bg-[#1e293b]">
         <div className="grid grid-cols-2 sm:grid-cols-5 h-56 sm:h-72">
           {PHOTOS.map((img, i) => (
             <motion.div
@@ -401,7 +401,7 @@ export default function Home() {
                 sizes="(max-width: 640px) 50vw, 20vw"
               />
               {/* Caption on hover */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#1C1410]/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+              <div className="absolute inset-0 bg-gradient-to-t from-[#1e293b]/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
                 <p className="text-white text-xs font-medium leading-tight">{t(img.caption)}</p>
               </div>
             </motion.div>
@@ -410,7 +410,7 @@ export default function Home() {
       </section>
 
       {/* How It Works — warm cream, no more jarring dark break */}
-      <section className="py-24 px-4 bg-[#F5EFE6]">
+      <section className="py-24 px-4 bg-[#f5f5f4]">
         <div className="max-w-6xl mx-auto">
           <motion.div
             className="text-center mb-16"
@@ -419,11 +419,11 @@ export default function Home() {
             viewport={{ once: true, amount: 0.3 }}
             variants={fadeUp}
           >
-            <p className="text-[#B85C38] text-xs font-semibold uppercase tracking-widest mb-4">
+            <p className="text-[#6366f1] text-xs font-semibold uppercase tracking-widest mb-4">
               {t({ en: "Our process", ar: "آليّة عملنا" })}
             </p>
             <h2
-              className="text-4xl font-light text-[#1C1410]"
+              className="text-4xl font-light text-[#1e293b]"
               style={{ fontFamily: "var(--font-serif)" }}
             >
               {t({ en: "How it works", ar: "كيف نعمل" })}
@@ -440,19 +440,19 @@ export default function Home() {
             {STEPS.map(({ icon: Icon, step, title, body }) => (
               <motion.div key={step} variants={fadeLeft} className="flex gap-6">
                 <div className="flex-shrink-0 pt-1">
-                  <div className="w-12 h-12 rounded-xl bg-[#B85C38]/10 flex items-center justify-center">
-                    <Icon size={20} className="text-[#B85C38]" strokeWidth={1.75} />
+                  <div className="w-12 h-12 rounded-xl bg-[#6366f1]/10 flex items-center justify-center">
+                    <Icon size={20} className="text-[#6366f1]" strokeWidth={1.75} />
                   </div>
                 </div>
                 <div>
                   <p className="text-xs font-semibold text-[#C9952A] uppercase tracking-widest mb-1">{step}</p>
                   <h3
-                    className="text-xl font-semibold text-[#1C1410] mb-2"
+                    className="text-xl font-semibold text-[#1e293b] mb-2"
                     style={{ fontFamily: "var(--font-serif)" }}
                   >
                     {t(title)}
                   </h3>
-                  <p className="text-[#8C7B72] text-sm leading-relaxed">{t(body)}</p>
+                  <p className="text-[#6b7280] text-sm leading-relaxed">{t(body)}</p>
                 </div>
               </motion.div>
             ))}
@@ -464,7 +464,7 @@ export default function Home() {
       <TrustStrip />
 
       {/* Final CTA */}
-      <section className="py-28 px-4 bg-[#FDFAF6] text-center">
+      <section className="py-28 px-4 bg-[#e7e5e4] text-center">
         <motion.div
           className="max-w-2xl mx-auto"
           initial="hidden"
@@ -474,12 +474,12 @@ export default function Home() {
         >
           <motion.h2
             variants={fadeUp}
-            className="text-4xl sm:text-5xl font-light text-[#1C1410] mb-6"
+            className="text-4xl sm:text-5xl font-light text-[#1e293b] mb-6"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {t({ en: "Walk this path with us.", ar: "اسلك هذا الدرب معنا." })}
           </motion.h2>
-          <motion.p variants={fadeUp} className="text-[#8C7B72] text-lg mb-10 leading-relaxed">
+          <motion.p variants={fadeUp} className="text-[#6b7280] text-lg mb-10 leading-relaxed">
             {t({
               en: "Whether you give once, give monthly, or sponsor a child — you become part of a story that started in Kapoeta and will not stop there.",
               ar: "سواء تبرّعت مرة واحدة، أو شهريًا، أو كفلت طفلًا — تصبح جزءًا من قصةٍ بدأت في كاپويتا ولن تتوقّف عندها.",
@@ -491,7 +491,7 @@ export default function Home() {
             </DonateButton>
             <Link
               href="/missions/kapoeta"
-              className="inline-flex items-center gap-2 justify-center px-7 py-4 text-base font-semibold rounded-full border-2 border-[#B85C38] text-[#B85C38] hover:bg-[#B85C38] hover:text-white transition-colors duration-200"
+              className="inline-flex items-center gap-2 justify-center px-7 py-4 text-base font-semibold rounded-full border-2 border-[#6366f1] text-[#6366f1] hover:bg-[#6366f1] hover:text-white transition-colors duration-200"
             >
               {t({ en: "Read the story", ar: "اقرأ القصة" })} <ArrowRight size={16} />
             </Link>

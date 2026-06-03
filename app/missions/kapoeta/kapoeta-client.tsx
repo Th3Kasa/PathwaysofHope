@@ -183,7 +183,7 @@ function HeroSection() {
           className="object-cover object-center"
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#1C1410]/90 via-[#1C1410]/40 to-[#1C1410]/10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1e293b]/90 via-[#1e293b]/40 to-[#1e293b]/10" />
       </motion.div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 w-full">
@@ -228,7 +228,7 @@ function StoryChapter1() {
   const imageY = useTransform(scrollYProgress, [0, 1], ["-5%", "5%"]);
 
   return (
-    <section ref={ref} className="py-24 px-4 bg-[#F5EFE6]">
+    <section ref={ref} className="py-24 px-4 bg-[#f5f5f4]">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
         <motion.div
           className="relative h-[520px] rounded-2xl overflow-hidden shadow-2xl"
@@ -249,7 +249,7 @@ function StoryChapter1() {
               sizes="(max-width: 768px) 100vw, 50vw"
             />
           </motion.div>
-          <div className="absolute inset-0 bg-gradient-to-t from-[#1C1410]/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1e293b]/40 to-transparent" />
         </motion.div>
 
         <motion.div
@@ -260,18 +260,18 @@ function StoryChapter1() {
         >
           <motion.p
             variants={fadeUp}
-            className="text-[#B85C38] text-sm uppercase tracking-widest mb-3 font-medium"
+            className="text-[#6366f1] text-sm uppercase tracking-widest mb-3 font-medium"
           >
             {t({ en: "Chapter 1 — The Calling", ar: "الفصل 1 — الدعوة" })}
           </motion.p>
           <motion.h2
             variants={fadeUp}
-            className="text-4xl sm:text-5xl font-light text-[#1C1410] mb-6 leading-tight"
+            className="text-4xl sm:text-5xl font-light text-[#1e293b] mb-6 leading-tight"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {t({ en: "A native son returns home.", ar: "ابنٌ من أبناء البلد يعود إلى وطنه." })}
           </motion.h2>
-          <motion.div variants={fadeUp} className="space-y-5 text-[#3D2B1F] text-lg leading-relaxed">
+          <motion.div variants={fadeUp} className="space-y-5 text-[#374151] text-lg leading-relaxed">
             <p>
               {t({
                 en: "Brother Hakim is a native of Kapoeta who, like so many in his generation, had migrated to the United States in search of a different life. In response to a clear calling, he returned in 2020 — leaving the United States and his family behind — to the streets where he had grown up.",
@@ -288,14 +288,14 @@ function StoryChapter1() {
 
           <motion.blockquote
             variants={fadeUp}
-            className="mt-8 pl-6 border-l-2 border-[#C9952A] italic text-[#3D2B1F] text-lg"
+            className="mt-8 pl-6 border-l-2 border-[#C9952A] italic text-[#374151] text-lg"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {t({
               en: "“What began as an effort to help children living on the streets — wearing tattered clothes, eating from trash bins, and with no access to education — has now become a thriving centre of hope and transformation.”",
               ar: "«ما بدأ جهدًا لمساعدة أطفال يعيشون في الشوارع — يرتدون ثيابًا رثّة، ويأكلون من صناديق القمامة، بلا فرصة للتعليم — صار اليوم مركزًا مزدهرًا للأمل والتحوّل.»",
             })}
-            <cite className="block mt-3 text-sm text-[#8C7B72] not-italic">
+            <cite className="block mt-3 text-sm text-[#6b7280] not-italic">
               {t({ en: "— Vision of Hope, Kapoeta", ar: "— رؤية الأمل، كاپويتا" })}
             </cite>
           </motion.blockquote>
@@ -317,7 +317,7 @@ function StatsStrip() {
   ];
 
   return (
-    <section className="bg-[#1C1410] py-16 px-4">
+    <section className="bg-[#1e293b] py-16 px-4">
       <motion.div
         className="max-w-6xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-8 text-center"
         initial="hidden"
@@ -362,7 +362,7 @@ function StoryChapter2() {
   ];
 
   return (
-    <section className="py-24 px-4 bg-[#FDFAF6]">
+    <section className="py-24 px-4 bg-[#e7e5e4]">
       <div className="max-w-6xl mx-auto">
         <motion.div
           className="max-w-3xl mb-14"
@@ -373,18 +373,18 @@ function StoryChapter2() {
         >
           <motion.p
             variants={fadeUp}
-            className="text-[#B85C38] text-sm uppercase tracking-widest mb-3 font-medium"
+            className="text-[#6366f1] text-sm uppercase tracking-widest mb-3 font-medium"
           >
             {t({ en: "Chapter 2 — The Container", ar: "الفصل 2 — الحاوية" })}
           </motion.p>
           <motion.h2
             variants={fadeUp}
-            className="text-4xl sm:text-5xl font-light text-[#1C1410] mb-6 leading-tight"
+            className="text-4xl sm:text-5xl font-light text-[#1e293b] mb-6 leading-tight"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {t({ en: "A 40-foot box, packed in Sydney.", ar: "صندوق طوله 40 قدمًا، عُبّئ في سيدني." })}
           </motion.h2>
-          <motion.p variants={fadeUp} className="text-[#3D2B1F] text-lg leading-relaxed">
+          <motion.p variants={fadeUp} className="text-[#374151] text-lg leading-relaxed">
             {t({
               en: "From May 2024, believers in Australia raised approximately AU$85,000 in a few weeks. The funds were used to purchase, fill, and ship a 40-foot container from Sydney to Mombasa, Kenya — and onward by road through Nadapal to Kapoeta South. Engineer Michael Elmasri designed the on-site building. Elders Mamdouh Mansour and Philip Hanna, along with many other Sydney volunteers, organised the loading and logistics.",
               ar: "منذ مايو 2024، جمع المؤمنون في أستراليا نحو AU$85,000 في غضون أسابيع قليلة. واستُخدمت الأموال لشراء حاوية طولها 40 قدمًا وتعبئتها وشحنها من سيدني إلى مومباسا في كينيا — ومنها برًّا عبر نادابال إلى كاپويتا الجنوبية. صمّم المهندس Michael Elmasri مبنى الموقع. ونظّم الشيخان Mamdouh Mansour وPhilip Hanna، إلى جانب كثير من متطوّعي سيدني، عملية التحميل واللوجستيات.",
@@ -414,14 +414,14 @@ function StoryChapter2() {
 
           <motion.div variants={fadeUp}>
             <h3
-              className="text-2xl font-semibold text-[#1C1410] mb-5"
+              className="text-2xl font-semibold text-[#1e293b] mb-5"
               style={{ fontFamily: "var(--font-serif)" }}
             >
               {t({ en: "What was inside", ar: "ما كان بداخلها" })}
             </h3>
             <ul className="space-y-3">
               {containerContents.map((item) => (
-                <li key={item.en} className="flex gap-3 text-[#3D2B1F] leading-relaxed">
+                <li key={item.en} className="flex gap-3 text-[#374151] leading-relaxed">
                   <span className="text-[#C9952A] flex-shrink-0 mt-1">●</span>
                   <span>{t(item)}</span>
                 </li>
@@ -439,7 +439,7 @@ function StoryChapter2() {
 function StoryChapter3() {
   const t = useT();
   return (
-    <section className="py-24 px-4 bg-[#F5EFE6]">
+    <section className="py-24 px-4 bg-[#f5f5f4]">
       <div className="max-w-5xl mx-auto">
         <motion.div
           className="mb-14 max-w-2xl"
@@ -450,18 +450,18 @@ function StoryChapter3() {
         >
           <motion.p
             variants={fadeUp}
-            className="text-[#B85C38] text-sm uppercase tracking-widest mb-3 font-medium"
+            className="text-[#6366f1] text-sm uppercase tracking-widest mb-3 font-medium"
           >
             {t({ en: "Chapter 3 — Building & Growth", ar: "الفصل 3 — البناء والنموّ" })}
           </motion.p>
           <motion.h2
             variants={fadeUp}
-            className="text-4xl sm:text-5xl font-light text-[#1C1410] mb-5 leading-tight"
+            className="text-4xl sm:text-5xl font-light text-[#1e293b] mb-5 leading-tight"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {t({ en: "How a building rose, and a shelter took shape.", ar: "كيف نهض مبنى، وتشكّل ملجأ." })}
           </motion.h2>
-          <motion.p variants={fadeUp} className="text-[#8C7B72] leading-relaxed">
+          <motion.p variants={fadeUp} className="text-[#6b7280] leading-relaxed">
             {t({
               en: "Each step is taken from the project's own documents — the Vision report, sponsor letters, and the January 2025 Final Report.",
               ar: "كل خطوة مأخوذة من وثائق المشروع نفسها — تقرير الرؤية، ورسائل الكافلين، والتقرير الختامي لشهر يناير 2025.",
@@ -478,17 +478,17 @@ function StoryChapter3() {
         >
           {TIMELINE.map((step) => (
             <motion.li key={step.period.en} variants={fadeUp} className="relative">
-              <span className="absolute -left-[42px] top-1.5 w-4 h-4 rounded-full bg-[#C9952A] ring-4 ring-[#F5EFE6]" />
-              <div className="text-xs uppercase tracking-widest text-[#B85C38] font-semibold mb-1">
+              <span className="absolute -left-[42px] top-1.5 w-4 h-4 rounded-full bg-[#C9952A] ring-4 ring-[#f5f5f4]" />
+              <div className="text-xs uppercase tracking-widest text-[#6366f1] font-semibold mb-1">
                 {t(step.period)}
               </div>
               <h3
-                className="text-xl sm:text-2xl text-[#1C1410] mb-2 font-semibold"
+                className="text-xl sm:text-2xl text-[#1e293b] mb-2 font-semibold"
                 style={{ fontFamily: "var(--font-serif)" }}
               >
                 {t(step.title)}
               </h3>
-              <p className="text-[#3D2B1F] leading-relaxed">{t(step.body)}</p>
+              <p className="text-[#374151] leading-relaxed">{t(step.body)}</p>
             </motion.li>
           ))}
         </motion.ol>
@@ -553,7 +553,7 @@ function OnTheGround() {
   ];
 
   return (
-    <section className="py-24 px-4 bg-[#FDFAF6]">
+    <section className="py-24 px-4 bg-[#e7e5e4]">
       <div className="max-w-6xl mx-auto">
         <motion.div
           className="mb-14 max-w-2xl"
@@ -564,13 +564,13 @@ function OnTheGround() {
         >
           <motion.p
             variants={fadeUp}
-            className="text-[#B85C38] text-sm uppercase tracking-widest mb-3 font-medium"
+            className="text-[#6366f1] text-sm uppercase tracking-widest mb-3 font-medium"
           >
             {t({ en: "On the ground", ar: "في الميدان" })}
           </motion.p>
           <motion.h2
             variants={fadeUp}
-            className="text-4xl sm:text-5xl font-light text-[#1C1410] leading-tight"
+            className="text-4xl sm:text-5xl font-light text-[#1e293b] leading-tight"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {t({ en: "The people who make the days work.", ar: "أناسٌ تسير الأيام بهم." })}
@@ -589,18 +589,18 @@ function OnTheGround() {
               key={it.title.en}
               variants={fadeUp}
               whileHover={{ y: -4 }}
-              className="bg-white rounded-2xl p-6 border border-[#EDD9B4] shadow-sm transition-shadow hover:shadow-md"
+              className="bg-white rounded-2xl p-6 border border-[#d6d3d1] shadow-sm transition-shadow hover:shadow-md"
             >
-              <div className="text-xs text-[#B85C38] uppercase tracking-widest font-semibold mb-2">
+              <div className="text-xs text-[#6366f1] uppercase tracking-widest font-semibold mb-2">
                 {t(it.role)}
               </div>
               <h3
-                className="text-xl font-semibold text-[#1C1410] mb-3"
+                className="text-xl font-semibold text-[#1e293b] mb-3"
                 style={{ fontFamily: "var(--font-serif)" }}
               >
                 {t(it.title)}
               </h3>
-              <p className="text-[#8C7B72] text-sm leading-relaxed">{t(it.body)}</p>
+              <p className="text-[#6b7280] text-sm leading-relaxed">{t(it.body)}</p>
             </motion.div>
           ))}
         </motion.div>
@@ -666,7 +666,7 @@ function Gallery() {
   ];
 
   return (
-    <section className="py-20 px-4 bg-[#1C1410] overflow-hidden">
+    <section className="py-20 px-4 bg-[#1e293b] overflow-hidden">
       <motion.div
         className="max-w-6xl mx-auto"
         initial="hidden"
@@ -700,7 +700,7 @@ function Gallery() {
                 sizes="(max-width: 640px) 50vw, 33vw"
               />
               {/* Persistent caption strip at bottom */}
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#1C1410]/85 to-transparent pt-8 pb-3 px-3">
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#1e293b]/85 to-transparent pt-8 pb-3 px-3">
                 <p className="text-white text-xs font-medium">{t(img.caption)}</p>
               </div>
             </motion.div>
@@ -716,7 +716,7 @@ function Gallery() {
 function Achievements() {
   const t = useT();
   return (
-    <section className="py-24 px-4 bg-[#F5EFE6]">
+    <section className="py-24 px-4 bg-[#f5f5f4]">
       <div className="max-w-5xl mx-auto">
         <motion.div
           className="mb-12 max-w-2xl"
@@ -725,12 +725,12 @@ function Achievements() {
           viewport={{ once: true, amount: 0.3 }}
           variants={staggerContainer}
         >
-          <motion.p variants={fadeUp} className="text-[#B85C38] text-sm uppercase tracking-widest mb-3 font-medium">
+          <motion.p variants={fadeUp} className="text-[#6366f1] text-sm uppercase tracking-widest mb-3 font-medium">
             {t({ en: "Already delivered", ar: "ما أُنجز فعلاً" })}
           </motion.p>
           <motion.h2
             variants={fadeUp}
-            className="text-4xl sm:text-5xl font-light text-[#1C1410] mb-4 leading-tight"
+            className="text-4xl sm:text-5xl font-light text-[#1e293b] mb-4 leading-tight"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {t({
@@ -738,7 +738,7 @@ function Achievements() {
               ar: <>{formatAUDFull(DELIVERED_TOTAL)} تحوّلت بالفعل إلى بيت حقيقي.</>,
             })}
           </motion.h2>
-          <motion.p variants={fadeUp} className="text-[#8C7B72] leading-relaxed">
+          <motion.p variants={fadeUp} className="text-[#6b7280] leading-relaxed">
             {t({
               en: "Every figure below is a project the community has already funded and completed. This is the track record behind the 2026 goals.",
               ar: "كل رقم في ما يلي يمثّل مشروعًا موّله المجتمع وأنجزه بالفعل. هذا هو السجلّ الذي تستند إليه أهداف 2026.",
@@ -757,13 +757,13 @@ function Achievements() {
             <motion.div
               key={d.title}
               variants={fadeUp}
-              className="flex items-center justify-between gap-4 rounded-xl bg-white border border-[#EDD9B4] px-5 py-4"
+              className="flex items-center justify-between gap-4 rounded-xl bg-white border border-[#d6d3d1] px-5 py-4"
             >
               <div className="flex items-center gap-3">
                 <CheckCircle2 size={18} className="text-[#C9952A] flex-shrink-0" strokeWidth={2} />
-                <span className="text-[#3D2B1F] text-sm leading-snug">{d.title}</span>
+                <span className="text-[#374151] text-sm leading-snug">{d.title}</span>
               </div>
-              <span className="text-sm font-semibold text-[#1C1410] tabular-nums flex-shrink-0">
+              <span className="text-sm font-semibold text-[#1e293b] tabular-nums flex-shrink-0">
                 {formatAUDFull(d.amount)}
               </span>
             </motion.div>
@@ -783,8 +783,8 @@ function DonationsSection({ goals, totals }: Props) {
   );
 
   return (
-    <section className="py-24 px-4 bg-[#1C1410] relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#1C1410] via-[#2A1F18] to-[#1C1410] opacity-90" />
+    <section className="py-24 px-4 bg-[#1e293b] relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-[#1e293b] via-[#2A1F18] to-[#1e293b] opacity-90" />
 
       <div className="relative max-w-6xl mx-auto">
         <motion.div
@@ -831,20 +831,20 @@ function DonationsSection({ goals, totals }: Props) {
                 key={goal.id}
                 variants={fadeUp}
                 whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                className="relative bg-white rounded-2xl p-6 sm:p-8 border border-[#EDD9B4] shadow-lg flex flex-col"
+                className="relative bg-white rounded-2xl p-6 sm:p-8 border border-[#d6d3d1] shadow-lg flex flex-col"
               >
                 {/* Priority badge */}
-                <div className="absolute -top-3 right-6 px-3 py-1 rounded-full bg-gradient-to-r from-[#C9952A] to-[#E4B84A] text-[#1C1410] text-xs font-bold tracking-wider uppercase shadow-md">
+                <div className="absolute -top-3 right-6 px-3 py-1 rounded-full bg-gradient-to-r from-[#C9952A] to-[#E4B84A] text-[#1e293b] text-xs font-bold tracking-wider uppercase shadow-md">
                   {t({ en: <>Priority {meta.priority}</>, ar: <>أولوية {meta.priority}</> })}
                 </div>
 
                 <div className="flex items-start gap-4 mb-3">
-                  <div className="w-11 h-11 rounded-xl bg-[#B85C38]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    {GoalIcon && <GoalIcon size={20} className="text-[#B85C38]" strokeWidth={1.75} />}
+                  <div className="w-11 h-11 rounded-xl bg-[#6366f1]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    {GoalIcon && <GoalIcon size={20} className="text-[#6366f1]" strokeWidth={1.75} />}
                   </div>
                   <div>
                     <h3
-                      className="text-xl sm:text-2xl font-semibold text-[#1C1410] leading-tight"
+                      className="text-xl sm:text-2xl font-semibold text-[#1e293b] leading-tight"
                       style={{ fontFamily: "var(--font-serif)" }}
                     >
                       {goal.title}
@@ -852,7 +852,7 @@ function DonationsSection({ goals, totals }: Props) {
                   </div>
                 </div>
 
-                <p className="text-[#8C7B72] text-sm leading-relaxed mb-5 flex-grow">{t(meta.why)}</p>
+                <p className="text-[#6b7280] text-sm leading-relaxed mb-5 flex-grow">{t(meta.why)}</p>
 
                 <div className="mb-6">
                   <GoalMeter
@@ -864,7 +864,7 @@ function DonationsSection({ goals, totals }: Props) {
 
                 <Link
                   href={goal.kind === "bundle" ? `/donate/${goal.id}/parts` : `/donate/${goal.id}`}
-                  className="inline-flex items-center justify-center w-full py-3.5 rounded-xl bg-[#B85C38] text-white text-sm font-semibold hover:bg-[#8B3E23] transition-colors"
+                  className="inline-flex items-center justify-center w-full py-3.5 rounded-xl bg-[#6366f1] text-white text-sm font-semibold hover:bg-[#4f46e5] transition-colors"
                 >
                   {goal.kind === "bundle"
                     ? t({ en: "See the breakdown →", ar: "اطّلع على التفاصيل ←" })
@@ -884,7 +884,7 @@ function DonationsSection({ goals, totals }: Props) {
 function FinalCTA() {
   const t = useT();
   return (
-    <section className="py-24 px-4 bg-[#FDFAF6] text-center">
+    <section className="py-24 px-4 bg-[#e7e5e4] text-center">
       <motion.div
         className="max-w-2xl mx-auto"
         initial="hidden"
@@ -894,12 +894,12 @@ function FinalCTA() {
       >
         <motion.h2
           variants={fadeUp}
-          className="text-4xl sm:text-5xl font-light text-[#1C1410] mb-6"
+          className="text-4xl sm:text-5xl font-light text-[#1e293b] mb-6"
           style={{ fontFamily: "var(--font-serif)" }}
         >
           {t({ en: "Join the story.", ar: "كن جزءًا من القصة." })}
         </motion.h2>
-        <motion.p variants={fadeUp} className="text-[#8C7B72] text-lg mb-8 leading-relaxed">
+        <motion.p variants={fadeUp} className="text-[#6b7280] text-lg mb-8 leading-relaxed">
           {t({
             en: "A one-off gift, a monthly partnership, or a sponsored child — every contribution becomes someone's breakfast, school uniform, or first safe night.",
             ar: "تبرّع لمرة واحدة، أو شراكة شهرية، أو كفالة طفل — كل مساهمة تصير فطور أحدهم، أو زيّه المدرسي، أو ليلته الأولى الآمنة.",
@@ -914,7 +914,7 @@ function FinalCTA() {
         {/* Kapoeta-specific contacts */}
         <motion.div
           variants={fadeUp}
-          className="mt-14 pt-10 border-t border-[#EDD9B4] grid grid-cols-1 sm:grid-cols-3 gap-6 text-left sm:text-center"
+          className="mt-14 pt-10 border-t border-[#d6d3d1] grid grid-cols-1 sm:grid-cols-3 gap-6 text-left sm:text-center"
         >
           {[
             { label: { en: "Email", ar: "البريد الإلكتروني" }, value: "stmarknubianfoundation@gmail.com", href: "mailto:stmarknubianfoundation@gmail.com" },
@@ -922,8 +922,8 @@ function FinalCTA() {
             { label: { en: "Philip Hanna", ar: "Philip Hanna" }, value: "0411 401 217", href: "tel:+61411401217" },
           ].map((c) => (
             <div key={c.label.en}>
-              <p className="text-xs font-semibold text-[#B85C38] uppercase tracking-widest mb-1">{t(c.label)}</p>
-              <a href={c.href} className="text-[#1C1410] text-sm font-medium hover:text-[#B85C38] transition-colors break-all">
+              <p className="text-xs font-semibold text-[#6366f1] uppercase tracking-widest mb-1">{t(c.label)}</p>
+              <a href={c.href} className="text-[#1e293b] text-sm font-medium hover:text-[#6366f1] transition-colors break-all">
                 {c.value}
               </a>
             </div>
@@ -938,7 +938,7 @@ function FinalCTA() {
 
 export default function KapoetaClient({ totals, goals }: Props) {
   return (
-    <div className="bg-[#FDFAF6]">
+    <div className="bg-[#e7e5e4]">
       <HeroSection />
       <StoryChapter1 />
       <StatsStrip />

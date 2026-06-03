@@ -125,13 +125,13 @@ const MODEL_PARAS: Dict<string>[] = [
 export default function AboutPage() {
   const t = useT();
   return (
-    <div className="bg-[#FDFAF6]">
+    <div className="bg-[#e7e5e4]">
 
       {/* Hero */}
-      <section className="py-28 px-4 bg-[#F5EFE6]">
+      <section className="py-28 px-4 bg-[#f5f5f4]">
         <div className="max-w-4xl mx-auto">
           <motion.p
-            className="text-[#B85C38] text-sm uppercase tracking-widest mb-4 font-medium"
+            className="text-[#6366f1] text-sm uppercase tracking-widest mb-4 font-medium"
             initial="hidden"
             animate="visible"
             variants={fadeUp}
@@ -139,7 +139,7 @@ export default function AboutPage() {
             {t({ en: "Who we are", ar: "من نحن" })}
           </motion.p>
           <motion.h1
-            className="text-5xl sm:text-6xl font-light text-[#1C1410] mb-6 leading-tight"
+            className="text-5xl sm:text-6xl font-light text-[#1e293b] mb-6 leading-tight"
             style={{ fontFamily: "var(--font-serif)" }}
             initial="hidden"
             animate="visible"
@@ -151,7 +151,7 @@ export default function AboutPage() {
             })}
           </motion.h1>
           <motion.p
-            className="text-[#3D2B1F] text-xl leading-relaxed max-w-2xl"
+            className="text-[#374151] text-xl leading-relaxed max-w-2xl"
             initial="hidden"
             animate="visible"
             variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] } } }}
@@ -168,7 +168,7 @@ export default function AboutPage() {
       <section className="py-20 px-4">
         <div className="max-w-3xl mx-auto">
           <motion.h2
-            className="text-3xl font-light text-[#1C1410] mb-8"
+            className="text-3xl font-light text-[#1e293b] mb-8"
             style={{ fontFamily: "var(--font-serif)" }}
             initial="hidden"
             whileInView="visible"
@@ -187,7 +187,7 @@ export default function AboutPage() {
             {MODEL_PARAS.map((para, i) => (
               <motion.p
                 key={i}
-                className="text-[#3D2B1F] leading-relaxed text-lg pl-5 border-l-2 border-[#C9952A]"
+                className="text-[#374151] leading-relaxed text-lg pl-5 border-l-2 border-[#C9952A]"
                 variants={fadeRight}
               >
                 {t(para)}
@@ -198,7 +198,7 @@ export default function AboutPage() {
       </section>
 
       {/* Pull Quote */}
-      <section className="bg-[#B85C38] py-20 px-4">
+      <section className="bg-[#6366f1] py-20 px-4">
         <motion.div
           className="max-w-3xl mx-auto text-center"
           initial="hidden"
@@ -215,7 +215,7 @@ export default function AboutPage() {
               ar: "«كُلُّ وَاحِدٍ كَمَا يَنْوِي بِقَلْبِهِ، لَيْسَ عَنْ حُزْنٍ أَوِ اضْطِرَارٍ، لِأَنَّ الْمُعْطِيَ الْمَسْرُورَ يُحِبُّهُ اللهُ.»",
             })}
           </blockquote>
-          <cite className="block mt-5 text-[#EDD9B4] text-sm not-italic tracking-wide">
+          <cite className="block mt-5 text-[#d6d3d1] text-sm not-italic tracking-wide">
             {t({ en: "— 2 Corinthians 9:7", ar: "— كورنثوس الثانية 9:7" })}
           </cite>
         </motion.div>
@@ -231,16 +231,16 @@ export default function AboutPage() {
             viewport={{ once: true, amount: 0.3 }}
             variants={fadeUp}
           >
-            <p className="text-[#B85C38] text-sm uppercase tracking-widest mb-3 font-medium">
+            <p className="text-[#6366f1] text-sm uppercase tracking-widest mb-3 font-medium">
               {t({ en: "Governance", ar: "الحوكمة" })}
             </p>
             <h2
-              className="text-4xl font-light text-[#1C1410]"
+              className="text-4xl font-light text-[#1e293b]"
               style={{ fontFamily: "var(--font-serif)" }}
             >
               {t({ en: "Board of Directors", ar: "مجلس الإدارة" })}
             </h2>
-            <p className="text-[#8C7B72] mt-3 max-w-xl">
+            <p className="text-[#6b7280] mt-3 max-w-xl">
               {t({
                 en: "Pathways of Hope is governed by its Responsible People — our board of directors who ensure the organisation operates with integrity, accountability, and purpose.",
                 ar: "تُحكَم دروب الأمل من قِبل المسؤولين عنها — مجلس إدارتنا الذي يكفل أن تعمل المنظمة بنزاهة ومساءلة وهدف.",
@@ -260,11 +260,11 @@ export default function AboutPage() {
                 key={person.name}
                 variants={fadeUp}
                 whileHover={{ y: -4 }}
-                className="bg-white rounded-2xl border border-[#EDD9B4] overflow-hidden shadow-sm transition-shadow hover:shadow-md"
+                className="bg-white rounded-2xl border border-[#d6d3d1] overflow-hidden shadow-sm transition-shadow hover:shadow-md"
               >
                 <div className="p-7">
                   <h3
-                    className="text-xl font-semibold text-[#1C1410] mb-2"
+                    className="text-xl font-semibold text-[#1e293b] mb-2"
                     style={{ fontFamily: "var(--font-serif)" }}
                   >
                     {person.name}
@@ -273,13 +273,13 @@ export default function AboutPage() {
                     {person.roles.map((role) => (
                       <span
                         key={role.en}
-                        className="inline-block text-xs font-medium px-2.5 py-1 rounded-full bg-[#EDD9B4] text-[#8B3E23]"
+                        className="inline-block text-xs font-medium px-2.5 py-1 rounded-full bg-[#d6d3d1] text-[#4f46e5]"
                       >
                         {t(role)}
                       </span>
                     ))}
                   </div>
-                  <p className="text-[#8C7B72] text-sm leading-relaxed">{t(person.bio)}</p>
+                  <p className="text-[#6b7280] text-sm leading-relaxed">{t(person.bio)}</p>
                 </div>
               </motion.div>
             ))}
@@ -288,7 +288,7 @@ export default function AboutPage() {
       </section>
 
       {/* Commitments */}
-      <section className="py-20 px-4 bg-[#F5EFE6]">
+      <section className="py-20 px-4 bg-[#f5f5f4]">
         <div className="max-w-4xl mx-auto">
           <motion.div
             className="mb-12"
@@ -297,11 +297,11 @@ export default function AboutPage() {
             viewport={{ once: true, amount: 0.3 }}
             variants={fadeUp}
           >
-            <p className="text-[#B85C38] text-sm uppercase tracking-widest mb-3 font-medium">
+            <p className="text-[#6366f1] text-sm uppercase tracking-widest mb-3 font-medium">
               {t({ en: "Our commitments", ar: "التزاماتنا" })}
             </p>
             <h2
-              className="text-4xl font-light text-[#1C1410]"
+              className="text-4xl font-light text-[#1e293b]"
               style={{ fontFamily: "var(--font-serif)" }}
             >
               {t({ en: "Why you can trust us with your giving", ar: "لماذا يمكنك أن تثق بنا في عطائك" })}
@@ -319,8 +319,8 @@ export default function AboutPage() {
               <motion.div key={item.title.en} variants={fadeLeft} className="flex gap-4">
                 <div className="w-2 h-2 rounded-full bg-[#C9952A] mt-2.5 flex-shrink-0" />
                 <div>
-                  <h3 className="font-semibold text-[#1C1410] mb-1">{t(item.title)}</h3>
-                  <p className="text-sm text-[#8C7B72] leading-relaxed">{t(item.body)}</p>
+                  <h3 className="font-semibold text-[#1e293b] mb-1">{t(item.title)}</h3>
+                  <p className="text-sm text-[#6b7280] leading-relaxed">{t(item.body)}</p>
                 </div>
               </motion.div>
             ))}
@@ -341,12 +341,12 @@ export default function AboutPage() {
         >
           <motion.h2
             variants={fadeUp}
-            className="text-3xl font-light text-[#1C1410] mb-6"
+            className="text-3xl font-light text-[#1e293b] mb-6"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {t({ en: "Support our missions.", ar: "ادعم مهامّنا." })}
           </motion.h2>
-          <motion.p variants={fadeUp} className="text-[#8C7B72] mb-8">
+          <motion.p variants={fadeUp} className="text-[#6b7280] mb-8">
             {t({
               en: "Whether you give once, give monthly, or give your time — you are part of this story.",
               ar: "سواء تبرّعت مرة واحدة، أو شهريًا، أو منحت وقتك — فأنت جزء من هذه القصة.",

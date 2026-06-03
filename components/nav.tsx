@@ -43,7 +43,7 @@ export function Nav() {
           ? "rgba(253,250,246,0.96)"
           : "linear-gradient(to bottom, rgba(28,20,16,0.55) 0%, transparent 100%)",
         backdropFilter: scrolled ? "blur(14px)" : "none",
-        borderBottom: scrolled ? "1px solid #DDD0C0" : "1px solid transparent",
+        borderBottom: scrolled ? "1px solid #d6d3d1" : "1px solid transparent",
       }}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -63,7 +63,7 @@ export function Nav() {
               className="text-lg font-semibold tracking-tight transition-colors duration-300 drop-shadow-sm"
               style={{
                 fontFamily: "var(--font-serif)",
-                color: scrolled ? "#3D2B1F" : "#ffffff",
+                color: scrolled ? "#374151" : "#ffffff",
               }}
             >
               Pathways of Hope
@@ -79,7 +79,7 @@ export function Nav() {
             />
             <Link
               href="/donate"
-              className="ml-3 inline-flex items-center justify-center px-5 py-2 text-sm font-semibold rounded-full bg-[#B85C38] text-white hover:bg-[#8B3E23] transition-colors duration-200 shadow-sm flex-shrink-0"
+              className="ml-3 inline-flex items-center justify-center px-5 py-2 text-sm font-semibold rounded-full bg-[#6366f1] text-white hover:bg-[#4f46e5] transition-colors duration-200 shadow-sm flex-shrink-0"
             >
               {t(GIVE_NOW)}
             </Link>
@@ -93,7 +93,7 @@ export function Nav() {
             <LanguageToggle scrolled={scrolled} />
             <button
               className="p-2 rounded-lg transition-colors"
-              style={{ color: scrolled ? "#3D2B1F" : "#ffffff" }}
+              style={{ color: scrolled ? "#374151" : "#ffffff" }}
               onClick={() => setOpen(!open)}
               aria-label="Toggle navigation"
             >
@@ -112,7 +112,7 @@ export function Nav() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="md:hidden border-t border-[#DDD0C0] bg-[#FDFAF6]"
+            className="md:hidden border-t border-[#d6d3d1] bg-[#e7e5e4]"
           >
             <nav className="flex flex-col px-4 py-4 gap-1">
               {NAV_LINKS.map((l) => {
@@ -124,8 +124,8 @@ export function Nav() {
                     href={l.href}
                     className={`py-2.5 px-3 rounded-lg text-sm font-medium transition-colors ${
                       isActive
-                        ? "bg-[#B85C38]/10 text-[#B85C38]"
-                        : "text-[#3D2B1F] hover:text-[#B85C38] hover:bg-[#F5EFE6]"
+                        ? "bg-[#6366f1]/10 text-[#6366f1]"
+                        : "text-[#374151] hover:text-[#6366f1] hover:bg-[#f5f5f4]"
                     }`}
                     onClick={() => setOpen(false)}
                   >
@@ -135,7 +135,7 @@ export function Nav() {
               })}
               <Link
                 href="/donate"
-                className="mt-2 inline-flex items-center justify-center px-5 py-3 text-sm font-semibold rounded-full bg-[#B85C38] text-white hover:bg-[#8B3E23] transition-colors"
+                className="mt-2 inline-flex items-center justify-center px-5 py-3 text-sm font-semibold rounded-full bg-[#6366f1] text-white hover:bg-[#4f46e5] transition-colors"
                 onClick={() => setOpen(false)}
               >
                 {t(GIVE_NOW)}

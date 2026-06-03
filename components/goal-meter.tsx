@@ -70,7 +70,7 @@ export function GoalMeter({
   return (
     <div
       ref={ref}
-      className="bg-white rounded-2xl p-6 shadow-sm border border-[#EDD9B4] w-full"
+      className="bg-white rounded-2xl p-6 shadow-sm border border-[#d6d3d1] w-full"
     >
       {/* Header */}
       <motion.div
@@ -80,14 +80,14 @@ export function GoalMeter({
         transition={{ duration: 0.5 }}
       >
         <h3
-          className="text-xl font-semibold text-[#1C1410] mb-1"
+          className="text-xl font-semibold text-[#1e293b] mb-1"
           style={{ fontFamily: "var(--font-serif)" }}
         >
           {title}
         </h3>
-        <p className="text-sm text-[#8C7B72] leading-relaxed">{description}</p>
+        <p className="text-sm text-[#6b7280] leading-relaxed">{description}</p>
         {unitLabel && (
-          <span className="inline-block mt-2 text-xs font-medium px-2 py-0.5 rounded-full bg-[#EDD9B4] text-[#8B3E23]">
+          <span className="inline-block mt-2 text-xs font-medium px-2 py-0.5 rounded-full bg-[#d6d3d1] text-[#4f46e5]">
             {unitLabel}
           </span>
         )}
@@ -96,7 +96,7 @@ export function GoalMeter({
       {/* Raised amount */}
       <div className="flex items-end justify-between gap-4 mb-5">
         <div>
-          <p className="text-xs font-medium text-[#8C7B72] uppercase tracking-widest mb-1">
+          <p className="text-xs font-medium text-[#6b7280] uppercase tracking-widest mb-1">
             {t({ en: "Raised", ar: "تم جمعه" })}
           </p>
           <motion.p
@@ -116,10 +116,10 @@ export function GoalMeter({
           </motion.p>
         </div>
         <div className="text-right pb-1">
-          <p className="text-xs font-medium text-[#8C7B72] uppercase tracking-widest mb-1">
+          <p className="text-xs font-medium text-[#6b7280] uppercase tracking-widest mb-1">
             {t({ en: "Goal", ar: "الهدف" })}
           </p>
-          <p className="text-base font-semibold text-[#1C1410]">
+          <p className="text-base font-semibold text-[#1e293b]">
             {formatAUDFull(goal.goalAmount)}
           </p>
         </div>
@@ -146,7 +146,7 @@ export function GoalMeter({
         </motion.div>
 
         {/* Bar track */}
-        <div className="w-full h-3.5 rounded-full bg-[#F5EFE6] overflow-hidden">
+        <div className="w-full h-3.5 rounded-full bg-[#f5f5f4] overflow-hidden">
           <motion.div
             className="h-full rounded-full relative overflow-hidden"
             style={{
@@ -190,13 +190,13 @@ export function GoalMeter({
 
         {/* Supporters */}
         <motion.div
-          className="flex items-center gap-1.5 text-sm text-[#8C7B72]"
+          className="flex items-center gap-1.5 text-sm text-[#6b7280]"
           initial={{ opacity: 0, x: 8 }}
           animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 8 }}
           transition={{ delay: 0.55, duration: 0.5 }}
         >
           <svg
-            className="w-4 h-4 text-[#8C7B72]"
+            className="w-4 h-4 text-[#6b7280]"
             fill="none"
             stroke="currentColor"
             strokeWidth={1.8}
@@ -208,7 +208,7 @@ export function GoalMeter({
               d="M17 20h5v-2a4 4 0 00-5-3.87M9 20H4v-2a4 4 0 015-3.87m6-4.13a4 4 0 11-8 0 4 4 0 018 0zm6 0a3 3 0 11-6 0 3 3 0 016 0z"
             />
           </svg>
-          <span className="font-medium text-[#1C1410]">
+          <span className="font-medium text-[#1e293b]">
             {supporters.toLocaleString()}
           </span>
           <span>{t({ en: "supporters", ar: "داعمًا" })}</span>

@@ -47,10 +47,10 @@ const items: Item[] = [
 export function TrustStrip() {
   const t = useT();
   return (
-    <section className="bg-[#F5EFE6] border-y border-[#DDD0C0] py-16 px-4">
+    <section className="bg-[#f5f5f4] border-y border-[#d6d3d1] py-16 px-4">
       <div className="max-w-6xl mx-auto">
         <p
-          className="text-center text-[#B85C38] text-xs font-semibold uppercase tracking-widest mb-10"
+          className="text-center text-[#6366f1] text-xs font-semibold uppercase tracking-widest mb-10"
           style={{ fontFamily: "var(--font-sans)" }}
         >
           {t({ en: "Why trust us with your giving", ar: "لماذا تثق بنا في عطائك" })}
@@ -60,12 +60,12 @@ export function TrustStrip() {
             const Icon = item.icon;
             return (
               <div key={item.heading.en} className="flex flex-col items-start gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#B85C38]/10 flex items-center justify-center flex-shrink-0">
-                  <Icon size={18} className="text-[#B85C38]" strokeWidth={1.75} />
+                <div className="w-10 h-10 rounded-xl bg-[#6366f1]/10 flex items-center justify-center flex-shrink-0">
+                  <Icon size={18} className="text-[#6366f1]" strokeWidth={1.75} />
                 </div>
                 <div>
-                  <h3 className="text-[#1C1410] font-semibold text-sm mb-1">{t(item.heading)}</h3>
-                  <p className="text-[#8C7B72] text-sm leading-relaxed">{t(item.body)}</p>
+                  <h3 className="text-[#1e293b] font-semibold text-sm mb-1">{t(item.heading)}</h3>
+                  <p className="text-[#6b7280] text-sm leading-relaxed">{t(item.body)}</p>
                 </div>
               </div>
             );

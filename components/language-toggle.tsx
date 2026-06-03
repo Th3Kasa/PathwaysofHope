@@ -9,8 +9,8 @@ import { useLang, LANGS, type Lang } from "@/lib/i18n";
 export function LanguageToggle({ scrolled = false }: { scrolled?: boolean }) {
   const { lang, setLang } = useLang();
 
-  const trackBorder = scrolled ? "#DDD0C0" : "rgba(255,255,255,0.45)";
-  const idleText = scrolled ? "#8C7B72" : "rgba(255,255,255,0.85)";
+  const trackBorder = scrolled ? "#d6d3d1" : "rgba(255,255,255,0.45)";
+  const idleText = scrolled ? "#6b7280" : "rgba(255,255,255,0.85)";
 
   return (
     <div
@@ -29,7 +29,7 @@ export function LanguageToggle({ scrolled = false }: { scrolled?: boolean }) {
             lang={l.code}
             className="px-2.5 py-1 text-xs font-semibold rounded-full transition-colors duration-200"
             style={{
-              background: active ? "#B85C38" : "transparent",
+              background: active ? "#6366f1" : "transparent",
               color: active ? "#ffffff" : idleText,
             }}
             title={l.label}

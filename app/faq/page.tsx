@@ -75,7 +75,7 @@ const GROUPS: { heading: Dict<string>; items: QA[] }[] = [
               A branded receipt from Pathways of Hope is emailed to you automatically the moment
               your donation is confirmed. For bank transfers, use the &ldquo;Email me a receipt&rdquo;
               link on any donation page. If you can&apos;t find it, check your spam folder or{" "}
-              <a href="mailto:contact@pathwaysofhope.org.au" className="text-[#B85C38] underline">
+              <a href="mailto:contact@pathwaysofhope.org.au" className="text-[#6366f1] underline">
                 email us
               </a>{" "}
               and we&apos;ll resend it.
@@ -169,7 +169,7 @@ const GROUPS: { heading: Dict<string>; items: QA[] }[] = [
               system, an electric water pump, a chicken coop for eggs and income, the day-to-day running
               of the home, and child sponsorship. You can give to a specific project, or to wherever the
               need is greatest. See the{" "}
-              <Link href="/donate" className="text-[#B85C38] font-medium hover:underline">
+              <Link href="/donate" className="text-[#6366f1] font-medium hover:underline">
                 donation page
               </Link>{" "}
               for each goal.
@@ -180,7 +180,7 @@ const GROUPS: { heading: Dict<string>; items: QA[] }[] = [
               تذهب التبرّعات إلى مشاريع محدّدة بوضوح في ملجأ كاپويتا للأطفال — نظام طاقة شمسية، ومضخة مياه
               كهربائية، وحظيرة دجاج للبيض والدخل، والتشغيل اليومي للبيت، وكفالة الأطفال. ويمكنك التبرّع
               لمشروع بعينه، أو حيث تشتدّ الحاجة أكثر. اطّلع على{" "}
-              <Link href="/donate" className="text-[#B85C38] font-medium hover:underline">
+              <Link href="/donate" className="text-[#6366f1] font-medium hover:underline">
                 صفحة التبرّع
               </Link>{" "}
               لكل هدف.
@@ -217,11 +217,11 @@ const GROUPS: { heading: Dict<string>; items: QA[] }[] = [
           en: (
             <>
               We share milestones and news from Kapoeta on our{" "}
-              <Link href="/impact" className="text-[#B85C38] font-medium hover:underline">
+              <Link href="/impact" className="text-[#6366f1] font-medium hover:underline">
                 Impact page
               </Link>
               , and you can follow the full story of the shelter on the{" "}
-              <Link href="/missions/kapoeta" className="text-[#B85C38] font-medium hover:underline">
+              <Link href="/missions/kapoeta" className="text-[#6366f1] font-medium hover:underline">
                 Kapoeta mission page
               </Link>
               .
@@ -230,11 +230,11 @@ const GROUPS: { heading: Dict<string>; items: QA[] }[] = [
           ar: (
             <>
               نشارك المحطّات والأخبار من كاپويتا على{" "}
-              <Link href="/impact" className="text-[#B85C38] font-medium hover:underline">
+              <Link href="/impact" className="text-[#6366f1] font-medium hover:underline">
                 صفحة الأثر
               </Link>
               ، ويمكنك متابعة القصّة الكاملة للملجأ على{" "}
-              <Link href="/missions/kapoeta" className="text-[#B85C38] font-medium hover:underline">
+              <Link href="/missions/kapoeta" className="text-[#6366f1] font-medium hover:underline">
                 صفحة مهمّة كاپويتا
               </Link>
               .
@@ -279,11 +279,11 @@ const GROUPS: { heading: Dict<string>; items: QA[] }[] = [
               Pathways of Hope is an Australian charity governed by a volunteer Board, working in
               partnership with Brother Hakim Peter — a native of Kapoeta who founded the shelter and leads
               the work on the ground. You can read more on our{" "}
-              <Link href="/about" className="text-[#B85C38] font-medium hover:underline">
+              <Link href="/about" className="text-[#6366f1] font-medium hover:underline">
                 About
               </Link>{" "}
               and{" "}
-              <Link href="/governance" className="text-[#B85C38] font-medium hover:underline">
+              <Link href="/governance" className="text-[#6366f1] font-medium hover:underline">
                 Governance
               </Link>{" "}
               pages.
@@ -293,11 +293,11 @@ const GROUPS: { heading: Dict<string>; items: QA[] }[] = [
             <>
               دروب الأمل جمعية خيرية أسترالية يديرها مجلس من المتطوّعين، بالشراكة مع الأخ حكيم بيتر — وهو
               من أبناء كاپويتا، أسّس الملجأ ويقود العمل في الميدان. ويمكنك قراءة المزيد على صفحتَي{" "}
-              <Link href="/about" className="text-[#B85C38] font-medium hover:underline">
+              <Link href="/about" className="text-[#6366f1] font-medium hover:underline">
                 من نحن
               </Link>{" "}
               و
-              <Link href="/governance" className="text-[#B85C38] font-medium hover:underline">
+              <Link href="/governance" className="text-[#6366f1] font-medium hover:underline">
                 الحوكمة
               </Link>
               .
@@ -315,7 +315,7 @@ const GROUPS: { heading: Dict<string>; items: QA[] }[] = [
             <>
               We publish what we&apos;ve raised, what we&apos;ve delivered, and real monthly operating
               statements on our{" "}
-              <Link href="/financials" className="text-[#B85C38] font-medium hover:underline">
+              <Link href="/financials" className="text-[#6366f1] font-medium hover:underline">
                 Transparency page
               </Link>
               . We operate under formal safeguarding, compliance, conflict-of-interest and
@@ -325,7 +325,7 @@ const GROUPS: { heading: Dict<string>; items: QA[] }[] = [
           ar: (
             <>
               ننشر ما جمعناه، وما أنجزناه، وبيانات تشغيلية شهرية حقيقية على{" "}
-              <Link href="/financials" className="text-[#B85C38] font-medium hover:underline">
+              <Link href="/financials" className="text-[#6366f1] font-medium hover:underline">
                 صفحة الشفافية
               </Link>
               . ونعمل وفق سياسات رسمية لحماية الطفل والامتثال وتعارض المصالح ومنع الاحتيال.
@@ -341,16 +341,16 @@ function FaqItem({ item }: { item: QA }) {
   const t = useT();
   const [open, setOpen] = useState(false);
   return (
-    <motion.div variants={fadeUp} className="bg-white rounded-2xl border border-[#EDD9B4] overflow-hidden">
+    <motion.div variants={fadeUp} className="bg-white rounded-2xl border border-[#d6d3d1] overflow-hidden">
       <button
         onClick={() => setOpen((o) => !o)}
         className="w-full flex items-center justify-between gap-4 text-left px-6 py-5"
         aria-expanded={open}
       >
-        <span className="text-[#1C1410] font-medium text-base sm:text-lg" style={{ fontFamily: "var(--font-serif)" }}>
+        <span className="text-[#1e293b] font-medium text-base sm:text-lg" style={{ fontFamily: "var(--font-serif)" }}>
           {t(item.q)}
         </span>
-        <span className="w-8 h-8 rounded-full bg-[#B85C38]/10 flex items-center justify-center flex-shrink-0 text-[#B85C38]">
+        <span className="w-8 h-8 rounded-full bg-[#6366f1]/10 flex items-center justify-center flex-shrink-0 text-[#6366f1]">
           {open ? <Minus size={16} /> : <Plus size={16} />}
         </span>
       </button>
@@ -363,7 +363,7 @@ function FaqItem({ item }: { item: QA }) {
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
             className="overflow-hidden"
           >
-            <p className="px-6 pb-6 text-[#8C7B72] text-sm sm:text-[0.95rem] leading-relaxed">{t(item.a)}</p>
+            <p className="px-6 pb-6 text-[#6b7280] text-sm sm:text-[0.95rem] leading-relaxed">{t(item.a)}</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -374,15 +374,15 @@ function FaqItem({ item }: { item: QA }) {
 export default function FaqPage() {
   const t = useT();
   return (
-    <div className="bg-[#FDFAF6]">
+    <div className="bg-[#e7e5e4]">
       {/* Hero */}
-      <section className="py-28 px-4 pt-36 bg-[#F5EFE6]">
+      <section className="py-28 px-4 pt-36 bg-[#f5f5f4]">
         <div className="max-w-4xl mx-auto">
           <motion.p
             initial="hidden"
             animate="visible"
             variants={fadeUp}
-            className="text-[#B85C38] text-sm uppercase tracking-widest mb-4 font-medium"
+            className="text-[#6366f1] text-sm uppercase tracking-widest mb-4 font-medium"
           >
             {t({ en: "Questions, answered", ar: "أسئلة وإجابات" })}
           </motion.p>
@@ -393,7 +393,7 @@ export default function FaqPage() {
               hidden: { opacity: 0, y: 24 },
               visible: { opacity: 1, y: 0, transition: { duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] } },
             }}
-            className="text-5xl sm:text-6xl font-light text-[#1C1410] mb-6 leading-tight"
+            className="text-5xl sm:text-6xl font-light text-[#1e293b] mb-6 leading-tight"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {t({ en: "Frequently asked questions.", ar: "الأسئلة الشائعة." })}
@@ -402,7 +402,7 @@ export default function FaqPage() {
             initial="hidden"
             animate="visible"
             variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, delay: 0.2 } } }}
-            className="text-[#3D2B1F] text-xl leading-relaxed max-w-2xl"
+            className="text-[#374151] text-xl leading-relaxed max-w-2xl"
           >
             {t({
               en: "Everything you might want to know before you give — about your donation, where it goes, and how we keep your trust.",
@@ -443,7 +443,7 @@ export default function FaqPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 px-4 text-center bg-[#F5EFE6]">
+      <section className="py-20 px-4 text-center bg-[#f5f5f4]">
         <motion.div
           className="max-w-xl mx-auto"
           initial="hidden"
@@ -453,17 +453,17 @@ export default function FaqPage() {
         >
           <motion.h2
             variants={fadeUp}
-            className="text-3xl font-light text-[#1C1410] mb-4"
+            className="text-3xl font-light text-[#1e293b] mb-4"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {t({ en: "Still have a question?", ar: "أمَا زال لديك سؤال؟" })}
           </motion.h2>
-          <motion.p variants={fadeUp} className="text-[#8C7B72] mb-8">
+          <motion.p variants={fadeUp} className="text-[#6b7280] mb-8">
             {t({
               en: (
                 <>
                   Email us at{" "}
-                  <a href="mailto:stmarknubianfoundation@gmail.com" className="text-[#B85C38] font-medium hover:underline">
+                  <a href="mailto:stmarknubianfoundation@gmail.com" className="text-[#6366f1] font-medium hover:underline">
                     stmarknubianfoundation@gmail.com
                   </a>{" "}
                   — we&apos;d love to hear from you.
@@ -472,7 +472,7 @@ export default function FaqPage() {
               ar: (
                 <>
                   راسلنا على{" "}
-                  <a href="mailto:stmarknubianfoundation@gmail.com" className="text-[#B85C38] font-medium hover:underline">
+                  <a href="mailto:stmarknubianfoundation@gmail.com" className="text-[#6366f1] font-medium hover:underline">
                     stmarknubianfoundation@gmail.com
                   </a>{" "}
                   — يسعدنا أن نسمع منك.

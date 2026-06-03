@@ -33,9 +33,9 @@ export function AnimatedNavigationTabs({ items, activeHref, scrolled }: Props) {
               className={cn(
                 "relative block px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-md",
                 isActive
-                  ? scrolled ? "text-[#B85C38]" : "text-white"
+                  ? scrolled ? "text-[#6366f1]" : "text-white"
                   : scrolled
-                  ? "text-[#5A4034] hover:text-[#B85C38]"
+                  ? "text-[#374151] hover:text-[#6366f1]"
                   : "text-white/80 hover:text-white"
               )}
               onMouseEnter={() => setHoverId(item.id)}
@@ -49,7 +49,7 @@ export function AnimatedNavigationTabs({ items, activeHref, scrolled }: Props) {
                   layoutId="nav-hover-bg"
                   className={cn(
                     "absolute inset-0 rounded-md",
-                    scrolled ? "bg-[#B85C38]/8" : "bg-white/10"
+                    scrolled ? "bg-[#6366f1]/8" : "bg-white/10"
                   )}
                   transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 />
@@ -60,7 +60,7 @@ export function AnimatedNavigationTabs({ items, activeHref, scrolled }: Props) {
             {isActive && (
               <motion.span
                 layoutId="nav-active-line"
-                className="absolute bottom-0 left-3 right-3 h-0.5 bg-[#B85C38] rounded-full"
+                className="absolute bottom-0 left-3 right-3 h-0.5 bg-[#6366f1] rounded-full"
                 transition={{ type: "spring", stiffness: 380, damping: 30 }}
               />
             )}

@@ -1,134 +1,146 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400&family=Inter:wght@300;400;500;600&display=swap');
-
-/* Arabic type — Amiri (elegant Naskh serif) for headings, Tajawal for UI/body. */
+/* Arabic type — Amiri (elegant Naskh serif) + Tajawal (UI/body). Loaded here
+   because next/font doesn't cover these Arabic typefaces. */
 @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700&display=swap');
 
 @import "tailwindcss";
-
 @import "tw-animate-css";
-
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
 
+/* ─── Design-system tokens ───────────────────────────────────────────────── */
 :root {
-  --terracotta: #B85C38;
-  --terracotta-dark: #8B3E23;
-  --terracotta-light: #D4785A;
-  --sand: #D4A96A;
-  --sand-light: #EDD9B4;
-  --ivory: #FDFAF6;
-  --charcoal: #1C1410;
-  --charcoal-mid: #3D2B1F;
-  --warm-gray: #8C7B72;
+  --card: #f5f5f4;
+  --ring: #6366f1;
+  --input: #d6d3d1;
+  --muted: #e7e5e4;
+  --accent: #eef2ff;
+  --border: #d6d3d1;
+  --radius: 1.25rem;
+  --chart-1: #6366f1;
+  --chart-2: #4f46e5;
+  --chart-3: #4338ca;
+  --chart-4: #3730a3;
+  --chart-5: #312e81;
+  --popover: #f5f5f4;
+  --primary: #6366f1;
+  --sidebar: #d6d3d1;
+  --font-mono: 'Roboto Mono', monospace;
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  --secondary: #d6d3d1;
+  --background: #e7e5e4;
+  --font-serif: 'Lora', Georgia, serif;
+  --foreground: #1e293b;
+  --destructive: #ef4444;
+  --shadow-blur: 10px;
+  --shadow-color: hsl(240 4% 60%);
+  --sidebar-ring: #6366f1;
+  --shadow-spread: 4px;
+  --shadow-opacity: 0.18;
+  --sidebar-accent: #eef2ff;
+  --sidebar-border: #d6d3d1;
+  --card-foreground: #1e293b;
+  --shadow-offset-x: 2px;
+  --shadow-offset-y: 2px;
+  --sidebar-primary: #6366f1;
+  --muted-foreground: #6b7280;
+  --accent-foreground: #374151;
+  --popover-foreground: #1e293b;
+  --primary-foreground: #ffffff;
+  --sidebar-foreground: #1e293b;
+  --secondary-foreground: #4b5563;
+  --destructive-foreground: #ffffff;
+  --sidebar-accent-foreground: #374151;
+  --sidebar-primary-foreground: #ffffff;
+}
 
-  --font-serif: 'Fraunces', Georgia, serif;
-  --font-sans: 'Inter', system-ui, sans-serif;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+.dark {
+  --card: #2c2825;
+  --ring: #818cf8;
+  --input: #3a3633;
+  --muted: #2c2825;
+  --accent: #2e2d4a;
+  --border: #3a3633;
+  --radius: 1.25rem;
+  --chart-1: #818cf8;
+  --chart-2: #6366f1;
+  --chart-3: #4f46e5;
+  --chart-4: #4338ca;
+  --chart-5: #3730a3;
+  --popover: #2c2825;
+  --primary: #818cf8;
+  --sidebar: #3a3633;
+  --secondary: #3a3633;
+  --background: #1e1b18;
+  --foreground: #e2e8f0;
+  --destructive: #ef4444;
+  --shadow-color: hsl(0 0% 0%);
+  --sidebar-ring: #818cf8;
+  --sidebar-accent: #2e2d4a;
+  --sidebar-border: #3a3633;
+  --card-foreground: #e2e8f0;
+  --sidebar-primary: #818cf8;
+  --muted-foreground: #9ca3af;
+  --accent-foreground: #d1d5db;
+  --popover-foreground: #e2e8f0;
+  --primary-foreground: #1e1b18;
+  --sidebar-foreground: #e2e8f0;
+  --secondary-foreground: #d1d5db;
+  --destructive-foreground: #1e1b18;
+  --sidebar-accent-foreground: #d1d5db;
+  --sidebar-primary-foreground: #1e1b18;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-heading: var(--font-sans);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
+  --color-card: var(--card);
   --color-ring: var(--ring);
   --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
+  --color-accent: var(--accent);
+  --color-border: var(--border);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
   --color-popover: var(--popover);
+  --color-primary: var(--primary);
+  --color-sidebar: var(--sidebar);
+  --color-secondary: var(--secondary);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-destructive: var(--destructive);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-border: var(--sidebar-border);
   --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
+  --font-mono: var(--font-mono);
+
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-xl: calc(var(--radius) * 1.25);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-3xl: calc(var(--radius) * 2);
+  --radius-4xl: calc(var(--radius) * 2.4);
 }
 
-* {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-/* ─── Arabic / RTL ───────────────────────────────────────────────────────────
-   When the document is in Arabic, swap the font stacks. Because the whole site
-   styles type through var(--font-serif)/var(--font-sans), overriding these two
-   variables re-skins every heading and paragraph automatically. The high-
-   specificity html[lang="ar"] selector reliably wins over the default fonts. */
-html[lang="ar"] {
-  --font-serif: 'Amiri', 'Times New Roman', serif;
-  --font-sans: 'Tajawal', 'Segoe UI', system-ui, sans-serif;
-}
-html[lang="ar"] body {
-  font-family: var(--font-sans);
-  letter-spacing: 0;
-}
-/* Arabic script has no concept of all-caps; widely-spaced uppercase eyebrows
-   look broken, so normalise them in RTL. */
-html[lang="ar"] .uppercase,
-html[dir="rtl"] .uppercase {
-  text-transform: none;
-  letter-spacing: normal;
-}
+/* ─── Base ───────────────────────────────────────────────────────────────── */
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 
 body {
   font-family: var(--font-sans);
@@ -143,111 +155,48 @@ h1, h2, h3, h4 {
   line-height: 1.15;
 }
 
-.font-serif {
-  font-family: var(--font-serif);
+.font-serif { font-family: var(--font-serif); }
+
+@layer base {
+  * { @apply border-border outline-ring/50; }
+  body { @apply bg-background text-foreground; }
+  html { @apply font-sans; }
 }
 
-/* Shadcn CSS variables */
-:root {
-  --radius: 0.5rem;
-  --card: #FFFFFF;
-  --card-foreground: #1C1410;
-  --popover: #FFFFFF;
-  --popover-foreground: #1C1410;
-  --primary: #B85C38;
-  --primary-foreground: #FDFAF6;
-  --secondary: #EDD9B4;
-  --secondary-foreground: #1C1410;
-  --muted: #F5EFE6;
-  --muted-foreground: #8C7B72;
-  --accent: #EDD9B4;
-  --accent-foreground: #1C1410;
-  --destructive: #ef4444;
-  --border: #DDD0C0;
-  --input: #DDD0C0;
-  --ring: #B85C38;
+/* ─── Arabic / RTL ───────────────────────────────────────────────────────── */
+html[lang="ar"] {
+  --font-serif: 'Amiri', 'Times New Roman', serif;
+  --font-sans: 'Tajawal', 'Segoe UI', system-ui, sans-serif;
+}
+html[lang="ar"] body {
+  font-family: var(--font-sans);
+  letter-spacing: 0;
+}
+html[lang="ar"] .uppercase,
+html[dir="rtl"] .uppercase {
+  text-transform: none;
+  letter-spacing: normal;
 }
 
+/* ─── Animations ─────────────────────────────────────────────────────────── */
 @keyframes fill-bar {
   from { width: 0%; }
-  to { width: var(--fill-target); }
+  to   { width: var(--fill-target); }
 }
-
 .goal-bar-fill {
   animation: fill-bar 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
 @keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
+.fade-up { animation: fade-up 0.7s ease forwards; }
 
-.fade-up {
-  animation: fade-up 0.7s ease forwards;
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-  html {
-    @apply font-sans;
-  }
-}
-
-/* Respect users who ask for reduced motion (vestibular safety, WCAG 2.3.3).
-   Neutralises CSS animations/transitions and disables smooth scrolling.
-   Framer Motion components additionally honour this via the useReducedMotion hook. */
+/* ─── Accessibility ──────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  *,
-  *::before,
-  *::after {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -255,14 +204,13 @@ h1, h2, h3, h4 {
   }
 }
 
-/* Visible keyboard focus for interactive elements (WCAG 2.4.7). */
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible,
 [tabindex]:focus-visible {
-  outline: 2px solid var(--terracotta);
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
-  border-radius: 2px;
+  border-radius: 4px;
 }

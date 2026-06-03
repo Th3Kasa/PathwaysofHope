@@ -127,15 +127,15 @@ export function DonationPanel({ goal, part }: Props) {
       initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      className="bg-white rounded-3xl shadow-sm border border-[#EDD9B4] overflow-hidden"
+      className="bg-white rounded-3xl shadow-sm border border-[#d6d3d1] overflow-hidden"
     >
       {/* Header image + title */}
       <div className="relative h-44 sm:h-52">
         <Image src={goal.image} alt={goal.imageAlt} fill className="object-cover object-center" sizes="(max-width: 768px) 100vw, 768px" priority />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#1C1410]/85 via-[#1C1410]/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1e293b]/85 via-[#1e293b]/30 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-6">
           {part && (
-            <p className="text-[#EDD9B4] text-xs uppercase tracking-widest mb-1">{goalTitle}</p>
+            <p className="text-[#d6d3d1] text-xs uppercase tracking-widest mb-1">{goalTitle}</p>
           )}
           <h2 className="text-2xl sm:text-3xl font-light text-white" style={{ fontFamily: "var(--font-serif)" }}>
             {part ? partTitle : goalTitle}
@@ -144,23 +144,23 @@ export function DonationPanel({ goal, part }: Props) {
       </div>
 
       <div className="p-6 sm:p-8 space-y-8">
-        <p className="text-[#8C7B72] text-sm leading-relaxed">
+        <p className="text-[#6b7280] text-sm leading-relaxed">
           {part ? partNote : goalDesc}
         </p>
 
         {/* Frequency */}
         <div>
-          <h3 className="text-sm font-semibold uppercase tracking-widest text-[#8C7B72] mb-3">
+          <h3 className="text-sm font-semibold uppercase tracking-widest text-[#6b7280] mb-3">
             {t({ en: "Donation frequency", ar: "تكرار التبرّع" })}
           </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-4 rounded-xl overflow-hidden border border-[#DDD0C0]">
+          <div className="grid grid-cols-2 sm:grid-cols-4 rounded-xl overflow-hidden border border-[#d6d3d1]">
             {FREQUENCIES.map((f) => (
               <button
                 key={f.value}
                 onClick={() => { setFrequency(f.value); setError(null); }}
                 className={cn(
                   "py-3 text-sm font-semibold transition-colors focus:outline-none",
-                  frequency === f.value ? "bg-[#B85C38] text-white" : "bg-white text-[#3D2B1F] hover:bg-[#F5EFE6]"
+                  frequency === f.value ? "bg-[#6366f1] text-white" : "bg-white text-[#374151] hover:bg-[#f5f5f4]"
                 )}
                 aria-pressed={frequency === f.value}
               >
@@ -178,15 +178,15 @@ export function DonationPanel({ goal, part }: Props) {
                 animate={{ opacity: 1, height: "auto", marginTop: 16 }}
                 exit={{ opacity: 0, height: 0, marginTop: 0 }}
                 transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-                className="flex items-start gap-3 rounded-xl bg-[#FDF5F0] border border-[#EDD9B4] p-4 cursor-pointer overflow-hidden"
+                className="flex items-start gap-3 rounded-xl bg-[#f5f5f4] border border-[#d6d3d1] p-4 cursor-pointer overflow-hidden"
               >
                 <input
                   type="checkbox"
                   checked={recurringConsent}
                   onChange={(e) => { setRecurringConsent(e.target.checked); setError(null); }}
-                  className="mt-0.5 w-4 h-4 accent-[#B85C38]"
+                  className="mt-0.5 w-4 h-4 accent-[#6366f1]"
                 />
-                <span className="text-sm text-[#3D2B1F] leading-relaxed">
+                <span className="text-sm text-[#374151] leading-relaxed">
                   {t({
                     en: "I understand this will be set up as a recurring payment, starting today.",
                     ar: "أتفهّم أن هذا سيُنشأ كتبرّع متكرّر، يبدأ اليوم.",
@@ -200,27 +200,27 @@ export function DonationPanel({ goal, part }: Props) {
         {/* Sponsor-a-child quantity selector */}
         {isSponsor ? (
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-widest text-[#8C7B72] mb-3">
+            <h3 className="text-sm font-semibold uppercase tracking-widest text-[#6b7280] mb-3">
               {t({ en: "How many children? (A$600 each)", ar: "كم عدد الأطفال؟ (A$600 لكلٍّ منهم)" })}
             </h3>
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                className="w-11 h-11 rounded-xl border-2 border-[#DDD0C0] flex items-center justify-center text-[#3D2B1F] hover:border-[#B85C38] hover:text-[#B85C38] transition-colors disabled:opacity-40"
+                className="w-11 h-11 rounded-xl border-2 border-[#d6d3d1] flex items-center justify-center text-[#374151] hover:border-[#6366f1] hover:text-[#6366f1] transition-colors disabled:opacity-40"
                 disabled={quantity <= 1}
                 aria-label="Fewer children"
               >
                 <Minus size={18} />
               </button>
               <div className="flex-1 text-center">
-                <span className="text-3xl font-light text-[#1C1410] tabular-nums" style={{ fontFamily: "var(--font-serif)" }}>
+                <span className="text-3xl font-light text-[#1e293b] tabular-nums" style={{ fontFamily: "var(--font-serif)" }}>
                   {quantity}
                 </span>
-                <span className="text-[#8C7B72] text-sm ml-2">{quantity === 1 ? t({ en: "child", ar: "طفل" }) : t({ en: "children", ar: "أطفال" })}</span>
+                <span className="text-[#6b7280] text-sm ml-2">{quantity === 1 ? t({ en: "child", ar: "طفل" }) : t({ en: "children", ar: "أطفال" })}</span>
               </div>
               <button
                 onClick={() => setQuantity((q) => Math.min(35, q + 1))}
-                className="w-11 h-11 rounded-xl border-2 border-[#DDD0C0] flex items-center justify-center text-[#3D2B1F] hover:border-[#B85C38] hover:text-[#B85C38] transition-colors disabled:opacity-40"
+                className="w-11 h-11 rounded-xl border-2 border-[#d6d3d1] flex items-center justify-center text-[#374151] hover:border-[#6366f1] hover:text-[#6366f1] transition-colors disabled:opacity-40"
                 disabled={quantity >= 35}
                 aria-label="More children"
               >
@@ -231,7 +231,7 @@ export function DonationPanel({ goal, part }: Props) {
         ) : (
           /* Amount selector */
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-widest text-[#8C7B72] mb-3">
+            <h3 className="text-sm font-semibold uppercase tracking-widest text-[#6b7280] mb-3">
               {t({ en: "Choose an amount (AUD)", ar: "اختر مبلغًا (بالدولار الأسترالي)" })}
             </h3>
             <div className="grid grid-cols-3 gap-2 mb-3">
@@ -242,8 +242,8 @@ export function DonationPanel({ goal, part }: Props) {
                   className={cn(
                     "py-3 rounded-xl text-sm font-semibold border-2 transition-all focus:outline-none",
                     !customAmount && selectedPreset === p
-                      ? "border-[#B85C38] bg-[#B85C38] text-white"
-                      : "border-[#DDD0C0] text-[#3D2B1F] hover:border-[#B85C38] hover:text-[#B85C38]"
+                      ? "border-[#6366f1] bg-[#6366f1] text-white"
+                      : "border-[#d6d3d1] text-[#374151] hover:border-[#6366f1] hover:text-[#6366f1]"
                   )}
                 >
                   {formatAUDFull(p)}
@@ -254,14 +254,14 @@ export function DonationPanel({ goal, part }: Props) {
                 onClick={() => { setSelectedPreset(null); document.getElementById("custom-input")?.focus(); }}
                 className={cn(
                   "py-3 rounded-xl text-sm font-semibold border-2 transition-all focus:outline-none",
-                  customAmount ? "border-[#B85C38] bg-[#B85C38] text-white" : "border-[#DDD0C0] text-[#3D2B1F] hover:border-[#B85C38] hover:text-[#B85C38]"
+                  customAmount ? "border-[#6366f1] bg-[#6366f1] text-white" : "border-[#d6d3d1] text-[#374151] hover:border-[#6366f1] hover:text-[#6366f1]"
                 )}
               >
                 {t({ en: "Custom", ar: "مبلغ آخر" })}
               </button>
             </div>
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8C7B72] font-medium text-sm">A$</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#6b7280] font-medium text-sm">A$</span>
               <input
                 id="custom-input"
                 type="number"
@@ -270,7 +270,7 @@ export function DonationPanel({ goal, part }: Props) {
                 placeholder={t({ en: "Enter amount", ar: "أدخل مبلغًا" })}
                 value={customAmount}
                 onChange={(e) => { setCustomAmount(e.target.value); setSelectedPreset(null); setError(null); }}
-                className="w-full pl-10 pr-4 py-3 border-2 border-[#DDD0C0] rounded-xl text-sm text-[#1C1410] focus:outline-none focus:border-[#B85C38] transition-colors"
+                className="w-full pl-10 pr-4 py-3 border-2 border-[#d6d3d1] rounded-xl text-sm text-[#1e293b] focus:outline-none focus:border-[#6366f1] transition-colors"
                 aria-label="Custom donation amount in AUD"
               />
             </div>
@@ -286,10 +286,10 @@ export function DonationPanel({ goal, part }: Props) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.25 }}
-              className="rounded-xl bg-[#F5EFE6] border border-[#EDD9B4] px-4 py-3 flex gap-2.5"
+              className="rounded-xl bg-[#f5f5f4] border border-[#d6d3d1] px-4 py-3 flex gap-2.5"
             >
               <span className="text-base leading-none">💡</span>
-              <p className="text-sm text-[#3D2B1F] leading-relaxed">{fact}</p>
+              <p className="text-sm text-[#374151] leading-relaxed">{fact}</p>
             </motion.div>
           )}
         </AnimatePresence>
@@ -300,9 +300,9 @@ export function DonationPanel({ goal, part }: Props) {
             type="checkbox"
             checked={coverFee}
             onChange={(e) => setCoverFee(e.target.checked)}
-            className="mt-0.5 w-4 h-4 accent-[#B85C38]"
+            className="mt-0.5 w-4 h-4 accent-[#6366f1]"
           />
-          <span className="text-sm text-[#3D2B1F] leading-relaxed">
+          <span className="text-sm text-[#374151] leading-relaxed">
             {t({
               en: `Add the card processing fee (${formatMoney(fee || feeFor(base || 1))}) so 100% of my gift reaches the children.`,
               ar: `أضِف رسم معالجة البطاقة (${formatMoney(fee || feeFor(base || 1))}) ليصل 100% من تبرّعي إلى الأطفال.`,
@@ -312,8 +312,8 @@ export function DonationPanel({ goal, part }: Props) {
 
         {/* Total breakdown */}
         {coverFee && base > 0 && (
-          <div className="text-xs text-[#8C7B72] -mt-4 pl-7">
-            {t({ en: "Gift", ar: "التبرّع" })} {formatMoney(base)} + {t({ en: "fee", ar: "رسم" })} {formatMoney(fee)} = <span className="font-semibold text-[#1C1410]">{formatMoney(total)}</span>
+          <div className="text-xs text-[#6b7280] -mt-4 pl-7">
+            {t({ en: "Gift", ar: "التبرّع" })} {formatMoney(base)} + {t({ en: "fee", ar: "رسم" })} {formatMoney(fee)} = <span className="font-semibold text-[#1e293b]">{formatMoney(total)}</span>
           </div>
         )}
 
@@ -328,8 +328,8 @@ export function DonationPanel({ goal, part }: Props) {
           onClick={handleSubmit}
           disabled={loading || !base}
           className={cn(
-            "w-full py-4 rounded-xl font-semibold text-base transition-all focus:outline-none focus:ring-2 focus:ring-[#B85C38] focus:ring-offset-2",
-            loading || !base ? "bg-[#DDD0C0] text-[#8C7B72] cursor-not-allowed" : "bg-[#B85C38] text-white hover:bg-[#8B3E23]"
+            "w-full py-4 rounded-xl font-semibold text-base transition-all focus:outline-none focus:ring-2 focus:ring-[#6366f1] focus:ring-offset-2",
+            loading || !base ? "bg-[#d6d3d1] text-[#6b7280] cursor-not-allowed" : "bg-[#6366f1] text-white hover:bg-[#4f46e5]"
           )}
           aria-busy={loading}
         >
@@ -341,7 +341,7 @@ export function DonationPanel({ goal, part }: Props) {
             `${t({ en: "Continue", ar: "متابعة" })} — ${formatMoney(total || base)}${frequencySuffix(frequency, lang)}`
           )}
         </button>
-        <p className="text-xs text-center text-[#8C7B72] -mt-4">
+        <p className="text-xs text-center text-[#6b7280] -mt-4">
           {t({ en: "Secure, encrypted checkout via Stripe.", ar: "دفع آمن ومشفّر عبر Stripe." })}
           {recurring && t({ en: " Cancel recurring giving anytime.", ar: " يمكنك إلغاء التبرّع المتكرّر في أيّ وقت." })}
         </p>

@@ -10,7 +10,7 @@ export function BackLink({ href, label }: { href: string; label: Dict<string> })
   return (
     <Link
       href={href}
-      className="inline-flex items-center gap-2 text-sm text-[#8C7B72] hover:text-[#B85C38] transition-colors mb-6"
+      className="inline-flex items-center gap-2 text-sm text-[#6b7280] hover:text-[#6366f1] transition-colors mb-6"
     >
       <ArrowLeft size={16} /> {t(label)}
     </Link>
