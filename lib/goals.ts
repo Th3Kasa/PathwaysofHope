@@ -152,11 +152,11 @@ export const KAPOETA_GOALS: Goal[] = [
     short:
       "The day-to-day running of the shelter — staff, food, school fees and medical care.",
     description:
-      "Stipends for the matron, evangelist and dairy caretaker; school fees and uniforms; food, medical care and the everyday costs of running a children's home. The steady support that keeps the doors open all year.",
-    goalAmount: 45000,
+      "Stipends for staff; school fees and uniforms; food, medical care, miscellaneous and the everyday costs of running a children's home. The steady support that keeps the doors open all year.",
+    goalAmount: 47000,
     kind: "leaf",
     recurringByNature: true,
-    unitLabel: "A$45,000 / year",
+    unitLabel: "A$47,000 / year",
     presets: [50, 100, 250, 500, 1000],
     image: "/images/kapoeta/field/children-school-uniforms-group-kapoeta.jpg",
     imageAlt: "Children in school uniforms at the Kapoeta shelter",
