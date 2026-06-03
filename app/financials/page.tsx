@@ -300,8 +300,8 @@ function AnnualReports() {
           className="text-xs text-[#6b7280] italic mt-4"
         >
           {t({
-            en: "To request a report or ask a question about our finances, contact our finance team at finance@pathwaysofhope.org.au",
-            ar: "للاستفسار عن تقرير أو طرح سؤال حول مالياتنا، تواصل مع فريقنا المالي على finance@pathwaysofhope.org.au",
+            en: "To request a report or ask a question about our finances, contact our finance team at pathways_of_hope@outlook.com",
+            ar: "للاستفسار عن تقرير أو طرح سؤال حول مالياتنا، تواصل مع فريقنا المالي على pathways_of_hope@outlook.com",
           })}
         </motion.p>
       </div>
