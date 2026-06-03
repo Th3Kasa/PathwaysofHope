@@ -1,8 +1,8 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
 import { getGoalById, getPart } from "@/lib/goals";
+import { GOAL_AR } from "@/lib/goals-i18n";
 import { DonationPanel } from "@/components/donation-panel";
+import { BackLink } from "@/components/back-link";
 
 export async function generateMetadata({
   params,
@@ -12,7 +12,7 @@ export async function generateMetadata({
   const { goal: goalId } = await params;
   const goal = getGoalById(goalId);
   return {
-    title: goal ? `Donate — ${goal.title} | Pathways of Hope` : "Donate — Pathways of Hope",
+    title: goal ? `Donate — ${goal.title}` : "Donate",
     description: goal?.short,
   };
 }
@@ -34,17 +34,16 @@ export default async function DonateGoalPage({
 
   // Bundles are normally reached via their breakdown page; link back there.
   const backHref = goal.kind === "bundle" ? `/donate/${goal.id}/parts` : "/donate";
-  const backLabel = goal.kind === "bundle" ? `Back to ${goal.title}` : "All donation options";
+  const arTitle = GOAL_AR[goal.id].title;
+  const backLabel =
+    goal.kind === "bundle"
+      ? { en: `Back to ${goal.title}`, ar: `العودة إلى ${arTitle}` }
+      : { en: "All donation options", ar: "كل خيارات التبرّع" };
 
   return (
     <div className="bg-[#FDFAF6] min-h-screen">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-20 pt-28">
-        <Link
-          href={backHref}
-          className="inline-flex items-center gap-2 text-sm text-[#8C7B72] hover:text-[#B85C38] transition-colors mb-6"
-        >
-          <ArrowLeft size={16} /> {backLabel}
-        </Link>
+        <BackLink href={backHref} label={backLabel} />
 
         <DonationPanel goal={goal} part={part} />
       </div>

@@ -10,6 +10,8 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { formatAUDFull } from "@/lib/utils";
 import type { Goal } from "@/lib/goals";
+import { useLang, useT } from "@/lib/i18n";
+import { GOAL_AR } from "@/lib/goals-i18n";
 
 interface GoalMeterProps {
   goal: Goal;
@@ -22,6 +24,13 @@ export function GoalMeter({
   raised: raisedProp,
   supporters: supportersProp,
 }: GoalMeterProps) {
+  const { lang } = useLang();
+  const t = useT();
+  const arGoal = GOAL_AR[goal.id];
+  const title = lang === "ar" ? arGoal.title : goal.title;
+  const description = lang === "ar" ? arGoal.description : goal.description;
+  const unitLabel = lang === "ar" ? arGoal.unitLabel ?? goal.unitLabel : goal.unitLabel;
+
   const raised = raisedProp ?? 0;
   const supporters = supportersProp ?? 0;
   const percentage = Math.min(Math.round((raised / goal.goalAmount) * 100), 100);
@@ -74,12 +83,12 @@ export function GoalMeter({
           className="text-xl font-semibold text-[#1C1410] mb-1"
           style={{ fontFamily: "var(--font-serif)" }}
         >
-          {goal.title}
+          {title}
         </h3>
-        <p className="text-sm text-[#8C7B72] leading-relaxed">{goal.description}</p>
-        {goal.unitLabel && (
+        <p className="text-sm text-[#8C7B72] leading-relaxed">{description}</p>
+        {unitLabel && (
           <span className="inline-block mt-2 text-xs font-medium px-2 py-0.5 rounded-full bg-[#EDD9B4] text-[#8B3E23]">
-            {goal.unitLabel}
+            {unitLabel}
           </span>
         )}
       </motion.div>
@@ -88,7 +97,7 @@ export function GoalMeter({
       <div className="flex items-end justify-between gap-4 mb-5">
         <div>
           <p className="text-xs font-medium text-[#8C7B72] uppercase tracking-widest mb-1">
-            Raised
+            {t({ en: "Raised", ar: "تم جمعه" })}
           </p>
           <motion.p
             className="text-3xl font-bold"
@@ -108,7 +117,7 @@ export function GoalMeter({
         </div>
         <div className="text-right pb-1">
           <p className="text-xs font-medium text-[#8C7B72] uppercase tracking-widest mb-1">
-            Goal
+            {t({ en: "Goal", ar: "الهدف" })}
           </p>
           <p className="text-base font-semibold text-[#1C1410]">
             {formatAUDFull(goal.goalAmount)}
@@ -176,7 +185,7 @@ export function GoalMeter({
           animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -8 }}
           transition={{ delay: 0.5, duration: 0.5 }}
         >
-          {percentage}% funded
+          {percentage}% {t({ en: "funded", ar: "مموَّل" })}
         </motion.p>
 
         {/* Supporters */}
@@ -202,7 +211,7 @@ export function GoalMeter({
           <span className="font-medium text-[#1C1410]">
             {supporters.toLocaleString()}
           </span>
-          <span>supporters</span>
+          <span>{t({ en: "supporters", ar: "داعمًا" })}</span>
         </motion.div>
       </div>
     </div>

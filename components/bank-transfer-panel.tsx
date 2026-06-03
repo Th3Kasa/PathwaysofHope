@@ -1,14 +1,18 @@
+"use client";
+
 import { Landmark } from "lucide-react";
+import { useT, type Dict } from "@/lib/i18n";
 
 /**
  * Shown at the bottom of every donation screen — lets donors give by direct
  * bank transfer and avoid the card processing fee entirely.
  */
 export function BankTransferPanel() {
-  const rows = [
-    { label: "Account name", value: "PATHWAYS OF HOPE LTD" },
-    { label: "BSB", value: "062-217" },
-    { label: "Account number", value: "1102 4438" },
+  const t = useT();
+  const rows: { label: Dict<string>; value: string }[] = [
+    { label: { en: "Account name", ar: "اسم الحساب" }, value: "PATHWAYS OF HOPE LTD" },
+    { label: { en: "BSB", ar: "BSB" }, value: "062-217" },
+    { label: { en: "Account number", ar: "رقم الحساب" }, value: "1102 4438" },
   ];
 
   return (
@@ -19,18 +23,21 @@ export function BankTransferPanel() {
         </div>
         <div>
           <h3 className="font-semibold text-[#1C1410] text-sm">
-            Prefer to give directly?
+            {t({ en: "Prefer to give directly?", ar: "تفضّل التبرّع مباشرةً؟" })}
           </h3>
           <p className="text-xs text-[#8C7B72] leading-relaxed mt-0.5">
-            Donate by bank transfer to skip the card processing fee — 100% reaches the children.
+            {t({
+              en: "Donate by bank transfer to skip the card processing fee — 100% reaches the children.",
+              ar: "تبرّع بالتحويل المصرفي لتتجاوز رسم معالجة البطاقة — 100% يصل إلى الأطفال.",
+            })}
           </p>
         </div>
       </div>
       <dl className="divide-y divide-[#EDD9B4] rounded-xl bg-white border border-[#EDD9B4] overflow-hidden">
         {rows.map((r) => (
-          <div key={r.label} className="flex items-center justify-between px-4 py-2.5">
+          <div key={r.value} className="flex items-center justify-between px-4 py-2.5">
             <dt className="text-xs uppercase tracking-wider text-[#8C7B72] font-medium">
-              {r.label}
+              {t(r.label)}
             </dt>
             <dd className="text-sm font-semibold text-[#1C1410] tabular-nums">{r.value}</dd>
           </div>
