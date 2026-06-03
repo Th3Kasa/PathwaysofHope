@@ -2,6 +2,7 @@
 
 import { MissionCard } from "@/components/mission-card";
 import { DonateButton } from "@/components/donate-button";
+import { Compass } from "lucide-react";
 import { useT } from "@/lib/i18n";
 
 export default function MissionsClient() {
@@ -54,7 +55,7 @@ export default function MissionsClient() {
             />
             {/* Future missions will be added here as MissionCard entries */}
             <div className="rounded-2xl border-2 border-dashed border-[#d6d3d1] flex flex-col items-center justify-center p-10 text-center min-h-[300px]">
-              <div className="text-4xl mb-4 opacity-30">✦</div>
+              <Compass className="h-9 w-9 mb-4 text-[#6366f1] opacity-30" strokeWidth={1.5} />
               <p className="text-[#6b7280] font-medium mb-2">
                 {t({ en: "Next mission coming", ar: "المهمّة القادمة في الطريق" })}
               </p>

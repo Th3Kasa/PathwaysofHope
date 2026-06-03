@@ -50,9 +50,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={cn("h-full", "font-sans", jakarta.variable, lora.variable)}>
-      <head>
-        <link rel="icon" href="/logo.png" type="image/png" />
-      </head>
       <body className="min-h-full flex flex-col antialiased">
         <LanguageProvider>
           <Nav />

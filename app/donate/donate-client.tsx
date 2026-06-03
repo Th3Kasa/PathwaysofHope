@@ -2,15 +2,16 @@
 
 import { DonateHub } from "@/components/donate-hub";
 import { useT, type Dict } from "@/lib/i18n";
+import { ShieldCheck, FileText, HeartHandshake, type LucideIcon } from "lucide-react";
 
 interface Props {
   totals: Record<string, { raised: number; supporters: number }> | null;
 }
 
-const TRUST: { icon: string; label: Dict<string> }[] = [
-  { icon: "🔒", label: { en: "Secure checkout via Stripe", ar: "دفع آمن عبر Stripe" } },
-  { icon: "🧾", label: { en: "Tax-deductible receipt emailed", ar: "إيصال معفى من الضرائب عبر البريد" } },
-  { icon: "💯", label: { en: "100% reaches the children", ar: "100% يصل إلى الأطفال" } },
+const TRUST: { icon: LucideIcon; label: Dict<string> }[] = [
+  { icon: ShieldCheck, label: { en: "Secure checkout via Stripe", ar: "دفع آمن عبر Stripe" } },
+  { icon: FileText, label: { en: "Tax-deductible receipt provided", ar: "إيصال معفى من الضرائب" } },
+  { icon: HeartHandshake, label: { en: "100% reaches the children", ar: "100% يصل إلى الأطفال" } },
 ];
 
 export function DonateClient({ totals }: Props) {
@@ -39,12 +40,15 @@ export function DonateClient({ totals }: Props) {
         <DonateHub totals={totals} />
 
         <div className="mt-14 grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
-          {TRUST.map((item) => (
-            <div key={item.label.en} className="flex items-center justify-center gap-2 text-sm text-[#6b7280]">
-              <span>{item.icon}</span>
-              <span>{t(item.label)}</span>
-            </div>
-          ))}
+          {TRUST.map((item) => {
+            const Icon = item.icon;
+            return (
+              <div key={item.label.en} className="flex items-center justify-center gap-2 text-sm text-[#6b7280]">
+                <Icon className="h-4 w-4 text-[#6366f1] flex-shrink-0" strokeWidth={2} />
+                <span>{t(item.label)}</span>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

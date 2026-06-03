@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, Minus, Plus } from "lucide-react";
+import { Loader2, Minus, Plus, Lightbulb } from "lucide-react";
 import { cn, formatAUDFull } from "@/lib/utils";
 import type { BreakdownPart, Frequency, Goal } from "@/lib/goals";
 import {
@@ -288,7 +288,7 @@ export function DonationPanel({ goal, part }: Props) {
               transition={{ duration: 0.25 }}
               className="rounded-xl bg-[#f5f5f4] border border-[#d6d3d1] px-4 py-3 flex gap-2.5"
             >
-              <span className="text-base leading-none">💡</span>
+              <Lightbulb className="h-4 w-4 text-[#6366f1] flex-shrink-0 mt-0.5" strokeWidth={2} />
               <p className="text-sm text-[#374151] leading-relaxed">{fact}</p>
             </motion.div>
           )}
