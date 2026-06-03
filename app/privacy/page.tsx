@@ -115,15 +115,15 @@ const SECTIONS: { icon: typeof Database; title: Dict<string>; body: Dict<string>
 export default function PrivacyPage() {
   const t = useT();
   return (
-    <div className="bg-[#FDFAF6]">
+    <div className="bg-[#e7e5e4]">
       {/* Hero */}
-      <section className="py-28 px-4 pt-36 bg-[#F5EFE6]">
+      <section className="py-28 px-4 pt-36 bg-[#f5f5f4]">
         <div className="max-w-4xl mx-auto">
           <motion.p
             initial="hidden"
             animate="visible"
             variants={fadeUp}
-            className="text-[#B85C38] text-sm uppercase tracking-widest mb-4 font-medium"
+            className="text-[#6366f1] text-sm uppercase tracking-widest mb-4 font-medium"
           >
             {t({ en: "Your privacy", ar: "خصوصيتك" })}
           </motion.p>
@@ -134,7 +134,7 @@ export default function PrivacyPage() {
               hidden: { opacity: 0, y: 24 },
               visible: { opacity: 1, y: 0, transition: { duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] } },
             }}
-            className="text-5xl sm:text-6xl font-light text-[#1C1410] mb-6 leading-tight"
+            className="text-5xl sm:text-6xl font-light text-[#1e293b] mb-6 leading-tight"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {t({ en: "Privacy policy.", ar: "سياسة الخصوصية." })}
@@ -143,7 +143,7 @@ export default function PrivacyPage() {
             initial="hidden"
             animate="visible"
             variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, delay: 0.2 } } }}
-            className="text-[#3D2B1F] text-xl leading-relaxed max-w-2xl"
+            className="text-[#374151] text-xl leading-relaxed max-w-2xl"
           >
             {t({
               en: "We treat your personal information with the same care we ask you to place in us. This policy explains what we collect, why, and the control you keep over it.",
@@ -154,7 +154,7 @@ export default function PrivacyPage() {
             initial="hidden"
             animate="visible"
             variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { delay: 0.35 } } }}
-            className="text-[#8C7B72] text-sm mt-6"
+            className="text-[#6b7280] text-sm mt-6"
           >
             {t({
               en: `Pathways of Hope Ltd · ABN 40 686 574 630 · Last updated ${LAST_UPDATED.en}`,
@@ -173,7 +173,7 @@ export default function PrivacyPage() {
           viewport={{ once: true, margin: "-60px" }}
           variants={fadeUp}
         >
-          <p className="text-[#3D2B1F] text-lg leading-relaxed">
+          <p className="text-[#374151] text-lg leading-relaxed">
             {t({
               en: (
                 <>
@@ -211,19 +211,19 @@ export default function PrivacyPage() {
               <motion.div
                 key={s.title.en}
                 variants={fadeUp}
-                className="bg-white rounded-2xl border border-[#EDD9B4] p-7 shadow-sm"
+                className="bg-white rounded-2xl border border-[#d6d3d1] p-7 shadow-sm"
               >
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-xl bg-[#B85C38]/10 flex items-center justify-center flex-shrink-0">
-                    <Icon size={18} className="text-[#B85C38]" strokeWidth={1.75} />
+                  <div className="w-10 h-10 rounded-xl bg-[#6366f1]/10 flex items-center justify-center flex-shrink-0">
+                    <Icon size={18} className="text-[#6366f1]" strokeWidth={1.75} />
                   </div>
-                  <h2 className="text-xl font-semibold text-[#1C1410]" style={{ fontFamily: "var(--font-serif)" }}>
+                  <h2 className="text-xl font-semibold text-[#1e293b]" style={{ fontFamily: "var(--font-serif)" }}>
                     {t(s.title)}
                   </h2>
                 </div>
                 <div className="space-y-3 pl-1">
                   {s.body.map((p, i) => (
-                    <p key={i} className="text-[#8C7B72] text-sm leading-relaxed">
+                    <p key={i} className="text-[#6b7280] text-sm leading-relaxed">
                       {t(p)}
                     </p>
                   ))}
@@ -242,7 +242,7 @@ export default function PrivacyPage() {
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
             variants={fadeUp}
-            className="rounded-2xl bg-[#1C1410] text-white p-8 sm:p-10 flex flex-col sm:flex-row gap-6 items-start"
+            className="rounded-2xl bg-[#1e293b] text-white p-8 sm:p-10 flex flex-col sm:flex-row gap-6 items-start"
           >
             <div className="w-12 h-12 rounded-xl bg-[#C9952A]/20 flex items-center justify-center flex-shrink-0">
               <Mail size={24} className="text-[#E4B84A]" strokeWidth={1.75} />

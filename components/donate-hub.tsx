@@ -54,25 +54,25 @@ export function DonateHub({ totals }: Props) {
           <motion.div
             key={goal.id}
             variants={fadeUp}
-            className="bg-white rounded-2xl p-6 sm:p-8 border border-[#EDD9B4] shadow-sm flex flex-col"
+            className="bg-white rounded-2xl p-6 sm:p-8 border border-[#d6d3d1] shadow-sm flex flex-col"
           >
             <div className="flex items-start gap-4 mb-3">
-              <div className="w-11 h-11 rounded-xl bg-[#B85C38]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                {Icon && <Icon size={20} className="text-[#B85C38]" strokeWidth={1.75} />}
+              <div className="w-11 h-11 rounded-xl bg-[#6366f1]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                {Icon && <Icon size={20} className="text-[#6366f1]" strokeWidth={1.75} />}
               </div>
               <div>
-                <h3 className="text-xl sm:text-2xl font-semibold text-[#1C1410] leading-tight" style={{ fontFamily: "var(--font-serif)" }}>
+                <h3 className="text-xl sm:text-2xl font-semibold text-[#1e293b] leading-tight" style={{ fontFamily: "var(--font-serif)" }}>
                   {title}
                 </h3>
                 {unitLabel && (
-                  <span className="inline-block mt-1.5 text-xs px-2 py-0.5 rounded-full bg-[#EDD9B4] text-[#8B3E23] font-medium">
+                  <span className="inline-block mt-1.5 text-xs px-2 py-0.5 rounded-full bg-[#d6d3d1] text-[#4f46e5] font-medium">
                     {unitLabel}
                   </span>
                 )}
               </div>
             </div>
 
-            <p className="text-[#8C7B72] text-sm leading-relaxed mb-5 flex-grow">{short}</p>
+            <p className="text-[#6b7280] text-sm leading-relaxed mb-5 flex-grow">{short}</p>
 
             {/* Compact progress meter */}
             <div className="mb-6">
@@ -80,11 +80,11 @@ export function DonateHub({ totals }: Props) {
                 <span className="text-lg font-bold" style={{ fontFamily: "var(--font-serif)", color: "#C9952A" }}>
                   {formatAUDFull(raised)}
                 </span>
-                <span className="text-xs text-[#8C7B72]">
+                <span className="text-xs text-[#6b7280]">
                   {t({ en: "of", ar: "من" })} {formatAUDFull(goal.goalAmount)}
                 </span>
               </div>
-              <div className="w-full h-2.5 rounded-full bg-[#F5EFE6] overflow-hidden">
+              <div className="w-full h-2.5 rounded-full bg-[#f5f5f4] overflow-hidden">
                 <div
                   className="h-full rounded-full"
                   style={{ width: `${pct}%`, background: "linear-gradient(90deg,#C9952A,#E4B84A,#F0C84E)" }}
@@ -93,14 +93,14 @@ export function DonateHub({ totals }: Props) {
               <div className="flex items-center justify-between mt-2">
                 <span className="text-xs font-semibold" style={{ color: "#C9952A" }}>{pct}% {t({ en: "funded", ar: "مموَّل" })}</span>
                 {supporters > 0 && (
-                  <span className="text-xs text-[#8C7B72]">{supporters.toLocaleString()} {t({ en: "supporters", ar: "داعمًا" })}</span>
+                  <span className="text-xs text-[#6b7280]">{supporters.toLocaleString()} {t({ en: "supporters", ar: "داعمًا" })}</span>
                 )}
               </div>
             </div>
 
             <Link
               href={hrefFor(goal)}
-              className="inline-flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-[#B85C38] text-white text-sm font-semibold hover:bg-[#8B3E23] transition-colors"
+              className="inline-flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-[#6366f1] text-white text-sm font-semibold hover:bg-[#4f46e5] transition-colors"
             >
               {goal.kind === "bundle" ? t({ en: "See the breakdown", ar: "اطّلع على التفاصيل" }) : t({ en: "Donate", ar: "تبرّع" })} <ArrowRight size={16} />
             </Link>

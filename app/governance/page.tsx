@@ -90,18 +90,18 @@ const POLICIES: { icon: typeof ShieldCheck; title: Dict<string>; body: Dict<stri
 export default function GovernancePage() {
   const t = useT();
   return (
-    <div className="bg-[#FDFAF6]">
+    <div className="bg-[#e7e5e4]">
       {/* Hero */}
-      <section className="py-28 px-4 pt-36 bg-[#F5EFE6]">
+      <section className="py-28 px-4 pt-36 bg-[#f5f5f4]">
         <div className="max-w-4xl mx-auto">
-          <motion.p initial="hidden" animate="visible" variants={fadeUp} className="text-[#B85C38] text-sm uppercase tracking-widest mb-4 font-medium">
+          <motion.p initial="hidden" animate="visible" variants={fadeUp} className="text-[#6366f1] text-sm uppercase tracking-widest mb-4 font-medium">
             {t({ en: "Accountability", ar: "المساءلة" })}
           </motion.p>
           <motion.h1
             initial="hidden"
             animate="visible"
             variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] } } }}
-            className="text-5xl sm:text-6xl font-light text-[#1C1410] mb-6 leading-tight"
+            className="text-5xl sm:text-6xl font-light text-[#1e293b] mb-6 leading-tight"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {t({ en: "Governance & safeguarding.", ar: "الحوكمة وحماية الطفل." })}
@@ -110,7 +110,7 @@ export default function GovernancePage() {
             initial="hidden"
             animate="visible"
             variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, delay: 0.2 } } }}
-            className="text-[#3D2B1F] text-xl leading-relaxed max-w-2xl"
+            className="text-[#374151] text-xl leading-relaxed max-w-2xl"
           >
             {t({
               en: "We work with vulnerable children. That carries a duty of care we take seriously — backed by formal policies, a registered legal structure, and oversight from the ACNC.",
@@ -125,18 +125,18 @@ export default function GovernancePage() {
         <div className="max-w-4xl mx-auto">
           <motion.h2
             initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={fadeUp}
-            className="text-3xl font-light text-[#1C1410] mb-8" style={{ fontFamily: "var(--font-serif)" }}
+            className="text-3xl font-light text-[#1e293b] mb-8" style={{ fontFamily: "var(--font-serif)" }}
           >
             {t({ en: "Who we are, legally", ar: "من نحن، قانونيًا" })}
           </motion.h2>
           <motion.dl
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-[#EDD9B4] rounded-2xl overflow-hidden border border-[#EDD9B4]"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-[#d6d3d1] rounded-2xl overflow-hidden border border-[#d6d3d1]"
             initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={stagger}
           >
             {ENTITY.map((e) => (
               <motion.div key={e.label.en} variants={fadeUp} className="bg-white p-5">
-                <dt className="text-xs uppercase tracking-wider text-[#8C7B72] font-medium mb-1">{t(e.label)}</dt>
-                <dd className="text-[#1C1410] font-semibold">{t(e.value)}</dd>
+                <dt className="text-xs uppercase tracking-wider text-[#6b7280] font-medium mb-1">{t(e.label)}</dt>
+                <dd className="text-[#1e293b] font-semibold">{t(e.value)}</dd>
               </motion.div>
             ))}
           </motion.dl>
@@ -144,14 +144,14 @@ export default function GovernancePage() {
       </section>
 
       {/* Charitable purpose */}
-      <section className="py-20 px-4 bg-[#F5EFE6]">
+      <section className="py-20 px-4 bg-[#f5f5f4]">
         <div className="max-w-4xl mx-auto">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} variants={fadeUp} className="mb-10">
-            <p className="text-[#B85C38] text-sm uppercase tracking-widest mb-3 font-medium">{t({ en: "Our charitable purpose", ar: "غرضنا الخيري" })}</p>
-            <h2 className="text-3xl sm:text-4xl font-light text-[#1C1410] max-w-2xl leading-tight" style={{ fontFamily: "var(--font-serif)" }}>
+            <p className="text-[#6366f1] text-sm uppercase tracking-widest mb-3 font-medium">{t({ en: "Our charitable purpose", ar: "غرضنا الخيري" })}</p>
+            <h2 className="text-3xl sm:text-4xl font-light text-[#1e293b] max-w-2xl leading-tight" style={{ fontFamily: "var(--font-serif)" }}>
               {t({ en: "Benevolent relief for vulnerable children, adults and refugees.", ar: "إغاثة خيرية للأطفال والبالغين واللاجئين المستضعفين." })}
             </h2>
-            <p className="text-[#8C7B72] mt-3 max-w-2xl">
+            <p className="text-[#6b7280] mt-3 max-w-2xl">
               {t({
                 en: "As set out in our Constitution, Pathways of Hope exists to serve Sudanese and South Sudanese orphans, vulnerable children, vulnerable adults and refugees across South Sudan, Sudan and Egypt — by:",
                 ar: "كما هو منصوص عليه في نظامنا الأساسي، تأسّست دروب الأمل لخدمة الأيتام والأطفال المستضعفين والبالغين المستضعفين واللاجئين من السودان وجنوب السودان في جنوب السودان والسودان ومصر — من خلال:",
@@ -160,9 +160,9 @@ export default function GovernancePage() {
           </motion.div>
           <motion.ul className="space-y-3" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={stagger}>
             {OBJECTS.map((o) => (
-              <motion.li key={o.en} variants={fadeUp} className="flex gap-3 bg-white rounded-xl border border-[#EDD9B4] p-4">
+              <motion.li key={o.en} variants={fadeUp} className="flex gap-3 bg-white rounded-xl border border-[#d6d3d1] p-4">
                 <HeartHandshake size={18} className="text-[#C9952A] flex-shrink-0 mt-0.5" strokeWidth={1.75} />
-                <span className="text-[#3D2B1F] text-sm leading-relaxed">{t(o)}</span>
+                <span className="text-[#374151] text-sm leading-relaxed">{t(o)}</span>
               </motion.li>
             ))}
           </motion.ul>
@@ -174,7 +174,7 @@ export default function GovernancePage() {
         <div className="max-w-4xl mx-auto">
           <motion.div
             initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} variants={fadeUp}
-            className="rounded-2xl bg-[#1C1410] text-white p-8 sm:p-10 flex flex-col sm:flex-row gap-6 items-start"
+            className="rounded-2xl bg-[#1e293b] text-white p-8 sm:p-10 flex flex-col sm:flex-row gap-6 items-start"
           >
             <div className="w-12 h-12 rounded-xl bg-[#C9952A]/20 flex items-center justify-center flex-shrink-0">
               <ShieldCheck size={24} className="text-[#E4B84A]" strokeWidth={1.75} />
@@ -198,14 +198,14 @@ export default function GovernancePage() {
       </section>
 
       {/* Policies */}
-      <section className="py-20 px-4 bg-[#F5EFE6]">
+      <section className="py-20 px-4 bg-[#f5f5f4]">
         <div className="max-w-5xl mx-auto">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} variants={fadeUp} className="mb-12">
-            <p className="text-[#B85C38] text-sm uppercase tracking-widest mb-3 font-medium">{t({ en: "Our policies", ar: "سياساتنا" })}</p>
-            <h2 className="text-3xl sm:text-4xl font-light text-[#1C1410]" style={{ fontFamily: "var(--font-serif)" }}>
+            <p className="text-[#6366f1] text-sm uppercase tracking-widest mb-3 font-medium">{t({ en: "Our policies", ar: "سياساتنا" })}</p>
+            <h2 className="text-3xl sm:text-4xl font-light text-[#1e293b]" style={{ fontFamily: "var(--font-serif)" }}>
               {t({ en: "Four policies that keep us honest.", ar: "أربع سياسات تُبقينا على استقامة." })}
             </h2>
-            <p className="text-[#8C7B72] mt-3 max-w-2xl">
+            <p className="text-[#6b7280] mt-3 max-w-2xl">
               {t({
                 en: "Adopted by the Board on 30 November 2025. Full documents are available on request.",
                 ar: "اعتمدها مجلس الإدارة في 30 November 2025. والوثائق الكاملة متاحة عند الطلب.",
@@ -216,12 +216,12 @@ export default function GovernancePage() {
             {POLICIES.map((p) => {
               const Icon = p.icon;
               return (
-                <motion.div key={p.title.en} variants={fadeUp} whileHover={{ y: -4 }} className="bg-white rounded-2xl border border-[#EDD9B4] p-7 shadow-sm transition-shadow hover:shadow-md">
-                  <div className="w-11 h-11 rounded-xl bg-[#B85C38]/10 flex items-center justify-center mb-4">
-                    <Icon size={20} className="text-[#B85C38]" strokeWidth={1.75} />
+                <motion.div key={p.title.en} variants={fadeUp} whileHover={{ y: -4 }} className="bg-white rounded-2xl border border-[#d6d3d1] p-7 shadow-sm transition-shadow hover:shadow-md">
+                  <div className="w-11 h-11 rounded-xl bg-[#6366f1]/10 flex items-center justify-center mb-4">
+                    <Icon size={20} className="text-[#6366f1]" strokeWidth={1.75} />
                   </div>
-                  <h3 className="text-xl font-semibold text-[#1C1410] mb-2" style={{ fontFamily: "var(--font-serif)" }}>{t(p.title)}</h3>
-                  <p className="text-[#8C7B72] text-sm leading-relaxed">{t(p.body)}</p>
+                  <h3 className="text-xl font-semibold text-[#1e293b] mb-2" style={{ fontFamily: "var(--font-serif)" }}>{t(p.title)}</h3>
+                  <p className="text-[#6b7280] text-sm leading-relaxed">{t(p.body)}</p>
                 </motion.div>
               );
             })}
@@ -229,10 +229,10 @@ export default function GovernancePage() {
 
           <motion.div
             initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} variants={fadeUp}
-            className="mt-8 flex items-start gap-3 rounded-xl bg-white border border-[#EDD9B4] p-5"
+            className="mt-8 flex items-start gap-3 rounded-xl bg-white border border-[#d6d3d1] p-5"
           >
             <FileCheck2 size={18} className="text-[#C9952A] flex-shrink-0 mt-0.5" strokeWidth={1.75} />
-            <p className="text-sm text-[#3D2B1F] leading-relaxed">
+            <p className="text-sm text-[#374151] leading-relaxed">
               {t({
                 en: "Our work overseas is governed by the ACNC’s ",
                 ar: "يخضع عملنا في الخارج لـ",
@@ -253,10 +253,10 @@ export default function GovernancePage() {
 
       <section className="py-20 px-4 text-center">
         <motion.div className="max-w-xl mx-auto" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.4 }} variants={stagger}>
-          <motion.h2 variants={fadeUp} className="text-3xl font-light text-[#1C1410] mb-6" style={{ fontFamily: "var(--font-serif)" }}>
+          <motion.h2 variants={fadeUp} className="text-3xl font-light text-[#1e293b] mb-6" style={{ fontFamily: "var(--font-serif)" }}>
             {t({ en: "Give with confidence.", ar: "تبرّع بثقة." })}
           </motion.h2>
-          <motion.p variants={fadeUp} className="text-[#8C7B72] mb-8">
+          <motion.p variants={fadeUp} className="text-[#6b7280] mb-8">
             {t({
               en: "Strong governance is how we honour your trust — and the children we serve.",
               ar: "الحوكمة الرشيدة هي كيف نصون ثقتك — والأطفال الذين نخدمهم.",

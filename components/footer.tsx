@@ -28,7 +28,7 @@ export function Footer() {
   const t = useT();
   return (
     <motion.footer
-      className="bg-[#1C1410] text-[#C4AE9A] mt-auto relative"
+      className="bg-[#1e293b] text-[#C4AE9A] mt-auto relative"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}

@@ -56,17 +56,17 @@ export function BankTransferPanel({ goalId }: Props) {
   }
 
   return (
-    <div className="rounded-2xl border border-[#EDD9B4] bg-[#FDF8F0] p-6">
+    <div className="rounded-2xl border border-[#d6d3d1] bg-[#f5f5f4] p-6">
       {/* Header */}
       <div className="flex items-start gap-3 mb-4">
-        <div className="w-9 h-9 rounded-lg bg-[#B85C38]/10 flex items-center justify-center flex-shrink-0">
-          <Landmark size={18} className="text-[#B85C38]" strokeWidth={1.75} />
+        <div className="w-9 h-9 rounded-lg bg-[#6366f1]/10 flex items-center justify-center flex-shrink-0">
+          <Landmark size={18} className="text-[#6366f1]" strokeWidth={1.75} />
         </div>
         <div>
-          <h3 className="font-semibold text-[#1C1410] text-sm">
+          <h3 className="font-semibold text-[#1e293b] text-sm">
             {t({ en: "Prefer to give directly?", ar: "تفضّل التبرّع مباشرةً؟" })}
           </h3>
-          <p className="text-xs text-[#8C7B72] leading-relaxed mt-0.5">
+          <p className="text-xs text-[#6b7280] leading-relaxed mt-0.5">
             {t({
               en: "Donate by bank transfer to skip the card processing fee — 100% reaches the children.",
               ar: "تبرّع بالتحويل المصرفي لتتجاوز رسم معالجة البطاقة — 100% يصل إلى الأطفال.",
@@ -76,13 +76,13 @@ export function BankTransferPanel({ goalId }: Props) {
       </div>
 
       {/* Account details */}
-      <dl className="divide-y divide-[#EDD9B4] rounded-xl bg-white border border-[#EDD9B4] overflow-hidden mb-4">
+      <dl className="divide-y divide-[#d6d3d1] rounded-xl bg-white border border-[#d6d3d1] overflow-hidden mb-4">
         {rows.map((r) => (
           <div key={r.value} className="flex items-center justify-between px-4 py-2.5">
-            <dt className="text-xs uppercase tracking-wider text-[#8C7B72] font-medium">
+            <dt className="text-xs uppercase tracking-wider text-[#6b7280] font-medium">
               {t(r.label)}
             </dt>
-            <dd className="text-sm font-semibold text-[#1C1410] tabular-nums">{r.value}</dd>
+            <dd className="text-sm font-semibold text-[#1e293b] tabular-nums">{r.value}</dd>
           </div>
         ))}
       </dl>
@@ -98,14 +98,14 @@ export function BankTransferPanel({ goalId }: Props) {
       ) : !open ? (
         <button
           onClick={() => setOpen(true)}
-          className="inline-flex items-center gap-2 text-sm font-medium text-[#B85C38] hover:text-[#9A4A2E] transition-colors"
+          className="inline-flex items-center gap-2 text-sm font-medium text-[#6366f1] hover:text-[#4338ca] transition-colors"
         >
           <Mail size={14} />
           {t({ en: "Email me a receipt", ar: "أرسِل لي إيصالًا بالبريد" })}
         </button>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-3 border-t border-[#EDD9B4] pt-4 mt-2">
-          <p className="text-xs text-[#8C7B72]">
+        <form onSubmit={handleSubmit} className="space-y-3 border-t border-[#d6d3d1] pt-4 mt-2">
+          <p className="text-xs text-[#6b7280]">
             {t({
               en: "Enter your details and we'll email a professional receipt for your records.",
               ar: "أدخل بياناتك وسنرسل إليك إيصالًا رسميًا بالبريد الإلكتروني.",
@@ -118,7 +118,7 @@ export function BankTransferPanel({ goalId }: Props) {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="w-full rounded-lg border border-[#EDD9B4] bg-white px-3 py-2 text-sm text-[#1C1410] placeholder:text-[#C0AFA6] focus:outline-none focus:ring-2 focus:ring-[#B85C38]/40 focus:border-[#B85C38]"
+            className="w-full rounded-lg border border-[#d6d3d1] bg-white px-3 py-2 text-sm text-[#1e293b] placeholder:text-[#9ca3af] focus:outline-none focus:ring-2 focus:ring-[#6366f1]/40 focus:border-[#6366f1]"
           />
           <input
             type="email"
@@ -126,10 +126,10 @@ export function BankTransferPanel({ goalId }: Props) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full rounded-lg border border-[#EDD9B4] bg-white px-3 py-2 text-sm text-[#1C1410] placeholder:text-[#C0AFA6] focus:outline-none focus:ring-2 focus:ring-[#B85C38]/40 focus:border-[#B85C38]"
+            className="w-full rounded-lg border border-[#d6d3d1] bg-white px-3 py-2 text-sm text-[#1e293b] placeholder:text-[#9ca3af] focus:outline-none focus:ring-2 focus:ring-[#6366f1]/40 focus:border-[#6366f1]"
           />
           <div className="flex items-center gap-2">
-            <span className="text-sm text-[#8C7B72] flex-shrink-0">A$</span>
+            <span className="text-sm text-[#6b7280] flex-shrink-0">A$</span>
             <input
               type="number"
               placeholder={t({ en: "Amount transferred", ar: "المبلغ المحوَّل" })}
@@ -138,7 +138,7 @@ export function BankTransferPanel({ goalId }: Props) {
               min="1"
               step="0.01"
               required
-              className="flex-1 rounded-lg border border-[#EDD9B4] bg-white px-3 py-2 text-sm text-[#1C1410] placeholder:text-[#C0AFA6] focus:outline-none focus:ring-2 focus:ring-[#B85C38]/40 focus:border-[#B85C38]"
+              className="flex-1 rounded-lg border border-[#d6d3d1] bg-white px-3 py-2 text-sm text-[#1e293b] placeholder:text-[#9ca3af] focus:outline-none focus:ring-2 focus:ring-[#6366f1]/40 focus:border-[#6366f1]"
             />
           </div>
 
@@ -150,7 +150,7 @@ export function BankTransferPanel({ goalId }: Props) {
             <button
               type="submit"
               disabled={status === "sending"}
-              className="inline-flex items-center gap-2 rounded-lg bg-[#B85C38] px-4 py-2 text-sm font-semibold text-white hover:bg-[#9A4A2E] disabled:opacity-60 transition-colors"
+              className="inline-flex items-center gap-2 rounded-lg bg-[#6366f1] px-4 py-2 text-sm font-semibold text-white hover:bg-[#4338ca] disabled:opacity-60 transition-colors"
             >
               {status === "sending" && <Loader2 size={14} className="animate-spin" />}
               {t({ en: "Send receipt", ar: "إرسال الإيصال" })}
@@ -158,7 +158,7 @@ export function BankTransferPanel({ goalId }: Props) {
             <button
               type="button"
               onClick={() => { setOpen(false); setStatus("idle"); }}
-              className="text-sm text-[#8C7B72] hover:text-[#5A4034] transition-colors"
+              className="text-sm text-[#6b7280] hover:text-[#374151] transition-colors"
             >
               {t({ en: "Cancel", ar: "إلغاء" })}
             </button>

@@ -19,16 +19,16 @@ export function PartsClient({ goal }: { goal: Goal }) {
   const imageAlt = lang === "ar" ? arGoal.imageAlt ?? goal.imageAlt : goal.imageAlt;
 
   return (
-    <div className="bg-[#FDFAF6] min-h-screen">
+    <div className="bg-[#e7e5e4] min-h-screen">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20 pt-28">
         <BackLink href="/donate" label={{ en: "All donation options", ar: "كل خيارات التبرّع" }} />
 
         {/* Header */}
         <div className="relative h-52 rounded-3xl overflow-hidden mb-8">
           <Image src={goal.image} alt={imageAlt} fill className="object-cover object-center" sizes="(max-width: 768px) 100vw, 768px" priority />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#1C1410]/85 via-[#1C1410]/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1e293b]/85 via-[#1e293b]/30 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-7">
-            <p className="text-[#EDD9B4] text-xs uppercase tracking-widest mb-1">
+            <p className="text-[#d6d3d1] text-xs uppercase tracking-widest mb-1">
               {t({ en: "Total project", ar: "إجمالي المشروع" })} — {formatAUDFull(goal.goalAmount)}
             </p>
             <h1 className="text-3xl sm:text-4xl font-light text-white" style={{ fontFamily: "var(--font-serif)" }}>
@@ -37,8 +37,8 @@ export function PartsClient({ goal }: { goal: Goal }) {
           </div>
         </div>
 
-        <p className="text-[#3D2B1F] leading-relaxed mb-3">{description}</p>
-        <p className="text-xs text-[#8C7B72] italic mb-8">
+        <p className="text-[#374151] leading-relaxed mb-3">{description}</p>
+        <p className="text-xs text-[#6b7280] italic mb-8">
           {t({
             en: "The breakdown below shows estimated component costs. Give toward any part — or fund the whole project.",
             ar: "يوضّح التفصيل أدناه التكاليف التقديرية للمكوّنات. تبرّع لأيّ جزء — أو موّل المشروع كاملًا.",
@@ -48,21 +48,21 @@ export function PartsClient({ goal }: { goal: Goal }) {
         {/* Fund the whole thing */}
         <Link
           href={`/donate/${goal.id}`}
-          className="flex items-center justify-between gap-4 rounded-2xl border-2 border-[#B85C38] bg-[#FDF5F0] p-5 mb-6 hover:bg-[#FBEDE4] transition-colors"
+          className="flex items-center justify-between gap-4 rounded-2xl border-2 border-[#6366f1] bg-[#f5f5f4] p-5 mb-6 hover:bg-[#FBEDE4] transition-colors"
         >
           <div>
-            <p className="font-semibold text-[#1C1410]">{t({ en: "Give to the whole project", ar: "تبرّع للمشروع كاملًا" })}</p>
-            <p className="text-sm text-[#8C7B72]">
+            <p className="font-semibold text-[#1e293b]">{t({ en: "Give to the whole project", ar: "تبرّع للمشروع كاملًا" })}</p>
+            <p className="text-sm text-[#6b7280]">
               {t({ en: `Any amount toward ${goal.title.toLowerCase()}.`, ar: `أيّ مبلغ نحو ${title}.` })}
             </p>
           </div>
-          <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#B85C38] flex-shrink-0">
+          <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#6366f1] flex-shrink-0">
             {t({ en: "Donate", ar: "تبرّع" })} <ArrowRight size={16} />
           </span>
         </Link>
 
         {/* Parts */}
-        <h2 className="text-sm font-semibold uppercase tracking-widest text-[#8C7B72] mb-4">
+        <h2 className="text-sm font-semibold uppercase tracking-widest text-[#6b7280] mb-4">
           {t({ en: "Or fund a specific part", ar: "أو موّل جزءًا بعينه" })}
         </h2>
         <div className="space-y-3 mb-10">
@@ -73,17 +73,17 @@ export function PartsClient({ goal }: { goal: Goal }) {
               <Link
                 key={part.id}
                 href={`/donate/${goal.id}?part=${part.id}`}
-                className="flex items-center justify-between gap-4 rounded-2xl border border-[#EDD9B4] bg-white p-5 hover:border-[#B85C38] hover:shadow-sm transition-all"
+                className="flex items-center justify-between gap-4 rounded-2xl border border-[#d6d3d1] bg-white p-5 hover:border-[#6366f1] hover:shadow-sm transition-all"
               >
                 <div>
-                  <p className="font-semibold text-[#1C1410]">{partTitle}</p>
-                  <p className="text-sm text-[#8C7B72] leading-relaxed">{partNote}</p>
+                  <p className="font-semibold text-[#1e293b]">{partTitle}</p>
+                  <p className="text-sm text-[#6b7280] leading-relaxed">{partNote}</p>
                 </div>
                 <div className="text-right flex-shrink-0">
                   <p className="text-lg font-bold" style={{ fontFamily: "var(--font-serif)", color: "#C9952A" }}>
                     {formatAUDFull(part.amount)}
                   </p>
-                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#B85C38]">
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#6366f1]">
                     {t({ en: "Donate", ar: "تبرّع" })} <ArrowRight size={14} />
                   </span>
                 </div>

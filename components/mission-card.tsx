@@ -26,9 +26,11 @@ export function MissionCard({
   status,
 }: MissionCardProps) {
   const t = useT();
+  const href = `/missions/${slug}`;
+  const isLink = status === "active";
   return (
-    <article className="group rounded-2xl overflow-hidden bg-white shadow-sm border border-[#EDD9B4] hover:shadow-md transition-shadow">
-      <div className="relative h-64 overflow-hidden">
+    <article className="group rounded-2xl overflow-hidden bg-white shadow-sm border border-[#d6d3d1] hover:shadow-md transition-shadow">
+      <ConditionalLink href={href} enabled={isLink} className="block relative h-64 overflow-hidden">
         <Image
           src={imageSrc}
           alt={imageAlt}
@@ -38,37 +40,48 @@ export function MissionCard({
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         <div className="absolute bottom-4 left-4 flex gap-2">
-          <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-white/90 text-[#3D2B1F]">
+          <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-white/90 text-[#374151]">
             {country}
           </span>
           {status === "active" && (
-            <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-[#B85C38] text-white">
+            <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-[#6366f1] text-white">
               {t({ en: "Active", ar: "نشطة" })}
             </span>
           )}
         </div>
-      </div>
+      </ConditionalLink>
       <div className="p-6">
-        <h2
-          className="text-xl font-semibold text-[#1C1410] mb-2"
-          style={{ fontFamily: "var(--font-serif)" }}
-        >
-          {title}
-        </h2>
-        <p className="text-sm text-[#8C7B72] leading-relaxed mb-4">{summary}</p>
+        {isLink ? (
+          <Link href={href}>
+            <h2
+              className="text-xl font-semibold text-[#1e293b] mb-2 hover:text-[#6366f1] transition-colors"
+              style={{ fontFamily: "var(--font-serif)" }}
+            >
+              {title}
+            </h2>
+          </Link>
+        ) : (
+          <h2
+            className="text-xl font-semibold text-[#1e293b] mb-2"
+            style={{ fontFamily: "var(--font-serif)" }}
+          >
+            {title}
+          </h2>
+        )}
+        <p className="text-sm text-[#6b7280] leading-relaxed mb-4">{summary}</p>
         <div className="flex items-center justify-between">
-          <span className="text-xs text-[#8C7B72]">
+          <span className="text-xs text-[#6b7280]">
             {t({ en: `${childCount} children`, ar: `${childCount} طفلاً` })}
           </span>
-          {status === "active" ? (
+          {isLink ? (
             <Link
-              href={`/missions/${slug}`}
-              className="inline-flex items-center gap-1 text-sm font-semibold text-[#B85C38] hover:text-[#8B3E23] transition-colors"
+              href={href}
+              className="inline-flex items-center gap-1 text-sm font-semibold text-[#6366f1] hover:text-[#4f46e5] transition-colors"
             >
               {t({ en: "Read the story →", ar: "اقرأ القصة ←" })}
             </Link>
           ) : (
-            <span className="text-xs text-[#8C7B72] italic">
+            <span className="text-xs text-[#6b7280] italic">
               {t({ en: "Coming soon", ar: "قريبًا" })}
             </span>
           )}
@@ -76,4 +89,25 @@ export function MissionCard({
       </div>
     </article>
   );
+}
+
+function ConditionalLink({
+  href,
+  enabled,
+  className,
+  children,
+}: {
+  href: string;
+  enabled: boolean;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  if (enabled) {
+    return (
+      <Link href={href} className={className}>
+        {children}
+      </Link>
+    );
+  }
+  return <div className={className}>{children}</div>;
 }

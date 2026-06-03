@@ -41,7 +41,7 @@ export default async function DonateGoalPage({
       : { en: "All donation options", ar: "كل خيارات التبرّع" };
 
   return (
-    <div className="bg-[#FDFAF6] min-h-screen">
+    <div className="bg-[#e7e5e4] min-h-screen">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-20 pt-28">
         <BackLink href={backHref} label={backLabel} />
 
