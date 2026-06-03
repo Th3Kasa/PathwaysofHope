@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useT } from "@/lib/i18n";
 
 interface MissionCardProps {
   slug: string;
@@ -22,6 +25,7 @@ export function MissionCard({
   childCount,
   status,
 }: MissionCardProps) {
+  const t = useT();
   return (
     <article className="group rounded-2xl overflow-hidden bg-white shadow-sm border border-[#EDD9B4] hover:shadow-md transition-shadow">
       <div className="relative h-64 overflow-hidden">
@@ -39,7 +43,7 @@ export function MissionCard({
           </span>
           {status === "active" && (
             <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-[#B85C38] text-white">
-              Active
+              {t({ en: "Active", ar: "نشطة" })}
             </span>
           )}
         </div>
@@ -53,16 +57,20 @@ export function MissionCard({
         </h2>
         <p className="text-sm text-[#8C7B72] leading-relaxed mb-4">{summary}</p>
         <div className="flex items-center justify-between">
-          <span className="text-xs text-[#8C7B72]">{childCount} children</span>
+          <span className="text-xs text-[#8C7B72]">
+            {t({ en: `${childCount} children`, ar: `${childCount} طفلاً` })}
+          </span>
           {status === "active" ? (
             <Link
               href={`/missions/${slug}`}
               className="inline-flex items-center gap-1 text-sm font-semibold text-[#B85C38] hover:text-[#8B3E23] transition-colors"
             >
-              Read the story →
+              {t({ en: "Read the story →", ar: "اقرأ القصة ←" })}
             </Link>
           ) : (
-            <span className="text-xs text-[#8C7B72] italic">Coming soon</span>
+            <span className="text-xs text-[#8C7B72] italic">
+              {t({ en: "Coming soon", ar: "قريبًا" })}
+            </span>
           )}
         </div>
       </div>
