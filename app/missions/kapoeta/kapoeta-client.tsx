@@ -48,8 +48,8 @@ const TIMELINE: { period: Dict<string>; title: Dict<string>; body: Dict<string> 
     period: { en: "Before 2024", ar: "قبل 2024" },
     title: { en: "The Land & First Foundations", ar: "الأرض والأسس الأولى" },
     body: {
-      en: "Triple L Orphanage and Vulnerable Children Organization, the local entity in Kapoeta, was granted a 10,000 m² parcel (100 m × 100 m) by local authorities. The site was fenced, a water well was drilled — funded by Toongabbie Church and its supporters — and toilets and a small initial structure were built.",
-      ar: "مُنحت منظمة Triple L للأيتام والأطفال المستضعفين، وهي الجهة المحلية في كاپويتا، قطعة أرض مساحتها 10,000 م² (100 م × 100 م) من السلطات المحلية. سُيّجت الأرض، وحُفر بئر للمياه — بتمويل من كنيسة تونغابي وداعميها — وبُنيت دورات مياه ومبنى أوّليّ صغير.",
+      en: "Triple L Orphanage and Vulnerable Children Organization, the local entity in Kapoeta, was granted a 20,000 m² parcel (100 m × 200 m) by local authorities. The site was fenced — funded by a supporting family in the United States — a water well was drilled with support from Toongabbie Church and its members, and toilets and a small initial structure were built.",
+      ar: "مُنحت منظمة Triple L للأيتام والأطفال المستضعفين، وهي الجهة المحلية في كاپويتا، قطعة أرض مساحتها 20,000 م² (100 م × 200 م) من السلطات المحلية. سُيّجت الأرض — بتمويل من عائلة داعمة في الولايات المتحدة — وحُفر بئر للمياه بدعم من كنيسة تونغابي وأعضائها، وبُنيت دورات مياه ومبنى أوّليّ صغير.",
     },
   },
   {
@@ -72,8 +72,8 @@ const TIMELINE: { period: Dict<string>; title: Dict<string>; body: Dict<string> 
     period: { en: "December 2024", ar: "ديسمبر 2024" },
     title: { en: "Construction & Completion", ar: "البناء والإنجاز" },
     body: {
-      en: "A team from Sydney travelled to Kapoeta — joined by 2 supporters from the United States, 1 from the United Kingdom, and 1 from Egypt. All trip expenses were paid by the individuals themselves. Together they completed the 16 m × 9 m main building and put the container's contents to use.",
-      ar: "سافر فريق من سيدني إلى كاپويتا — انضمّ إليه 2 من الداعمين من الولايات المتحدة، و1 من المملكة المتحدة، و1 من مصر. ودفع كلٌّ منهم نفقات رحلته بنفسه. وأنجزوا معًا المبنى الرئيسي بمساحة 16 م × 9 م، ووضعوا محتويات الحاوية قيد الاستخدام.",
+      en: "A team from Sydney travelled to Kapoeta — joined by supporters from the United States and the United Kingdom. All trip expenses were paid by the individuals themselves. Together they completed the 16 m × 9 m main building and put the container's contents to use.",
+      ar: "سافر فريق من سيدني إلى كاپويتا — انضمّ إليه داعمون من الولايات المتحدة والمملكة المتحدة. ودفع كلٌّ منهم نفقات رحلته بنفسه. وأنجزوا معًا المبنى الرئيسي بمساحة 16 م × 9 م، ووضعوا محتويات الحاوية قيد الاستخدام.",
     },
   },
   {
@@ -88,8 +88,8 @@ const TIMELINE: { period: Dict<string>; title: Dict<string>; body: Dict<string> 
     period: { en: "Today", ar: "اليوم" },
     title: { en: "70 Children in Our Care", ar: "70 طفلاً في رعايتنا" },
     body: {
-      en: "The shelter now cares for 70 children. 18 of the youngest are taught at the centre during the week, and 26 older children, aged 8 to 16, are enrolled at a local Catholic school — uniforms, fees and registration paid through the shelter. That number keeps growing.",
-      ar: "يرعى الملجأ الآن 70 طفلاً. يتعلّم 18 من أصغرهم في المركز خلال الأسبوع، و26 من الأكبر سنًّا، تتراوح أعمارهم بين 8 و16 عامًا، مسجّلون في مدرسة كاثوليكية محلية — وتُدفع تكاليف الزيّ المدرسي والرسوم والتسجيل عبر الملجأ. وهذا العدد في ازدياد مستمر.",
+      en: "The shelter now cares for 70 children. The youngest are taught at the centre during the week, and 46 children are enrolled in the local Catholic school system for the 2026 academic year — uniforms, fees and registration paid through the shelter. That number keeps growing.",
+      ar: "يرعى الملجأ الآن 70 طفلاً. يتعلّم أصغرهم في المركز خلال الأسبوع، و46 طفلاً مسجّلون في نظام المدرسة الكاثوليكية المحلية للعام الدراسي 2026 — وتُدفع تكاليف الزيّ المدرسي والرسوم والتسجيل عبر الملجأ. وهذا العدد في ازدياد مستمر.",
     },
   },
 ];
@@ -113,8 +113,8 @@ const GOAL_META: Record<GoalId, { priority: number; why: Dict<string> }> = {
   "sponsor-a-child": {
     priority: 2,
     why: {
-      en: "A$600 covers one child's full year — meals, shelter, schooling, and the dignity of belonging. Of the 70 children in our care, 10 are already sponsored. 60 names are still waiting.",
-      ar: "يغطّي مبلغ A$600 عامًا كاملاً لطفل واحد — الطعام والمأوى والتعليم وكرامة الانتماء. من بين 70 طفلاً في رعايتنا، يُكفل 10 بالفعل. وما زال 60 اسمًا في الانتظار.",
+      en: "A$600 covers one child's full year — meals, shelter, schooling, and the dignity of belonging. Of the 70 children in our care, 46 are now in school. 24 names are still waiting for sponsorship.",
+      ar: "يغطّي مبلغ A$600 عامًا كاملاً لطفل واحد — الطعام والمأوى والتعليم وكرامة الانتماء. من بين 70 طفلاً في رعايتنا، 46 الآن في المدرسة. وما زال 24 اسمًا في انتظار الكفالة.",
     },
   },
   "chicken-coop": {
@@ -274,14 +274,14 @@ function StoryChapter1() {
           <motion.div variants={fadeUp} className="space-y-5 text-[#3D2B1F] text-lg leading-relaxed">
             <p>
               {t({
-                en: "Brother Hakim is a native of Kapoeta who, like so many in his generation, had migrated to the United States in search of a different life. With the encouragement of Pastor Aman — a Sudanese pastor based in the US — Hakim returned to the streets where he had grown up.",
-                ar: "الأخ حكيم من أبناء كاپويتا، وقد هاجر، مثل كثيرين من جيله، إلى الولايات المتحدة بحثًا عن حياة مختلفة. وبتشجيع من القس Aman — وهو قسّ سوداني مقيم في الولايات المتحدة — عاد حكيم إلى الشوارع التي نشأ فيها.",
+                en: "Brother Hakim is a native of Kapoeta who, like so many in his generation, had migrated to the United States in search of a different life. In response to a clear calling, he returned in 2020 — leaving the United States and his family behind — to the streets where he had grown up.",
+                ar: "الأخ حكيم من أبناء كاپويتا، وقد هاجر، مثل كثيرين من جيله، إلى الولايات المتحدة بحثًا عن حياة مختلفة. واستجابةً لدعوة واضحة، عاد عام 2020 — تاركًا الولايات المتحدة وعائلته — إلى الشوارع التي نشأ فيها.",
               })}
             </p>
             <p>
               {t({
-                en: "He found children there: between 150 and 200 of them, aged 2 to 18, sleeping near the local market, wearing tattered clothes, eating from trash bins, with no access to school. Hakim began with what he had — gathering them by day to teach Bible stories and hymns, share one meal, and offer the safety of presence.",
-                ar: "هناك وجد الأطفال: بين 150 و200 منهم، تتراوح أعمارهم بين 2 و18 عامًا، ينامون قرب السوق المحلي، يرتدون ثيابًا رثّة، يأكلون من صناديق القمامة، بلا فرصة للالتحاق بالمدرسة. وبدأ حكيم بما لديه — يجمعهم نهارًا ليعلّمهم قصص الكتاب المقدس والتراتيل، ويتقاسم معهم وجبة واحدة، ويمنحهم أمان الحضور.",
+                en: "He found children there: approximately 320 boys and girls, sleeping near the local market, wearing tattered clothes, eating from trash bins, with no access to school. Hakim began with what he had — gathering them by day to teach Bible stories and hymns, share one meal, and offer the safety of presence.",
+                ar: "هناك وجد الأطفال: نحو 320 من الأولاد والبنات، ينامون قرب السوق المحلي، يرتدون ثيابًا رثّة، يأكلون من صناديق القمامة، بلا فرصة للالتحاق بالمدرسة. وبدأ حكيم بما لديه — يجمعهم نهارًا ليعلّمهم قصص الكتاب المقدس والتراتيل، ويتقاسم معهم وجبة واحدة، ويمنحهم أمان الحضور.",
               })}
             </p>
           </motion.div>
@@ -310,9 +310,9 @@ function StoryChapter1() {
 function StatsStrip() {
   const t = useT();
   const stats = [
-    { value: 150, suffix: "+", label: { en: "Children served since 2024", ar: "أطفال شملتهم الرعاية منذ 2024" } },
+    { value: 320, suffix: "", label: { en: "Children first gathered from the streets", ar: "أطفال جُمِعوا أوّلًا من الشوارع" } },
     { value: 70, suffix: "", label: { en: "Children currently in our care", ar: "أطفال في رعايتنا حاليًا" } },
-    { value: 44, suffix: "", label: { en: "Children in formal education", ar: "أطفال في التعليم النظامي" } },
+    { value: 46, suffix: "", label: { en: "Children in school for 2026", ar: "أطفال في المدرسة لعام 2026" } },
     { value: 85000, prefix: "A$", suffix: "", label: { en: "Raised in opening campaign", ar: "جُمعت في الحملة الافتتاحية" } },
   ];
 
@@ -522,16 +522,16 @@ function OnTheGround() {
       title: { en: "Catholic School Partnership", ar: "شراكة المدرسة الكاثوليكية" },
       role: { en: "Education", ar: "التعليم" },
       body: {
-        en: "26 older children, aged 8–16, enrolled at a local Catholic school. Uniforms, fees and registration are funded through the shelter.",
-        ar: "26 طفلاً من الأكبر سنًّا، تتراوح أعمارهم بين 8 و16 عامًا، مسجّلون في مدرسة كاثوليكية محلية. وتُموَّل تكاليف الزيّ المدرسي والرسوم والتسجيل عبر الملجأ.",
+        en: "46 children are enrolled in the local Catholic school system for the 2026 academic year. Uniforms, fees and registration are funded through the shelter.",
+        ar: "46 طفلاً مسجّلون في نظام المدرسة الكاثوليكية المحلية للعام الدراسي 2026. وتُموَّل تكاليف الزيّ المدرسي والرسوم والتسجيل عبر الملجأ.",
       },
     },
     {
       title: { en: "On-site Preschool", ar: "روضة في الموقع" },
       role: { en: "Early Years", ar: "السنوات المبكرة" },
       body: {
-        en: "18 preschool-age children are educated at the centre by the team during the week.",
-        ar: "يتعلّم 18 طفلاً في سنّ ما قبل المدرسة في المركز على يد الفريق خلال الأسبوع.",
+        en: "The youngest, preschool-age children are educated at the centre by the team during the week.",
+        ar: "يتعلّم أصغر الأطفال في سنّ ما قبل المدرسة في المركز على يد الفريق خلال الأسبوع.",
       },
     },
     {

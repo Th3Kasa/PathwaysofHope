@@ -27,8 +27,8 @@ const MILESTONES: Milestone[] = [
     period: { en: "Before 2024", ar: "قبل 2024" },
     title: { en: "The ground is prepared", ar: "تهيئة الأرض" },
     body: {
-      en: "Local partner Triple L secured a 10,000 m² parcel of land in Kapoeta, fenced it, drilled a deep water well, and built the first toilets and a small building — laying the foundation for everything that followed.",
-      ar: "أمّن الشريك المحلي Triple L قطعة أرض مساحتها 10,000 م² في كاپويتا، وسيّجها، وحفر بئر مياه عميقة، وبنى أوّل دورات المياه ومبنى صغيرًا — ممّا أرسى الأساس لكل ما تلا ذلك.",
+      en: "Local partner Triple L secured a 20,000 m² (100 m × 200 m) parcel of land in Kapoeta, fenced it, drilled a deep water well, and built the first toilets and a small building — laying the foundation for everything that followed.",
+      ar: "أمّن الشريك المحلي Triple L قطعة أرض مساحتها 20,000 م² (100 م × 200 م) في كاپويتا، وسيّجها، وحفر بئر مياه عميقة، وبنى أوّل دورات المياه ومبنى صغيرًا — ممّا أرسى الأساس لكل ما تلا ذلك.",
     },
     image: "/images/kapoeta/field/children-playing-field-kapoeta.jpg",
     alt: {
@@ -66,8 +66,8 @@ const MILESTONES: Milestone[] = [
     period: { en: "December 2024", ar: "ديسمبر 2024" },
     title: { en: "A shelter rises", ar: "ملجأ يرتفع" },
     body: {
-      en: "A team travelled from Australia — joined by supporters from the United States, the United Kingdom and Egypt — to complete the build. The main 16 m × 9 m shelter, with its dormitories and multipurpose hall, was constructed.",
-      ar: "سافر فريق من أستراليا — انضمّ إليه مناصرون من الولايات المتحدة وبريطانيا ومصر — لإتمام البناء. وشُيّد الملجأ الرئيسي بمساحة 16 م × 9 م، بما فيه من مهاجع وقاعة متعدّدة الأغراض.",
+      en: "A team travelled from Australia — joined by supporters from the United States and the United Kingdom — to complete the build. The main 16 m × 9 m shelter, with its dormitories and multipurpose hall, was constructed.",
+      ar: "سافر فريق من أستراليا — انضمّ إليه مناصرون من الولايات المتحدة وبريطانيا — لإتمام البناء. وشُيّد الملجأ الرئيسي بمساحة 16 م × 9 م، بما فيه من مهاجع وقاعة متعدّدة الأغراض.",
     },
     image: "/images/kapoeta/field/shelter-steel-frame-construction-kapoeta.jpg",
     alt: {
@@ -92,8 +92,8 @@ const MILESTONES: Milestone[] = [
     period: { en: "2025", ar: "2025" },
     title: { en: "Back to school", ar: "العودة إلى المدرسة" },
     body: {
-      en: "Eighteen of the youngest children are now taught on-site, and 26 older children are enrolled in a local school — their uniforms, tuition and registration fees all funded by supporters.",
-      ar: "يُعلَّم الآن 18 من أصغر الأطفال داخل المركز، و26 من الأطفال الأكبر سنًّا ملتحقون بمدرسة محلية — وقد موّل المناصرون أزياءهم المدرسية ورسومهم الدراسية ورسوم تسجيلهم بالكامل.",
+      en: "The youngest children are now taught on-site, and 46 children are enrolled in the local Catholic school system for the 2026 academic year — their uniforms, tuition and registration fees all funded by supporters.",
+      ar: "يُعلَّم الآن أصغر الأطفال داخل المركز، و46 طفلاً ملتحقون بنظام المدرسة الكاثوليكية المحلية للعام الدراسي 2026 — وقد موّل المناصرون أزياءهم المدرسية ورسومهم الدراسية ورسوم تسجيلهم بالكامل.",
     },
     image: "/images/kapoeta/field/children-school-uniforms-group-kapoeta.jpg",
     alt: {
@@ -112,10 +112,10 @@ const NEXT: { title: Dict<string>; desc: Dict<string> }[] = [
     },
   },
   {
-    title: { en: "Electric water pump", ar: "مضخة مياه كهربائية" },
+    title: { en: "Water tank tower & solar pump", ar: "برج خزان المياه والمضخة الشمسية" },
     desc: {
-      en: "Clean water drawn from the deep well already on site — no more daily haul by hand.",
-      ar: "مياه نظيفة تُسحب من البئر العميقة الموجودة في الموقع — دون نقلٍ يومي باليد.",
+      en: "A tower to hold the water tank and a solar-powered electric pump — drawing clean water from the deep well to expand irrigation and end the daily haul by hand.",
+      ar: "برجٌ يحمل خزان المياه ومضخة كهربائية تعمل بالطاقة الشمسية — تسحب مياهًا نظيفة من البئر العميقة لتوسيع الريّ وإنهاء النقل اليومي باليد.",
     },
   },
   {

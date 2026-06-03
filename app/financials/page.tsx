@@ -14,31 +14,23 @@ const fadeUp: Variants = {
 };
 const stagger: Variants = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } } };
 
-// Real monthly operating statements from the field (Triple L Orphanage).
-const MONTHLY: { period: Dict<string>; total: number; lines: { item: Dict<string>; amount: number }[] }[] = [
+// Verified annual operating budget — the steady cost of running the shelter
+// and caring for 70 children, as set out in the charity's own newsletter.
+const ANNUAL_LINES: { item: Dict<string>; note: Dict<string>; amount: number }[] = [
   {
-    period: { en: "July 2025", ar: "July 2025" },
-    total: 4160,
-    lines: [
-      { item: { en: "Matron (Mrs Jackie) salary", ar: "راتب المربّية (السيدة Jackie)" }, amount: 240 },
-      { item: { en: "Evangelist (Mr Simon) salary", ar: "راتب المبشّر (السيد Simon)" }, amount: 160 },
-      { item: { en: "Cook", ar: "الطاهي" }, amount: 160 },
-      { item: { en: "Food materials", ar: "مواد غذائية" }, amount: 2400 },
-      { item: { en: "School shoes", ar: "أحذية مدرسية" }, amount: 200 },
-      { item: { en: "Flour for the bakery", ar: "دقيق للمخبز" }, amount: 1000 },
-    ],
+    item: { en: "Food", ar: "الطعام" },
+    note: { en: "A$2,500 / month", ar: "A$2,500 / شهريًا" },
+    amount: 30000,
   },
   {
-    period: { en: "March 2026", ar: "March 2026" },
-    total: 7560,
-    lines: [
-      { item: { en: "Staff salaries (matron, evangelist, cook)", ar: "رواتب العاملين (المربّية، المبشّر، الطاهي)" }, amount: 560 },
-      { item: { en: "Food materials", ar: "مواد غذائية" }, amount: 1280 },
-      { item: { en: "School expenses", ar: "مصاريف مدرسية" }, amount: 1600 },
-      { item: { en: "Medication", ar: "أدوية" }, amount: 80 },
-      { item: { en: "Building materials (gravel, sand, cement, iron)", ar: "مواد بناء (حصى، رمل، أسمنت، حديد)" }, amount: 2540 },
-      { item: { en: "Workmanship (partial payment)", ar: "أجور العمالة (دفعة جزئية)" }, amount: 1500 },
-    ],
+    item: { en: "Education", ar: "التعليم" },
+    note: { en: "School fees, uniforms & supplies", ar: "الرسوم المدرسية والزيّ والمستلزمات" },
+    amount: 6000,
+  },
+  {
+    item: { en: "Staff salaries", ar: "رواتب العاملين" },
+    note: { en: "Three caregivers", ar: "ثلاثة من القائمين على الرعاية" },
+    amount: 7000,
   },
 ];
 
@@ -117,42 +109,47 @@ export default function FinancialsPage() {
         </div>
       </section>
 
-      {/* Monthly operating statements */}
+      {/* Annual operating budget */}
       <section className="py-20 px-4 bg-[#F5EFE6]">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-3xl mx-auto">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} variants={fadeUp} className="mb-10">
-            <p className="text-[#B85C38] text-sm uppercase tracking-widest mb-3 font-medium">{t({ en: "Monthly operations", ar: "التشغيل الشهري" })}</p>
+            <p className="text-[#B85C38] text-sm uppercase tracking-widest mb-3 font-medium">{t({ en: "Running costs", ar: "تكاليف التشغيل" })}</p>
             <h2 className="text-3xl sm:text-4xl font-light text-[#1C1410]" style={{ fontFamily: "var(--font-serif)" }}>
-              {t({ en: "Real statements from the field.", ar: "بيانات حقيقية من الميدان." })}
+              {t({ en: "What it costs to care for 70 children.", ar: "كم تكلّف رعاية 70 طفلاً." })}
             </h2>
             <p className="text-[#8C7B72] mt-3 max-w-2xl">
               {t({
-                en: "Each month, the team in Kapoeta sends an itemised expense statement. Two recent examples:",
-                ar: "كل شهر، يرسل الفريق في كاپويتا بيانًا مفصّلًا بالنفقات بندًا بندًا. وهذان مثالان حديثان:",
+                en: "This is the steady annual cost of keeping the shelter open — food, education and the people who care for the children every day.",
+                ar: "هذه هي التكلفة السنوية الثابتة لإبقاء الملجأ مفتوحًا — الطعام والتعليم والأشخاص الذين يرعون الأطفال كل يوم.",
               })}
             </p>
           </motion.div>
-          <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-6" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={stagger}>
-            {MONTHLY.map((m) => (
-              <motion.div key={m.period.en} variants={fadeUp} className="bg-white rounded-2xl border border-[#EDD9B4] p-6 shadow-sm">
-                <div className="flex items-center gap-2 mb-4">
-                  <Receipt size={18} className="text-[#B85C38]" strokeWidth={1.75} />
-                  <h3 className="font-semibold text-[#1C1410]" style={{ fontFamily: "var(--font-serif)" }}>{t(m.period)}</h3>
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} className="bg-white rounded-2xl border border-[#EDD9B4] p-6 sm:p-8 shadow-sm">
+            <div className="flex items-center gap-2 mb-5">
+              <Receipt size={18} className="text-[#B85C38]" strokeWidth={1.75} />
+              <h3 className="font-semibold text-[#1C1410]" style={{ fontFamily: "var(--font-serif)" }}>{t({ en: "Annual operating budget", ar: "الميزانية التشغيلية السنوية" })}</h3>
+            </div>
+            <dl className="divide-y divide-[#F0E6D6]">
+              {ANNUAL_LINES.map((l) => (
+                <div key={l.item.en} className="flex items-center justify-between gap-3 py-3">
+                  <dt>
+                    <span className="text-sm font-medium text-[#3D2B1F]">{t(l.item)}</span>
+                    <span className="block text-xs text-[#A0918A]">{t(l.note)}</span>
+                  </dt>
+                  <dd className="text-sm font-semibold text-[#1C1410] tabular-nums flex-shrink-0">{formatAUDFull(l.amount)} <span className="text-xs font-normal text-[#A0918A]">{t({ en: "/ yr", ar: "/ سنويًا" })}</span></dd>
                 </div>
-                <dl className="divide-y divide-[#F0E6D6]">
-                  {m.lines.map((l) => (
-                    <div key={l.item.en} className="flex items-center justify-between gap-3 py-2">
-                      <dt className="text-sm text-[#3D2B1F]">{t(l.item)}</dt>
-                      <dd className="text-sm text-[#8C7B72] tabular-nums flex-shrink-0">{formatAUDFull(l.amount)}</dd>
-                    </div>
-                  ))}
-                </dl>
-                <div className="flex items-center justify-between mt-4 pt-3 border-t-2 border-[#EDD9B4]">
-                  <span className="text-sm font-semibold text-[#1C1410] uppercase tracking-wide">{t({ en: "Total", ar: "الإجمالي" })}</span>
-                  <span className="text-lg font-bold" style={{ fontFamily: "var(--font-serif)", color: "#C9952A" }}>{formatAUDFull(m.total)}</span>
-                </div>
-              </motion.div>
-            ))}
+              ))}
+            </dl>
+            <div className="flex items-center justify-between mt-4 pt-4 border-t-2 border-[#EDD9B4]">
+              <span className="text-sm font-semibold text-[#1C1410] uppercase tracking-wide">{t({ en: "Total per year", ar: "الإجمالي سنويًا" })}</span>
+              <span className="text-xl font-bold" style={{ fontFamily: "var(--font-serif)", color: "#C9952A" }}>≈ {formatAUDFull(45000)}</span>
+            </div>
+            <p className="text-xs text-[#8C7B72] italic mt-4">
+              {t({
+                en: "Figures above are the major categories; the rounded annual total of about A$45,000 also covers medical care and day-to-day incidentals. That is roughly A$54 per child per month.",
+                ar: "الأرقام أعلاه هي الفئات الرئيسية؛ ويشمل الإجمالي السنوي المقرّب البالغ نحو A$45,000 أيضًا الرعاية الطبية والنفقات اليومية الطارئة. أي ما يعادل نحو A$54 لكل طفل شهريًا.",
+              })}
+            </p>
           </motion.div>
         </div>
       </section>
