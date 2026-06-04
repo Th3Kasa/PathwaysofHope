@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 const MUAPI_BASE = "https://api.muapi.ai/api/v1";
-const MODEL = "google-imagen4-ultra"; // higher quality photorealistic
+const MODEL = "flux-kontext-max-t2i"; // photorealistic/cinematic, less restrictive than Imagen
 const MAX_ATTEMPTS = 3; // retry transient "Internal Error" failures
 
 /** Error thrown when MUAPI reports the generation itself failed (vs a transient network/poll error). */
