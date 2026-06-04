@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { isAuthed } from "@/lib/admin/auth";
 import { getConfig, saveConfig } from "@/lib/admin/store";
 import { KAPOETA_GOALS } from "@/lib/goals";
+import { ALL_SITE_SECTIONS } from "@/lib/admin/sections";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -16,10 +17,19 @@ export async function GET() {
     defaultImage: g.image,
   }));
 
+  const sections = ALL_SITE_SECTIONS.map((s) => ({
+    key: s.key,
+    label: s.label,
+    page: s.page,
+    defaultImage: s.defaultImage,
+    aiPrompt: s.aiPrompt,
+  }));
+
   return NextResponse.json({
     images: config.images,
     reports: config.reports,
     goals,
+    sections,
     blobReady: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
   });
 }

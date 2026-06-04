@@ -3,6 +3,7 @@ import { getGoalById, getPart } from "@/lib/goals";
 import { GOAL_AR } from "@/lib/goals-i18n";
 import { DonationPanel } from "@/components/donation-panel";
 import { BackLink } from "@/components/back-link";
+import { getConfig } from "@/lib/admin/store";
 
 export async function generateMetadata({
   params,
@@ -31,6 +32,7 @@ export default async function DonateGoalPage({
   if (!goal) notFound();
 
   const part = partId ? getPart(goal, partId) : undefined;
+  const { images } = await getConfig();
 
   // Bundles are normally reached via their breakdown page; link back there.
   const backHref = goal.kind === "bundle" ? `/donate/${goal.id}/parts` : "/donate";
@@ -45,7 +47,7 @@ export default async function DonateGoalPage({
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-24 sm:py-20 sm:pt-28">
         <BackLink href={backHref} label={backLabel} />
 
-        <DonationPanel goal={goal} part={part} />
+        <DonationPanel goal={goal} part={part} imageOverride={images[goal.id]} />
       </div>
     </div>
   );

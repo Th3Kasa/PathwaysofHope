@@ -20,6 +20,7 @@ import { GOAL_AR } from "@/lib/goals-i18n";
 interface Props {
   goal: Goal;
   part?: BreakdownPart;
+  imageOverride?: string;
 }
 
 function formatMoney(n: number): string {
@@ -27,7 +28,7 @@ function formatMoney(n: number): string {
   return Number.isInteger(n) ? formatAUDFull(n) : `A$${n.toFixed(2)}`;
 }
 
-export function DonationPanel({ goal, part }: Props) {
+export function DonationPanel({ goal, part, imageOverride }: Props) {
   const { lang } = useLang();
   const t = useT();
   const arGoal = GOAL_AR[goal.id];
@@ -131,7 +132,7 @@ export function DonationPanel({ goal, part }: Props) {
     >
       {/* Header image + title */}
       <div className="relative h-44 sm:h-52">
-        <Image src={goal.image} alt={goal.imageAlt} fill className="object-cover object-center" sizes="(max-width: 768px) 100vw, 768px" priority />
+        <Image src={imageOverride ?? goal.image} alt={goal.imageAlt} fill className="object-cover object-center" sizes="(max-width: 768px) 100vw, 768px" priority />
         <div className="absolute inset-0 bg-gradient-to-t from-[#1e293b]/85 via-[#1e293b]/30 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-6">
           {part && (

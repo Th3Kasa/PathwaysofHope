@@ -468,8 +468,8 @@ export default function FaqPage() {
               en: (
                 <>
                   Email us at{" "}
-                  <a href="mailto:stmarknubianfoundation@gmail.com" className="text-[#6366f1] font-medium hover:underline">
-                    stmarknubianfoundation@gmail.com
+                  <a href="mailto:pathways_of_hope@outlook.com" className="text-[#6366f1] font-medium hover:underline">
+                    pathways_of_hope@outlook.com
                   </a>{" "}
                   — we&apos;d love to hear from you.
                 </>
@@ -477,8 +477,8 @@ export default function FaqPage() {
               ar: (
                 <>
                   راسلنا على{" "}
-                  <a href="mailto:stmarknubianfoundation@gmail.com" className="text-[#6366f1] font-medium hover:underline">
-                    stmarknubianfoundation@gmail.com
+                  <a href="mailto:pathways_of_hope@outlook.com" className="text-[#6366f1] font-medium hover:underline">
+                    pathways_of_hope@outlook.com
                   </a>{" "}
                   — يسعدنا أن نسمع منك.
                 </>

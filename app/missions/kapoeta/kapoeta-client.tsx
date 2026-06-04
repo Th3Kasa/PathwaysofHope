@@ -25,6 +25,7 @@ import { useT, type Dict } from "@/lib/i18n";
 interface Props {
   totals: Record<string, { raised: number; supporters: number }> | null;
   goals: Goal[];
+  imageOverrides?: Record<string, string>;
 }
 
 const fadeUp: Variants = {
@@ -166,7 +167,7 @@ function Counter({ value, prefix = "", suffix = "" }: { value: number; prefix?: 
 
 /* ─── Hero ───────────────────────────────────────────────────── */
 
-function HeroSection() {
+function HeroSection({ imageOverrides }: { imageOverrides?: Record<string, string> }) {
   const t = useT();
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
@@ -176,7 +177,7 @@ function HeroSection() {
     <section ref={ref} className="relative h-screen min-h-[600px] flex items-end overflow-hidden">
       <motion.div className="absolute inset-0" style={{ y: imageY }}>
         <Image
-          src="/images/kapoeta/field/children-large-group-activity-kapoeta.jpg"
+          src={imageOverrides?.["kapoeta-hero"] ?? "/images/kapoeta/field/children-large-group-activity-kapoeta.jpg"}
           alt={t({
             en: "Children gathered together at the Kapoeta Children's Shelter, South Sudan",
             ar: "أطفال مجتمعون في ملجأ كاپويتا للأطفال، جنوب السودان",
@@ -224,7 +225,7 @@ function HeroSection() {
 
 /* ─── Chapter 1: The Calling ─────────────────────────────────── */
 
-function StoryChapter1() {
+function StoryChapter1({ imageOverrides }: { imageOverrides?: Record<string, string> }) {
   const t = useT();
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
@@ -243,7 +244,7 @@ function StoryChapter1() {
           {/* Replace with hakim-peter-compound-kapoeta.jpg once uploaded */}
           <motion.div className="absolute inset-0" style={{ y: imageY }}>
             <Image
-              src="/images/kapoeta/field/children-outdoor-activity-kapoeta.jpg"
+              src={imageOverrides?.["kapoeta-chapter1"] ?? "/images/kapoeta/field/children-outdoor-activity-kapoeta.jpg"}
               alt={t({
                 en: "Children gathered at the Kapoeta shelter — the community Brother Hakim built from nothing",
                 ar: "أطفال مجتمعون في ملجأ كاپويتا — المجتمع الذي بناه الأخ حكيم من لا شيء",
@@ -349,7 +350,7 @@ function StatsStrip() {
 
 /* ─── Chapter 2: The Container ───────────────────────────────── */
 
-function StoryChapter2() {
+function StoryChapter2({ imageOverrides }: { imageOverrides?: Record<string, string> }) {
   const t = useT();
   const containerContents: Dict<string>[] = [
     {
@@ -404,7 +405,7 @@ function StoryChapter2() {
           variants={staggerContainer}
         >
           <motion.div variants={scaleIn}>
-            <ContainerCarousel />
+            <ContainerCarousel imageOverrides={imageOverrides} />
           </motion.div>
 
           <motion.div variants={fadeUp}>
@@ -606,7 +607,7 @@ function OnTheGround() {
 
 /* ─── Container Carousel ─────────────────────────────────────── */
 
-function ContainerCarousel() {
+function ContainerCarousel({ imageOverrides }: { imageOverrides?: Record<string, string> }) {
   const t = useT();
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(0);
@@ -654,9 +655,14 @@ function ContainerCarousel() {
     },
   ];
 
+  const resolvedSlides = slides.map((slide, i) => ({
+    ...slide,
+    src: imageOverrides?.[`kapoeta-container-${i + 1}`] ?? slide.src,
+  }));
+
   const paginate = (dir: number) => {
     setDirection(dir);
-    setCurrent((c) => (c + dir + slides.length) % slides.length);
+    setCurrent((c) => (c + dir + resolvedSlides.length) % resolvedSlides.length);
   };
 
   const variants: Variants = {
@@ -685,15 +691,15 @@ function ContainerCarousel() {
           className="absolute inset-0 cursor-grab active:cursor-grabbing"
         >
           <Image
-            src={slides[current].src}
-            alt={t(slides[current].caption)}
+            src={resolvedSlides[current].src}
+            alt={t(resolvedSlides[current].caption)}
             fill
             className="object-cover object-center pointer-events-none"
             sizes="(max-width: 768px) 100vw, 50vw"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent pointer-events-none" />
           <p className="absolute bottom-12 left-4 right-12 text-white text-sm font-medium leading-snug pointer-events-none">
-            {t(slides[current].caption)}
+            {t(resolvedSlides[current].caption)}
           </p>
         </motion.div>
       </AnimatePresence>
@@ -716,7 +722,7 @@ function ContainerCarousel() {
 
       {/* Dots */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
-        {slides.map((_, i) => (
+        {resolvedSlides.map((_, i) => (
           <button
             key={i}
             onClick={() => { setDirection(i > current ? 1 : -1); setCurrent(i); }}
@@ -728,7 +734,7 @@ function ContainerCarousel() {
 
       {/* Counter */}
       <div className="absolute bottom-4 right-4 z-10 text-white/70 text-xs tabular-nums">
-        {current + 1} / {slides.length}
+        {current + 1} / {resolvedSlides.length}
       </div>
     </div>
   );
@@ -736,7 +742,7 @@ function ContainerCarousel() {
 
 /* ─── Gallery ────────────────────────────────────────────────── */
 
-function Gallery() {
+function Gallery({ imageOverrides }: { imageOverrides?: Record<string, string> }) {
   const t = useT();
   // Each image is a distinct moment — ordered as a story arc
   const images: { src: string; alt: Dict<string>; caption: Dict<string> }[] = [
@@ -877,6 +883,11 @@ function Gallery() {
     },
   ];
 
+  const resolvedImages = images.map((img, i) => ({
+    ...img,
+    src: imageOverrides?.[`kapoeta-gallery-${i + 1}`] ?? img.src,
+  }));
+
   return (
     <section className="py-12 sm:py-20 px-4 bg-[#1e293b] overflow-hidden">
       <motion.div
@@ -897,7 +908,7 @@ function Gallery() {
         </motion.div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
-          {images.map((img) => (
+          {resolvedImages.map((img) => (
             <motion.div
               key={img.src}
               variants={scaleIn}
@@ -1130,7 +1141,7 @@ function FinalCTA() {
           className="mt-14 pt-10 border-t border-[#d6d3d1] grid grid-cols-1 sm:grid-cols-3 gap-6 text-left sm:text-center"
         >
           {[
-            { label: { en: "Email", ar: "البريد الإلكتروني" }, value: "stmarknubianfoundation@gmail.com", href: "mailto:stmarknubianfoundation@gmail.com" },
+            { label: { en: "Email", ar: "البريد الإلكتروني" }, value: "pathways_of_hope@outlook.com", href: "mailto:pathways_of_hope@outlook.com" },
             { label: { en: "Mamdouh Mansour", ar: "Mamdouh Mansour" }, value: "0402 747 292", href: "tel:+61402747292" },
             { label: { en: "Philip Hanna", ar: "Philip Hanna" }, value: "0411 401 217", href: "tel:+61411401217" },
           ].map((c) => (
@@ -1149,16 +1160,16 @@ function FinalCTA() {
 
 /* ─── Page composition ───────────────────────────────────────── */
 
-export default function KapoetaClient({ totals, goals }: Props) {
+export default function KapoetaClient({ totals, goals, imageOverrides }: Props) {
   return (
     <div className="bg-[#e7e5e4]">
-      <HeroSection />
-      <StoryChapter1 />
+      <HeroSection imageOverrides={imageOverrides} />
+      <StoryChapter1 imageOverrides={imageOverrides} />
       <StatsStrip />
-      <StoryChapter2 />
+      <StoryChapter2 imageOverrides={imageOverrides} />
       <StoryChapter3 />
       <OnTheGround />
-      <Gallery />
+      <Gallery imageOverrides={imageOverrides} />
       <Achievements />
       <DonationsSection totals={totals} goals={goals} />
       <TrustStrip />

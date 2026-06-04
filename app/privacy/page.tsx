@@ -257,10 +257,10 @@ export default function PrivacyPage() {
                     <>
                       For any question about this policy, or to access or correct your information, email us at{" "}
                       <a
-                        href="mailto:stmarknubianfoundation@gmail.com"
+                        href="mailto:pathways_of_hope@outlook.com"
                         className="text-[#E4B84A] font-medium hover:underline"
                       >
-                        stmarknubianfoundation@gmail.com
+                        pathways_of_hope@outlook.com
                       </a>
                       . We will respond as promptly as we can.
                     </>
@@ -269,10 +269,10 @@ export default function PrivacyPage() {
                     <>
                       لأيّ سؤال حول هذه السياسة، أو للاطّلاع على معلوماتك أو تصحيحها، راسلنا على{" "}
                       <a
-                        href="mailto:stmarknubianfoundation@gmail.com"
+                        href="mailto:pathways_of_hope@outlook.com"
                         className="text-[#E4B84A] font-medium hover:underline"
                       >
-                        stmarknubianfoundation@gmail.com
+                        pathways_of_hope@outlook.com
                       </a>
                       . وسنردّ في أسرع وقت ممكن.
                     </>

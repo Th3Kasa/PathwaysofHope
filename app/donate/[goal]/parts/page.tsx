@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getGoalById } from "@/lib/goals";
 import { PartsClient } from "@/app/donate/[goal]/parts/parts-client";
+import { getConfig } from "@/lib/admin/store";
 
 export async function generateMetadata({
   params,
@@ -25,5 +26,6 @@ export default async function BundleBreakdownPage({
 
   if (!goal || goal.kind !== "bundle" || !goal.breakdown) notFound();
 
-  return <PartsClient goal={goal} />;
+  const { images } = await getConfig();
+  return <PartsClient goal={goal} imageOverride={images[goal.id]} />;
 }

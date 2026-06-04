@@ -106,8 +106,8 @@ export const KAPOETA_GOALS: Goal[] = [
     kind: "bundle",
     recurringByNature: false,
     presets: [25, 50, 100, 250, 500],
-    image: "/images/kapoeta/field/child-eating-bowl-rice-kapoeta.jpg",
-    imageAlt: "Children at a meal at the Kapoeta shelter",
+    image: "/images/people/mamdouh-mansour-cornfield-kapoeta.jpg",
+    imageAlt: "Maize growing on the Kapoeta shelter grounds — the chicken coop will add eggs to the same self-sustaining food system",
     breakdown: [
       {
         id: "coop",
@@ -178,8 +178,8 @@ export const KAPOETA_GOALS: Goal[] = [
     unitAmount: 600,
     unitNoun: "child",
     presets: [600],
-    image: "/images/kapoeta/field/children-group-portrait-shelter.jpg",
-    imageAlt: "Children at the Kapoeta Children's Shelter",
+    image: "/images/kapoeta/field/children-playing-field-kapoeta.jpg",
+    imageAlt: "Children playing freely at the Kapoeta shelter — the safe, joyful childhood your sponsorship makes possible",
   },
   {
     id: "where-most-needed",
