@@ -15,6 +15,7 @@ interface GoalMeta { id: string; title: string; defaultImage: string }
 interface ReportItem { id: string; title: string; year: string; url: string; uploadedAt: string }
 interface Config {
   images: Record<string, string>;
+  titles: Record<string, string>;
   reports: ReportItem[];
   goals: GoalMeta[];
   sections: SectionMeta[];
@@ -35,6 +36,65 @@ function Toast({ msg, kind }: { msg: string; kind: "ok" | "err" }) {
     <div className={`flex items-center gap-2 text-sm rounded-xl px-4 py-2.5 ${kind === "ok" ? "bg-green-50 border border-green-200 text-green-700" : "bg-red-50 border border-red-200 text-red-700"}`}>
       {kind === "ok" ? <CheckCircle2 size={15} /> : <TriangleAlert size={15} />}
       <span>{msg}</span>
+    </div>
+  );
+}
+
+// ─── Title Input ──────────────────────────────────────────────────────────────
+
+function TitleInput({ itemKey, value: externalValue, compact, reload }: {
+  itemKey: string; value: string; compact?: boolean; reload: () => void;
+}) {
+  const [value, setValue] = useState(externalValue);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => { setValue(externalValue); }, [externalValue]);
+
+  const save = async () => {
+    setSaving(true);
+    await fetch("/api/admin/config", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(value.trim() ? { setTitle: { key: itemKey, value: value.trim() } } : { resetTitleKey: itemKey }),
+    });
+    setSaving(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+    reload();
+  };
+
+  if (compact) {
+    return (
+      <div className="relative mt-1.5 mb-2">
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onBlur={save}
+          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); (e.target as HTMLInputElement).blur(); } }}
+          placeholder="Caption (optional)"
+          className="w-full px-2 py-1 text-[10px] border border-[#d6d3d1] rounded-md text-[#374151] focus:outline-none focus:border-[#6366f1] bg-white pr-8"
+        />
+        {saving && <Loader2 size={9} className="absolute right-1.5 top-1/2 -translate-y-1/2 animate-spin text-[#6b7280]" />}
+        {saved && !saving && <span className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[9px] text-green-600 font-semibold">✓</span>}
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative mt-1 mb-3">
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onBlur={save}
+        onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); (e.target as HTMLInputElement).blur(); } }}
+        placeholder="Caption / alt text shown on site (optional)"
+        className="w-full px-3 py-1.5 text-xs border border-[#d6d3d1] rounded-lg text-[#1e293b] focus:outline-none focus:border-[#6366f1] bg-white pr-14"
+      />
+      {saving && <Loader2 size={10} className="absolute right-2.5 top-1/2 -translate-y-1/2 animate-spin text-[#6b7280]" />}
+      {saved && !saving && <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-green-600 font-semibold">Saved ✓</span>}
     </div>
   );
 }
@@ -130,9 +190,9 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
 // ─── Photo Row (row layout for Home / Kapoeta) ────────────────────────────────
 
 function PhotoRow({
-  itemKey, label, currentImage, hasOverride, aiPrompt, reload,
+  itemKey, label, currentImage, currentTitle, hasOverride, aiPrompt, reload,
 }: {
-  itemKey: string; label: string; currentImage: string; hasOverride: boolean;
+  itemKey: string; label: string; currentImage: string; currentTitle: string; hasOverride: boolean;
   aiPrompt: string; reload: () => void;
 }) {
   const fileRef = useRef<HTMLInputElement>(null);
@@ -179,7 +239,8 @@ function PhotoRow({
 
       {/* Controls */}
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold text-[#1e293b] mb-3">{label}</p>
+        <p className="text-sm font-semibold text-[#1e293b] mb-0">{label}</p>
+        <TitleInput itemKey={itemKey} value={currentTitle} reload={reload} />
         <div className="flex flex-wrap gap-2">
           <input ref={fileRef} type="file" accept="image/*" hidden onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])} />
           <button onClick={() => fileRef.current?.click()} disabled={uploading || generating} className={btnGhost}>
@@ -204,9 +265,9 @@ function PhotoRow({
 // ─── Gallery Card (compact 2/3/4-col grid layout) ─────────────────────────────
 
 function GalleryCard({
-  itemKey, label, currentImage, hasOverride, aiPrompt, reload,
+  itemKey, label, currentImage, currentTitle, hasOverride, aiPrompt, reload,
 }: {
-  itemKey: string; label: string; currentImage: string; hasOverride: boolean;
+  itemKey: string; label: string; currentImage: string; currentTitle: string; hasOverride: boolean;
   aiPrompt: string; reload: () => void;
 }) {
   const fileRef = useRef<HTMLInputElement>(null);
@@ -253,7 +314,8 @@ function GalleryCard({
 
       {/* Label + buttons */}
       <div className="p-2.5">
-        <p className="text-xs font-semibold text-[#1e293b] mb-2 truncate">{label}</p>
+        <p className="text-xs font-semibold text-[#1e293b] mb-0 truncate">{label}</p>
+        <TitleInput itemKey={itemKey} value={currentTitle} compact reload={reload} />
         <div className="flex flex-wrap gap-1">
           <input ref={fileRef} type="file" accept="image/*" hidden onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])} />
           <button onClick={() => fileRef.current?.click()} disabled={uploading || generating} className={btnCompact}>
@@ -304,9 +366,9 @@ function GroupHeader({
 // ─── Page Group (accordion for Home / Kapoeta Mission) ───────────────────────
 
 function PageGroup({
-  title, sections, images, reload,
+  title, sections, images, titles, reload,
 }: {
-  title: string; sections: SectionMeta[]; images: Record<string, string>; reload: () => void;
+  title: string; sections: SectionMeta[]; images: Record<string, string>; titles: Record<string, string>; reload: () => void;
 }) {
   const [open, setOpen] = useState(false);
   const overrides = sections.filter((s) => Boolean(images[s.key])).length;
@@ -322,6 +384,7 @@ function PageGroup({
               itemKey={s.key}
               label={s.label}
               currentImage={images[s.key] ?? s.defaultImage}
+              currentTitle={titles[s.key] ?? ""}
               hasOverride={Boolean(images[s.key])}
               aiPrompt={s.aiPrompt}
               reload={reload}
@@ -336,9 +399,9 @@ function PageGroup({
 // ─── Gallery Group (compact grid accordion) ───────────────────────────────────
 
 function GalleryGroup({
-  sections, images, reload,
+  sections, images, titles, reload,
 }: {
-  sections: SectionMeta[]; images: Record<string, string>; reload: () => void;
+  sections: SectionMeta[]; images: Record<string, string>; titles: Record<string, string>; reload: () => void;
 }) {
   const [open, setOpen] = useState(false);
   const overrides = sections.filter((s) => Boolean(images[s.key])).length;
@@ -354,6 +417,7 @@ function GalleryGroup({
               itemKey={s.key}
               label={s.label}
               currentImage={images[s.key] ?? s.defaultImage}
+              currentTitle={titles[s.key] ?? ""}
               hasOverride={Boolean(images[s.key])}
               aiPrompt={s.aiPrompt}
               reload={reload}
@@ -377,9 +441,9 @@ const GOAL_AI_PROMPTS: Record<string, string> = {
 };
 
 function GoalsGroup({
-  goals, images, reload,
+  goals, images, titles, reload,
 }: {
-  goals: GoalMeta[]; images: Record<string, string>; reload: () => void;
+  goals: GoalMeta[]; images: Record<string, string>; titles: Record<string, string>; reload: () => void;
 }) {
   const [open, setOpen] = useState(false);
   const overrides = goals.filter((g) => Boolean(images[g.id])).length;
@@ -395,6 +459,7 @@ function GoalsGroup({
               itemKey={goal.id}
               label={goal.title}
               currentImage={images[goal.id] ?? goal.defaultImage}
+              currentTitle={titles[goal.id] ?? ""}
               hasOverride={Boolean(images[goal.id])}
               aiPrompt={GOAL_AI_PROMPTS[goal.id] ?? `Photorealistic photo related to: ${goal.title}, South Sudan charity, documentary style`}
               reload={reload}
@@ -420,10 +485,10 @@ function PhotosPanel({ config, reload }: { config: Config; reload: () => void })
         Manage photos across every page of the site. Click a group to expand it, then upload, generate with AI, or reset each photo.
       </p>
       <div className="space-y-3">
-        <PageGroup title="Home Page" sections={homeSections} images={config.images} reload={reload} />
-        <PageGroup title="Kapoeta Mission" sections={kapoetaSections} images={config.images} reload={reload} />
-        <GalleryGroup sections={gallerySections} images={config.images} reload={reload} />
-        <GoalsGroup goals={config.goals} images={config.images} reload={reload} />
+        <PageGroup title="Home Page" sections={homeSections} images={config.images} titles={config.titles} reload={reload} />
+        <PageGroup title="Kapoeta Mission" sections={kapoetaSections} images={config.images} titles={config.titles} reload={reload} />
+        <GalleryGroup sections={gallerySections} images={config.images} titles={config.titles} reload={reload} />
+        <GoalsGroup goals={config.goals} images={config.images} titles={config.titles} reload={reload} />
       </div>
     </section>
   );

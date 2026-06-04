@@ -63,20 +63,23 @@ export async function POST(req: NextRequest) {
   const { request_id } = await submitRes.json();
   if (!request_id) return NextResponse.json({ error: "No request_id from MUAPI" }, { status: 502 });
 
-  // Poll for result
-  const imageUrl = await pollResult(String(request_id), apiKey);
+  // Poll, download, and save — all wrapped so errors return JSON not HTML
+  try {
+    const imageUrl = await pollResult(String(request_id), apiKey);
 
-  // Download the generated image
-  const imgRes = await fetch(imageUrl);
-  if (!imgRes.ok) throw new Error("Failed to download generated image");
-  const imgBuffer = Buffer.from(await imgRes.arrayBuffer());
-  const contentType = imgRes.headers.get("content-type") || "image/jpeg";
+    const imgRes = await fetch(imageUrl);
+    if (!imgRes.ok) throw new Error(`Failed to download generated image (${imgRes.status})`);
+    const imgBuffer = Buffer.from(await imgRes.arrayBuffer());
+    const contentType = imgRes.headers.get("content-type") || "image/jpeg";
 
-  // Save to Vercel Blob and update config
-  const blobUrl = await uploadFile(`sections/${sectionKey}-ai.jpg`, imgBuffer, contentType);
-  const config = await getConfig();
-  config.images[sectionKey] = blobUrl;
-  await saveConfig(config);
+    const blobUrl = await uploadFile(`sections/${sectionKey}-ai.jpg`, imgBuffer, contentType);
+    const config = await getConfig();
+    config.images[sectionKey] = blobUrl;
+    await saveConfig(config);
 
-  return NextResponse.json({ ok: true, url: blobUrl });
+    return NextResponse.json({ ok: true, url: blobUrl });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "Generation failed";
+    return NextResponse.json({ error: msg }, { status: 500 });
+  }
 }
