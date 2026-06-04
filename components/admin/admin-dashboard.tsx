@@ -174,7 +174,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
               <div className="rounded-2xl bg-amber-50 border border-amber-200 px-5 py-4 flex gap-3">
                 <TriangleAlert size={18} className="text-amber-600 mt-0.5 flex-shrink-0" />
                 <div className="text-sm text-amber-800">
-                  <strong>Storage not connected.</strong> Go to your Vercel dashboard → Storage → Create a Blob store → Connect to this project. The <code>BLOB_READ_WRITE_TOKEN</code> will be injected automatically. Until then, uploads cannot be saved.
+                  <strong>Storage not connected.</strong> Go to your Vercel dashboard → Storage → Create a Blob store → Connect to this project. Vercel will inject a Blob token automatically on the next deploy. Until then, uploads cannot be saved.
                 </div>
               </div>
             )}
