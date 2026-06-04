@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   motion,
+  AnimatePresence,
   useInView,
   useScroll,
   useTransform,
@@ -12,11 +13,11 @@ import {
   animate,
   type Variants,
 } from "framer-motion";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { GoalMeter } from "@/components/goal-meter";
 import { DonateButton } from "@/components/donate-button";
 import { TrustStrip } from "@/components/trust-strip";
-import { Baby, Droplets, Egg, HeartHandshake, Sun, CheckCircle2 } from "lucide-react";
+import { Baby, Droplets, Egg, HeartHandshake, Sun, CheckCircle2, ChevronLeft, ChevronRight } from "lucide-react";
 import { DELIVERED, DELIVERED_TOTAL, type Goal, type GoalId } from "@/lib/goals";
 import { formatAUDFull } from "@/lib/utils";
 import { useT, type Dict } from "@/lib/i18n";
@@ -173,10 +174,10 @@ function HeroSection() {
     <section ref={ref} className="relative h-screen min-h-[600px] flex items-end overflow-hidden">
       <motion.div className="absolute inset-0" style={{ y: imageY }}>
         <Image
-          src="/images/kapoeta/field/children-group-portrait-shelter.jpg"
+          src="/images/kapoeta/field/children-large-group-activity-kapoeta.jpg"
           alt={t({
-            en: "Children waving in front of the completed Kapoeta Children's Shelter, 2025",
-            ar: "أطفال يلوّحون أمام ملجأ كاپويتا للأطفال بعد اكتماله، 2025",
+            en: "Children gathered together at the Kapoeta Children's Shelter, South Sudan",
+            ar: "أطفال مجتمعون في ملجأ كاپويتا للأطفال، جنوب السودان",
           })}
           fill
           priority
@@ -237,12 +238,13 @@ function StoryChapter1() {
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
+          {/* Replace with hakim-peter-compound-kapoeta.jpg once uploaded */}
           <motion.div className="absolute inset-0" style={{ y: imageY }}>
             <Image
-              src="/images/kapoeta/field/children-sitting-bench-kapoeta.jpg"
+              src="/images/kapoeta/field/children-outdoor-activity-kapoeta.jpg"
               alt={t({
-                en: "Brother Hakim, founder and leader of the Kapoeta Children's Shelter, at the site in Kapoeta, South Sudan",
-                ar: "الأخ حكيم، مؤسّس وقائد ملجأ كاپويتا للأطفال، في الموقع في كاپويتا، جنوب السودان",
+                en: "Children gathered at the Kapoeta shelter — the community Brother Hakim built from nothing",
+                ar: "أطفال مجتمعون في ملجأ كاپويتا — المجتمع الذي بناه الأخ حكيم من لا شيء",
               })}
               fill
               className="object-cover object-center"
@@ -399,17 +401,8 @@ function StoryChapter2() {
           viewport={{ once: true, amount: 0.2 }}
           variants={staggerContainer}
         >
-          <motion.div variants={scaleIn} className="relative h-[420px] rounded-2xl overflow-hidden shadow-xl">
-            <Image
-              src="/images/kapoeta/field/container-contents-mattresses-materials.jpg"
-              alt={t({
-                en: "Mattresses and materials from the container — packed by volunteers in Sydney and shipped to Kapoeta",
-                ar: "مراتب ومواد من الحاوية — عبّأها متطوّعون في سيدني وشُحنت إلى كاپويتا",
-              })}
-              fill
-              className="object-cover object-center"
-              sizes="(max-width: 768px) 100vw, 50vw"
-            />
+          <motion.div variants={scaleIn}>
+            <ContainerCarousel />
           </motion.div>
 
           <motion.div variants={fadeUp}>
@@ -609,6 +602,120 @@ function OnTheGround() {
   );
 }
 
+/* ─── Container Carousel ─────────────────────────────────────── */
+
+function ContainerCarousel() {
+  const t = useT();
+  const [current, setCurrent] = useState(0);
+  const [direction, setDirection] = useState(0);
+
+  const slides: { src: string; caption: Dict<string> }[] = [
+    {
+      src: "/images/kapoeta/field/container-contents-mattresses-materials.jpg",
+      caption: { en: "Mattresses packed in Sydney, bound for Kapoeta", ar: "مراتب عُبّئت في سيدني، في طريقها إلى كاپويتا" },
+    },
+    {
+      src: "/images/kapoeta/field/shelter-steel-frame-construction-kapoeta.jpg",
+      caption: { en: "The steel frame going up on site", ar: "الهيكل الفولاذي يرتفع في الموقع" },
+    },
+    {
+      src: "/images/kapoeta/field/shelter-brickwall-construction-progress.jpg",
+      caption: { en: "Brick by brick — walls built by hand", ar: "لبنةً فلبنة — جدران بُنيت باليد" },
+    },
+    {
+      src: "/images/kapoeta/field/shelter-brickwall-steel-frame-kapoeta.jpg",
+      caption: { en: "Brick walls meet steel frame", ar: "الجدران الطوبية تلتقي بالهيكل الفولاذي" },
+    },
+    {
+      src: "/images/kapoeta/field/bunkbeds-assembled-outdoor-kapoeta.jpg",
+      caption: { en: "Bunkbeds assembled and ready to move in", ar: "الأسرّة المزدوجة جاهزة للاستخدام" },
+    },
+    {
+      src: "/images/kapoeta/field/community-hall-worship-service-kapoeta.jpg",
+      caption: { en: "The finished dormitory — safe beds for every child", ar: "المهجع المكتمل — سرير آمن لكل طفل" },
+    },
+  ];
+
+  const paginate = (dir: number) => {
+    setDirection(dir);
+    setCurrent((c) => (c + dir + slides.length) % slides.length);
+  };
+
+  const variants: Variants = {
+    enter: (d: number) => ({ x: d > 0 ? "60%" : "-60%", opacity: 0 }),
+    center: { x: 0, opacity: 1, transition: { duration: 0.38, ease: [0.22, 1, 0.36, 1] } },
+    exit: (d: number) => ({ x: d > 0 ? "-60%" : "60%", opacity: 0, transition: { duration: 0.28, ease: [0.22, 1, 0.36, 1] } }),
+  };
+
+  return (
+    <div className="relative h-[420px] rounded-2xl overflow-hidden shadow-xl select-none">
+      <AnimatePresence initial={false} custom={direction} mode="popLayout">
+        <motion.div
+          key={current}
+          custom={direction}
+          variants={variants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.15}
+          onDragEnd={(_, info) => {
+            if (info.offset.x < -40) paginate(1);
+            else if (info.offset.x > 40) paginate(-1);
+          }}
+          className="absolute inset-0 cursor-grab active:cursor-grabbing"
+        >
+          <Image
+            src={slides[current].src}
+            alt={t(slides[current].caption)}
+            fill
+            className="object-cover object-center pointer-events-none"
+            sizes="(max-width: 768px) 100vw, 50vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent pointer-events-none" />
+          <p className="absolute bottom-12 left-4 right-12 text-white text-sm font-medium leading-snug pointer-events-none">
+            {t(slides[current].caption)}
+          </p>
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Prev / Next */}
+      <button
+        onClick={() => paginate(-1)}
+        className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center transition-colors"
+        aria-label="Previous photo"
+      >
+        <ChevronLeft size={18} />
+      </button>
+      <button
+        onClick={() => paginate(1)}
+        className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center transition-colors"
+        aria-label="Next photo"
+      >
+        <ChevronRight size={18} />
+      </button>
+
+      {/* Dots */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => { setDirection(i > current ? 1 : -1); setCurrent(i); }}
+            className={`rounded-full transition-all duration-200 ${i === current ? "w-4 h-1.5 bg-white" : "w-1.5 h-1.5 bg-white/45 hover:bg-white/70"}`}
+            aria-label={`Go to photo ${i + 1}`}
+          />
+        ))}
+      </div>
+
+      {/* Counter */}
+      <div className="absolute bottom-4 right-4 z-10 text-white/70 text-xs tabular-nums">
+        {current + 1} / {slides.length}
+      </div>
+    </div>
+  );
+}
+
 /* ─── Gallery ────────────────────────────────────────────────── */
 
 function Gallery() {
@@ -616,52 +723,64 @@ function Gallery() {
   // Each image is a distinct moment — ordered as a story arc
   const images: { src: string; alt: Dict<string>; caption: Dict<string> }[] = [
     {
-      src: "/images/kapoeta/field/children-playing-field-kapoeta.jpg",
-      alt: {
-        en: "The children of Kapoeta — before the shelter existed, gathered together outdoors",
-        ar: "أطفال كاپويتا — قبل وجود الملجأ، مجتمعين في العراء",
-      },
-      caption: { en: "The children we found", ar: "الأطفال الذين وجدناهم" },
+      src: "/images/kapoeta/field/child-eating-bowl-rice-kapoeta.jpg",
+      alt: { en: "A young child eating rice from a bowl — one of the children found on the streets of Kapoeta", ar: "طفل صغير يأكل الأرز من وعاء — أحد الأطفال الذين وُجدوا في شوارع كاپويتا" },
+      caption: { en: "A child found on the streets", ar: "طفل وُجد في الشوارع" },
+    },
+    {
+      src: "/images/kapoeta/field/child-sibling-carrying-baby-kapoeta.jpg",
+      alt: { en: "An older child carrying a baby sibling — family bonds in Kapoeta", ar: "طفل أكبر سنًّا يحمل رضيعًا — روابط عائلية في كاپويتا" },
+      caption: { en: "Brothers and sisters", ar: "إخوة وأخوات" },
+    },
+    {
+      src: "/images/kapoeta/field/shelter-brickwall-construction-progress.jpg",
+      alt: { en: "A worker laying bricks by hand — the shelter walls being built in Kapoeta, 2024", ar: "عامل يضع الطوب يدويًا — جدران الملجأ قيد البناء في كاپويتا، 2024" },
+      caption: { en: "Built brick by brick", ar: "بُني لبنةً فلبنة" },
     },
     {
       src: "/images/kapoeta/field/shelter-steel-frame-construction-kapoeta.jpg",
-      alt: {
-        en: "The Kapoeta shelter steel frame under construction, 2024",
-        ar: "الهيكل الفولاذي لملجأ كاپويتا قيد الإنشاء، 2024",
-      },
+      alt: { en: "The Kapoeta shelter steel frame rising from the ground, 2024", ar: "الهيكل الفولاذي لملجأ كاپويتا يرتفع من الأرض، 2024" },
       caption: { en: "The building going up", ar: "المبنى يرتفع" },
     },
     {
-      src: "/images/kapoeta/field/children-group-portrait-shelter.jpg",
-      alt: {
-        en: "Children waving in front of the completed shelter wall, Kapoeta 2025",
-        ar: "أطفال يلوّحون أمام جدار الملجأ بعد اكتماله، كاپويتا 2025",
-      },
-      caption: { en: "Home — finished", ar: "البيت — وقد اكتمل" },
+      src: "/images/kapoeta/field/community-hall-worship-service-kapoeta.jpg",
+      alt: { en: "Rows of white bunk beds inside the completed Kapoeta Children's Shelter dormitory", ar: "صفوف من الأسرّة المزدوجة البيضاء داخل مهجع ملجأ كاپويتا المكتمل" },
+      caption: { en: "Their first safe beds", ar: "أوّل أسرّةٍ آمنة لهم" },
     },
     {
-      src: "/images/kapoeta/field/bunkbeds-dormitory-interior-kapoeta.jpg",
-      alt: {
-        en: "Rows of white bunk beds inside the completed Kapoeta Children's Shelter dormitory",
-        ar: "صفوف من الأسرّة البيضاء بطابقين داخل مهجع ملجأ كاپويتا للأطفال بعد اكتماله",
-      },
-      caption: { en: "Their first beds", ar: "أسرّتهم الأولى" },
-    },
-    {
-      src: "/images/kapoeta/field/children-sitting-bench-kapoeta.jpg",
-      alt: {
-        en: "Children sitting on bamboo benches at the shelter compound, Kapoeta",
-        ar: "أطفال يجلسون على مقاعد من الخيزران في باحة الملجأ، كاپويتا",
-      },
-      caption: { en: "Growing their own food", ar: "يزرعون طعامهم بأنفسهم" },
+      src: "/images/kapoeta/field/children-large-group-activity-kapoeta.jpg",
+      alt: { en: "Children gathered in a circle under a tree for a structured activity at the Kapoeta shelter", ar: "أطفال مجتمعون في دائرة تحت شجرة لنشاط منظّم في ملجأ كاپويتا" },
+      caption: { en: "Together every day", ar: "معًا كل يوم" },
     },
     {
       src: "/images/kapoeta/field/children-school-uniforms-group-kapoeta.jpg",
-      alt: {
-        en: "Children in school uniforms waving, one child in a wheelchair — enrolled in formal education, June 2025",
-        ar: "أطفال بالزيّ المدرسي يلوّحون، وطفل على كرسيّ متحرّك — ملتحقون بالتعليم النظامي، يونيو 2025",
-      },
+      alt: { en: "Children in school uniforms at the Kapoeta shelter — 46 enrolled in the Catholic school system for 2026", ar: "أطفال بالزيّ المدرسي في ملجأ كاپويتا — 46 ملتحقًا بالمدرسة الكاثوليكية لعام 2026" },
       caption: { en: "Going to school", ar: "ذاهبون إلى المدرسة" },
+    },
+    {
+      src: "/images/people/mamdouh-mansour-cornfield-kapoeta.jpg",
+      alt: { en: "A thriving maize crop growing on the shelter grounds — the children grow their own food", ar: "محصول ذرة مزدهر ينمو في أرض الملجأ — الأطفال يزرعون طعامهم بأنفسهم" },
+      caption: { en: "Growing their own food", ar: "يزرعون طعامهم" },
+    },
+    {
+      src: "/images/kapoeta/field/girl-child-water-pump-kapoeta.jpg",
+      alt: { en: "A young girl collecting water at the pump on the Kapoeta shelter grounds", ar: "فتاة صغيرة تجمع الماء من المضخة في أرض ملجأ كاپويتا" },
+      caption: { en: "Clean water on site", ar: "مياه نظيفة في الموقع" },
+    },
+    {
+      src: "/images/kapoeta/field/children-drawing-activity-outdoor-kapoeta.jpg",
+      alt: { en: "Children crouched around paper doing an outdoor drawing activity under tree shade in Kapoeta", ar: "أطفال ينحنون على أوراق في نشاط رسم خارجي تحت ظل الأشجار في كاپويتا" },
+      caption: { en: "Drawing and learning", ar: "يرسمون ويتعلّمون" },
+    },
+    {
+      src: "/images/kapoeta/field/visitor-women-session-children-kapoeta.jpg",
+      alt: { en: "Visitors from Australia leading an activity session with children at the Kapoeta shelter at dusk", ar: "زوّار من أستراليا يقودون جلسة نشاط مع الأطفال في ملجأ كاپويتا عند الغسق" },
+      caption: { en: "Partners from four continents", ar: "شركاء من أربع قارّات" },
+    },
+    {
+      src: "/images/kapoeta/field/girl-child-yellow-dress-holding-paper.jpg",
+      alt: { en: "A small girl in a bright yellow dress holding a piece of paper — learning every day in Kapoeta", ar: "فتاة صغيرة بفستان أصفر زاهٍ تحمل ورقة — تتعلّم كل يوم في كاپويتا" },
+      caption: { en: "Learning every day", ar: "تتعلّم كل يوم" },
     },
   ];
 
@@ -684,8 +803,7 @@ function Gallery() {
           </h2>
         </motion.div>
 
-        {/* 6-image story grid: 2 tall flanking 4 square */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
           {images.map((img) => (
             <motion.div
               key={img.src}

@@ -102,8 +102,8 @@ const STEPS: { icon: typeof Search; step: string; title: Dict<string>; body: Dic
 
 const PHOTOS: { src: string; alt: string; caption: Dict<string> }[] = [
   {
-    src: "/images/kapoeta/field/children-playing-field-kapoeta.jpg",
-    alt: "The children found on the streets of Kapoeta — hungry, homeless, without school",
+    src: "/images/kapoeta/field/child-eating-bowl-rice-kapoeta.jpg",
+    alt: "A young child eating rice from a bowl — one of the children found on the streets of Kapoeta",
     caption: { en: "The children we found", ar: "الأطفال الذين وجدناهم" },
   },
   {
@@ -112,18 +112,18 @@ const PHOTOS: { src: string; alt: string; caption: Dict<string> }[] = [
     caption: { en: "The building going up", ar: "البناء يرتفع" },
   },
   {
-    src: "/images/kapoeta/field/children-group-portrait-shelter.jpg",
-    alt: "Children waving in front of the completed shelter wall, Kapoeta",
+    src: "/images/kapoeta/field/children-large-group-activity-kapoeta.jpg",
+    alt: "Children gathered together in the shelter compound, Kapoeta",
     caption: { en: "Home", ar: "بيت" },
   },
   {
-    src: "/images/kapoeta/field/bunkbeds-dormitory-interior-kapoeta.jpg",
+    src: "/images/kapoeta/field/community-hall-worship-service-kapoeta.jpg",
     alt: "Rows of white bunk beds inside the completed Kapoeta Children's Shelter dormitory",
     caption: { en: "Their first safe beds", ar: "أوّل أسرّةٍ آمنة لهم" },
   },
   {
     src: "/images/kapoeta/field/children-school-uniforms-group-kapoeta.jpg",
-    alt: "Children in school uniforms, including a child in a wheelchair, Kapoeta 2025",
+    alt: "Children in school uniforms enrolled in the Catholic school system, Kapoeta 2025",
     caption: { en: "Going to school", ar: "إلى المدرسة" },
   },
 ];
