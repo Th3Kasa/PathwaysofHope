@@ -393,11 +393,11 @@ export default function Home() {
 
       {/* Photo strip — 5 images telling the arc: before → building → home → beds → school */}
       <section className="overflow-hidden bg-[#1e293b]">
-        <div className="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-7 h-56 sm:h-72">
+        <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-7 sm:h-72">
           {PHOTOS.map((img, i) => (
             <motion.div
               key={img.src}
-              className="relative overflow-hidden group"
+              className="relative overflow-hidden group aspect-square sm:aspect-auto"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true, amount: 0.3 }}
@@ -408,7 +408,7 @@ export default function Home() {
                 alt={img.alt}
                 fill
                 className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
-                sizes="(max-width: 640px) 50vw, 20vw"
+                sizes="(max-width: 640px) 33vw, 20vw"
               />
               {/* Caption on hover */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#1e293b]/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
