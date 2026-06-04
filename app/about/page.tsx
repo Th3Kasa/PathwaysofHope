@@ -23,8 +23,8 @@ const COMMITMENTS: { title: Dict<string>; body: Dict<string> }[] = [
   {
     title: { en: "Registered Australian Charity", ar: "جمعية خيرية أسترالية مسجّلة" },
     body: {
-      en: "Pathways of Hope Ltd (ABN 40 686 574 630) is a public company limited by guarantee, registered with the Australian Charities and Not-for-profits Commission (ACNC). Donations are tax-deductible for Australian taxpayers.",
-      ar: "‏Pathways of Hope Ltd (ABN 40 686 574 630) شركة عامة محدودة بالضمان، مسجّلة لدى هيئة الجمعيات الخيرية والمنظمات غير الربحية الأسترالية (ACNC). والتبرّعات معفاة من الضرائب لدافعي الضرائب الأستراليين.",
+      en: "Pathways of Hope Ltd (ABN 40 686 574 630) is a public company limited by guarantee, registered with the Australian Charities and Not-for-profits Commission (ACNC) and endorsed by the ATO as a Deductible Gift Recipient (DGR). Gifts of $2 or more are tax-deductible and receive a tax-deductible receipt.",
+      ar: "‏Pathways of Hope Ltd (ABN 40 686 574 630) شركة عامة محدودة بالضمان، مسجّلة لدى هيئة الجمعيات الخيرية والمنظمات غير الربحية الأسترالية (ACNC) ومعتمدة من مكتب الضرائب الأسترالي كجهة مؤهَّلة لاستلام الهبات المعفاة (DGR). التبرّعات بقيمة $2 فأكثر معفاة من الضرائب وتحصل على إيصال معفى من الضرائب.",
     },
   },
   {

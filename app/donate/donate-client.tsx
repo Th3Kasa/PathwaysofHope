@@ -10,7 +10,7 @@ interface Props {
 
 const TRUST: { icon: LucideIcon; label: Dict<string> }[] = [
   { icon: ShieldCheck, label: { en: "Secure checkout via Stripe", ar: "دفع آمن عبر Stripe" } },
-  { icon: FileText, label: { en: "Tax-deductible receipt provided", ar: "إيصال معفى من الضرائب" } },
+  { icon: FileText, label: { en: "DGR — tax-deductible invoice emailed", ar: "فاتورة معفاة من الضرائب (DGR) تُرسل بالبريد" } },
   { icon: HeartHandshake, label: { en: "100% reaches the children", ar: "100% يصل إلى الأطفال" } },
 ];
 

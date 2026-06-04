@@ -20,10 +20,10 @@ const items: Item[] = [
   },
   {
     icon: ShieldCheck,
-    heading: { en: "Registered Australian charity", ar: "جمعية خيرية أسترالية مسجّلة" },
+    heading: { en: "DGR — tax-deductible receipt", ar: "إيصال معفى من الضرائب (DGR)" },
     body: {
-      en: "Pathways of Hope Ltd · ABN 40 686 574 630. Registered with the ACNC; donations are tax-deductible.",
-      ar: "Pathways of Hope Ltd · ABN 40 686 574 630. مسجّلة لدى هيئة الجمعيات الخيرية الأسترالية (ACNC)؛ والتبرّعات معفاة من الضرائب.",
+      en: "Pathways of Hope Ltd · ABN 40 686 574 630. ACNC-registered and endorsed by the ATO as a Deductible Gift Recipient (DGR) — every gift of $2+ receives a tax-deductible invoice.",
+      ar: "Pathways of Hope Ltd · ABN 40 686 574 630. مسجّلة لدى ACNC ومعتمدة من مكتب الضرائب الأسترالي كجهة مؤهَّلة لاستلام الهبات المعفاة (DGR) — كل تبرّع بقيمة $2 فأكثر يحصل على إيصال معفى من الضرائب.",
     },
   },
   {

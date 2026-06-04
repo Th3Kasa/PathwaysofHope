@@ -40,3 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 public/videos/
+
+# local dev artifacts
+.audit-shots/
+.devlog.txt
+.devserver*.log
+.cookies.txt

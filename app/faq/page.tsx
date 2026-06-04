@@ -52,14 +52,18 @@ const GROUPS: { heading: Dict<string>; items: QA[] }[] = [
         a: {
           en: (
             <>
-              Yes. Pathways of Hope Ltd is a registered charity, and a receipt is emailed to you
-              automatically as soon as your payment is confirmed. Keep it for your tax records.
+              Yes. Pathways of Hope Ltd is an ACNC-registered charity endorsed by the ATO as a
+              Deductible Gift Recipient (DGR). Gifts of $2 or more are tax-deductible, and a
+              tax-deductible invoice is emailed to you automatically by Stripe as soon as your
+              payment is confirmed. Keep it for your tax records.
             </>
           ),
           ar: (
             <>
-              نعم. Pathways of Hope Ltd جمعية خيرية مسجّلة، ويُرسَل إليك إيصال عبر البريد الإلكتروني
-              تلقائيًا بمجرّد تأكيد دفعتك. احتفظ به لسجلّاتك الضريبية.
+              نعم. Pathways of Hope Ltd جمعية خيرية مسجّلة لدى ACNC ومعتمدة من مكتب الضرائب
+              الأسترالي كجهة مؤهَّلة لاستلام الهبات المعفاة (DGR). التبرّعات بقيمة $2 فأكثر معفاة من
+              الضرائب، وتُرسَل إليك فاتورة معفاة من الضرائب تلقائيًا عبر Stripe بمجرّد تأكيد دفعتك.
+              احتفظ بها لسجلّاتك الضريبية.
             </>
           ),
         },
@@ -72,18 +76,21 @@ const GROUPS: { heading: Dict<string>; items: QA[] }[] = [
         a: {
           en: (
             <>
-              Every gift is tax-deductible and a receipt is issued for your records. If you don&apos;t
-              receive one within a few days, check your spam folder or{" "}
+              For card donations, a DGR tax-deductible invoice is emailed automatically by Stripe
+              when your payment is confirmed. If you don&apos;t receive one within a few minutes,
+              check your spam folder or{" "}
               <a href="mailto:contact@pathwaysofhope.org.au" className="text-[#6366f1] underline">
                 email us
               </a>{" "}
-              and we&apos;ll send it through.
+              and we&apos;ll send it through. For bank transfers, email us and we&apos;ll issue your
+              receipt.
             </>
           ),
           ar: (
             <>
-              كل تبرّع معفى من الضرائب ويُصدَر له إيصال لسجلّاتك. وإن لم تستلمه خلال أيام قليلة،
-              تفقّد مجلّد البريد غير المرغوب فيه أو راسلنا وسنرسله إليك.
+              للتبرّعات بالبطاقة، تُرسَل فاتورة معفاة من الضرائب (DGR) تلقائيًا عبر Stripe بمجرّد
+              تأكيد الدفع. وإن لم تستلمها خلال دقائق قليلة، تفقّد مجلّد البريد غير المرغوب فيه أو
+              راسلنا وسنرسلها إليك. أمّا التحويلات المصرفية فراسلنا وسنُصدر لك الإيصال.
             </>
           ),
         },

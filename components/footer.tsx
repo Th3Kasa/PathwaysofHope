@@ -19,7 +19,7 @@ const NAV_LINKS: { href: string; label: Dict<string> }[] = [
 const PROMISES: Dict<string>[] = [
   { en: "100% of donations reach the children", ar: "100% من التبرّعات تصل إلى الأطفال" },
   { en: "All travel costs self-funded by volunteers", ar: "المتطوّعون يموّلون كل نفقات سفرهم بأنفسهم" },
-  { en: "Registered charity — donations tax-deductible", ar: "جمعية مسجّلة — التبرّعات معفاة من الضرائب" },
+  { en: "DGR-endorsed — every gift gets a tax-deductible receipt", ar: "معتمدة كجهة DGR — كل تبرّع يحصل على إيصال معفى من الضرائب" },
   { en: "Full financial transparency on request", ar: "شفافية مالية كاملة عند الطلب" },
   { en: "Led by Brother Hakim — on the ground in Kapoeta", ar: "بقيادة الأخ حكيم — في الميدان بكاپويتا" },
 ];
