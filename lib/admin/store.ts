@@ -38,18 +38,31 @@ export function defaultConfig(): AdminConfig {
  * prefix it with the store name). Returns undefined if none is configured.
  */
 export function getBlobToken(): string | undefined {
-  if (process.env.BLOB_READ_WRITE_TOKEN) return process.env.BLOB_READ_WRITE_TOKEN;
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    console.log("[blob] found token via BLOB_READ_WRITE_TOKEN");
+    return process.env.BLOB_READ_WRITE_TOKEN;
+  }
+  // Marketplace integrations may prefix the token with the store name,
+  // e.g. pathwaysofhope-blob_READ_WRITE_TOKEN. Match by name only — no
+  // value-prefix check, since token formats differ across Vercel products.
   for (const [name, value] of Object.entries(process.env)) {
-    if (value && /READ_WRITE_TOKEN$/.test(name) && value.startsWith("vercel_blob_")) {
+    if (value && /READ_WRITE_TOKEN$/i.test(name)) {
+      console.log(`[blob] found token via ${name}`);
       return value;
     }
   }
   // Last resort: any var whose name mentions BLOB and TOKEN.
   for (const [name, value] of Object.entries(process.env)) {
-    if (value && /BLOB/i.test(name) && /TOKEN/i.test(name) && value.startsWith("vercel_blob_")) {
+    if (value && /BLOB/i.test(name) && /TOKEN/i.test(name)) {
+      console.log(`[blob] found token via ${name} (fallback)`);
       return value;
     }
   }
+  // Log all env var names to help diagnose missing token.
+  const blobish = Object.keys(process.env).filter(
+    (k) => /blob|token|storage/i.test(k)
+  );
+  console.log("[blob] no token found. Blob-related env vars:", blobish.length ? blobish.join(", ") : "(none)");
   return undefined;
 }
 
