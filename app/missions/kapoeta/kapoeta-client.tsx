@@ -26,6 +26,7 @@ interface Props {
   totals: Record<string, { raised: number; supporters: number }> | null;
   goals: Goal[];
   imageOverrides?: Record<string, string>;
+  titleOverrides?: Record<string, string>;
 }
 
 const fadeUp: Variants = {
@@ -350,7 +351,7 @@ function StatsStrip() {
 
 /* ─── Chapter 2: The Container ───────────────────────────────── */
 
-function StoryChapter2({ imageOverrides }: { imageOverrides?: Record<string, string> }) {
+function StoryChapter2({ imageOverrides, titleOverrides }: { imageOverrides?: Record<string, string>; titleOverrides?: Record<string, string> }) {
   const t = useT();
   const containerContents: Dict<string>[] = [
     {
@@ -405,7 +406,7 @@ function StoryChapter2({ imageOverrides }: { imageOverrides?: Record<string, str
           variants={staggerContainer}
         >
           <motion.div variants={scaleIn}>
-            <ContainerCarousel imageOverrides={imageOverrides} />
+            <ContainerCarousel imageOverrides={imageOverrides} titleOverrides={titleOverrides} />
           </motion.div>
 
           <motion.div variants={fadeUp}>
@@ -607,7 +608,7 @@ function OnTheGround() {
 
 /* ─── Container Carousel ─────────────────────────────────────── */
 
-function ContainerCarousel({ imageOverrides }: { imageOverrides?: Record<string, string> }) {
+function ContainerCarousel({ imageOverrides, titleOverrides }: { imageOverrides?: Record<string, string>; titleOverrides?: Record<string, string> }) {
   const t = useT();
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(0);
@@ -658,6 +659,7 @@ function ContainerCarousel({ imageOverrides }: { imageOverrides?: Record<string,
   const resolvedSlides = slides.map((slide, i) => ({
     ...slide,
     src: imageOverrides?.[`kapoeta-container-${i + 1}`] ?? slide.src,
+    titleOverride: titleOverrides?.[`kapoeta-container-${i + 1}`],
   }));
 
   const paginate = (dir: number) => {
@@ -699,7 +701,7 @@ function ContainerCarousel({ imageOverrides }: { imageOverrides?: Record<string,
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent pointer-events-none" />
           <p className="absolute bottom-12 left-4 right-12 text-white text-sm font-medium leading-snug pointer-events-none">
-            {t(resolvedSlides[current].caption)}
+            {resolvedSlides[current].titleOverride ?? t(resolvedSlides[current].caption)}
           </p>
         </motion.div>
       </AnimatePresence>
@@ -742,7 +744,7 @@ function ContainerCarousel({ imageOverrides }: { imageOverrides?: Record<string,
 
 /* ─── Gallery ────────────────────────────────────────────────── */
 
-function Gallery({ imageOverrides }: { imageOverrides?: Record<string, string> }) {
+function Gallery({ imageOverrides, titleOverrides }: { imageOverrides?: Record<string, string>; titleOverrides?: Record<string, string> }) {
   const t = useT();
   // Each image is a distinct moment — ordered as a story arc
   const images: { src: string; alt: Dict<string>; caption: Dict<string> }[] = [
@@ -886,6 +888,7 @@ function Gallery({ imageOverrides }: { imageOverrides?: Record<string, string> }
   const resolvedImages = images.map((img, i) => ({
     ...img,
     src: imageOverrides?.[`kapoeta-gallery-${i + 1}`] ?? img.src,
+    titleOverride: titleOverrides?.[`kapoeta-gallery-${i + 1}`],
   }));
 
   return (
@@ -923,7 +926,7 @@ function Gallery({ imageOverrides }: { imageOverrides?: Record<string, string> }
               />
               {/* Persistent caption strip at bottom */}
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#1e293b]/85 to-transparent pt-8 pb-3 px-3">
-                <p className="text-white text-xs font-medium">{t(img.caption)}</p>
+                <p className="text-white text-xs font-medium">{img.titleOverride ?? t(img.caption)}</p>
               </div>
             </motion.div>
           ))}
@@ -1160,16 +1163,16 @@ function FinalCTA() {
 
 /* ─── Page composition ───────────────────────────────────────── */
 
-export default function KapoetaClient({ totals, goals, imageOverrides }: Props) {
+export default function KapoetaClient({ totals, goals, imageOverrides, titleOverrides }: Props) {
   return (
     <div className="bg-[#e7e5e4]">
       <HeroSection imageOverrides={imageOverrides} />
       <StoryChapter1 imageOverrides={imageOverrides} />
       <StatsStrip />
-      <StoryChapter2 imageOverrides={imageOverrides} />
+      <StoryChapter2 imageOverrides={imageOverrides} titleOverrides={titleOverrides} />
       <StoryChapter3 />
       <OnTheGround />
-      <Gallery imageOverrides={imageOverrides} />
+      <Gallery imageOverrides={imageOverrides} titleOverrides={titleOverrides} />
       <Achievements />
       <DonationsSection totals={totals} goals={goals} />
       <TrustStrip />

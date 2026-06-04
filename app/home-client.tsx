@@ -173,12 +173,13 @@ function AnimatedCounter({
 
 /* ─── Page ───────────────────────────────────────────────────── */
 
-export function HomeClient({ imageOverrides }: { imageOverrides?: Record<string, string> }) {
+export function HomeClient({ imageOverrides, titleOverrides }: { imageOverrides?: Record<string, string>; titleOverrides?: Record<string, string> }) {
   const t = useT();
   const heroSrc = imageOverrides?.["home-hero"] ?? "/images/kapoeta/field/children-group-sunset-kapoeta.jpg";
   const photos = BASE_PHOTOS.map((p, i) => ({
     ...p,
     src: imageOverrides?.[`home-strip-${i + 1}`] ?? p.src,
+    titleOverride: titleOverrides?.[`home-strip-${i + 1}`],
   }));
 
   return (
@@ -418,7 +419,7 @@ export function HomeClient({ imageOverrides }: { imageOverrides?: Record<string,
               />
               {/* Caption on hover */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#1e293b]/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
-                <p className="text-white text-xs font-medium leading-tight">{t(img.caption)}</p>
+                <p className="text-white text-xs font-medium leading-tight">{img.titleOverride ?? t(img.caption)}</p>
               </div>
             </motion.div>
           ))}

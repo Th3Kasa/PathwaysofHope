@@ -19,12 +19,14 @@ export interface ReportItem {
 export interface AdminConfig {
   /** Per-section image URL overrides, keyed by goal ID or page section key. */
   images: Record<string, string>;
+  /** Per-section caption/alt text overrides, keyed by section key. */
+  titles: Record<string, string>;
   /** Annual reports listed on the public /reports page. */
   reports: ReportItem[];
 }
 
 export function defaultConfig(): AdminConfig {
-  return { images: {}, reports: [] };
+  return { images: {}, titles: {}, reports: [] };
 }
 
 export async function getConfig(): Promise<AdminConfig> {
@@ -35,7 +37,7 @@ export async function getConfig(): Promise<AdminConfig> {
     const res = await fetch(blobs[0].url, { cache: "no-store" });
     if (!res.ok) return defaultConfig();
     const parsed = (await res.json()) as Partial<AdminConfig>;
-    return { ...defaultConfig(), ...parsed };
+    return { ...defaultConfig(), ...parsed, titles: { ...{}, ...(parsed.titles ?? {}) } };
   } catch {
     return defaultConfig();
   }

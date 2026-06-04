@@ -27,6 +27,7 @@ export async function GET() {
 
   return NextResponse.json({
     images: config.images,
+    titles: config.titles,
     reports: config.reports,
     goals,
     sections,
@@ -37,7 +38,7 @@ export async function GET() {
 export async function PATCH(req: NextRequest) {
   if (!(await isAuthed())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  let body: { removeReportId?: string; resetImageKey?: string };
+  let body: { removeReportId?: string; resetImageKey?: string; setTitle?: { key: string; value: string }; resetTitleKey?: string };
   try { body = await req.json(); } catch { return NextResponse.json({ error: "Bad request" }, { status: 400 }); }
 
   const config = await getConfig();
@@ -47,6 +48,13 @@ export async function PATCH(req: NextRequest) {
   }
   if (body.resetImageKey) {
     delete config.images[body.resetImageKey];
+  }
+  if (body.setTitle) {
+    config.titles[body.setTitle.key] = String(body.setTitle.value ?? "").trim();
+    if (!config.titles[body.setTitle.key]) delete config.titles[body.setTitle.key];
+  }
+  if (body.resetTitleKey) {
+    delete config.titles[body.resetTitleKey];
   }
 
   await saveConfig(config);

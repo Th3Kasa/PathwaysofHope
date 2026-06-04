@@ -22,6 +22,6 @@ async function getTotals() {
 }
 
 export default async function KapoetaPage() {
-  const [totals, { images }] = await Promise.all([getTotals(), getConfig()]);
-  return <KapoetaClient totals={totals} goals={KAPOETA_GOALS} imageOverrides={images} />;
+  const [totals, { images, titles }] = await Promise.all([getTotals(), getConfig()]);
+  return <KapoetaClient totals={totals} goals={KAPOETA_GOALS} imageOverrides={images} titleOverrides={titles} />;
 }
