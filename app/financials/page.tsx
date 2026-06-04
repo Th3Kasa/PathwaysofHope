@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, type Variants } from "framer-motion";
-import { CheckCircle2, Receipt, Target } from "lucide-react";
+import { CheckCircle2, Receipt, Target, FileDown } from "lucide-react";
 import { DELIVERED, DELIVERED_TOTAL, KAPOETA_GOALS } from "@/lib/goals";
 import { formatAUDFull } from "@/lib/utils";
 import { TrustStrip } from "@/components/trust-strip";
@@ -31,6 +31,11 @@ const ANNUAL_LINES: { item: Dict<string>; note: Dict<string>; amount: number }[]
     item: { en: "Staff salaries", ar: "رواتب العاملين" },
     note: { en: "Three caregivers", ar: "ثلاثة من القائمين على الرعاية" },
     amount: 7000,
+  },
+  {
+    item: { en: "Medical & miscellaneous", ar: "الرعاية الطبية والمتنوّعات" },
+    note: { en: "Healthcare, incidentals & emergencies", ar: "الرعاية الصحية والنفقات الطارئة" },
+    amount: 2000,
   },
 ];
 
@@ -142,12 +147,12 @@ export default function FinancialsPage() {
             </dl>
             <div className="flex items-center justify-between mt-4 pt-4 border-t-2 border-[#d6d3d1]">
               <span className="text-sm font-semibold text-[#1e293b] uppercase tracking-wide">{t({ en: "Total per year", ar: "الإجمالي سنويًا" })}</span>
-              <span className="text-xl font-bold" style={{ fontFamily: "var(--font-serif)", color: "#C9952A" }}>≈ {formatAUDFull(45000)}</span>
+              <span className="text-xl font-bold" style={{ fontFamily: "var(--font-serif)", color: "#C9952A" }}>{formatAUDFull(47000)}</span>
             </div>
             <p className="text-xs text-[#6b7280] italic mt-4">
               {t({
-                en: "Figures above are the major categories; the rounded annual total of about A$45,000 also covers medical care and day-to-day incidentals. That is roughly A$54 per child per month.",
-                ar: "الأرقام أعلاه هي الفئات الرئيسية؛ ويشمل الإجمالي السنوي المقرّب البالغ نحو A$45,000 أيضًا الرعاية الطبية والنفقات اليومية الطارئة. أي ما يعادل نحو A$54 لكل طفل شهريًا.",
+                en: "Annual total for food, education, staff, medical care and day-to-day incidentals. That is roughly A$56 per child per month.",
+                ar: "الإجمالي السنوي للطعام والتعليم والرواتب والرعاية الطبية والنفقات اليومية. أي ما يعادل نحو A$56 لكل طفل شهريًا.",
               })}
             </p>
           </motion.div>
@@ -161,8 +166,8 @@ export default function FinancialsPage() {
             <p className="text-[#6366f1] text-sm uppercase tracking-widest mb-3 font-medium">{t({ en: "What we’re raising for", ar: "ما نجمع التبرّعات من أجله" })}</p>
             <h2 className="text-3xl sm:text-4xl font-light text-[#1e293b]" style={{ fontFamily: "var(--font-serif)" }}>
               {t({
-                en: `The 2026 goals — ${formatAUDFull(goalsTotal)} in total.`,
-                ar: `أهداف عام 2026 — ${formatAUDFull(goalsTotal)} إجمالًا.`,
+                en: "The 2026 goals — $100,000 in total.",
+                ar: "أهداف عام 2026 — $100,000 إجمالًا.",
               })}
             </h2>
           </motion.div>
@@ -179,12 +184,15 @@ export default function FinancialsPage() {
           </motion.div>
           <motion.p initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} className="text-xs text-[#6b7280] italic mt-4">
             {t({
-              en: "Project totals are working estimates; component breakdowns are shown on each donation page. Detailed financial reports are available on request.",
-              ar: "إجماليّات المشاريع تقديرات أوّلية؛ وتفصيل المكوّنات معروض في كل صفحة تبرّع. والتقارير المالية التفصيلية متاحة عند الطلب.",
+              en: "Itemised project costs total A$92,900. The A$100,000 campaign target includes a A$7,100 contingency and emergency reserve. Component breakdowns are shown on each donation page.",
+              ar: "تبلغ تكاليف المشاريع المفصّلة A$92,900. ويتضمّن هدف الحملة البالغ A$100,000 احتياطيًا للطوارئ بقيمة A$7,100. تفصيل المكوّنات معروض في كل صفحة تبرّع.",
             })}
           </motion.p>
         </div>
       </section>
+
+      {/* Annual Reports */}
+      <AnnualReports />
 
       <TrustStrip />
 
@@ -197,5 +205,106 @@ export default function FinancialsPage() {
         </motion.div>
       </section>
     </div>
+  );
+}
+
+/* ─── Annual Reports ─────────────────────────────────────────── */
+
+type ReportStatus = "available" | "preparing";
+
+interface AnnualReport {
+  year: string;
+  period: string;
+  status: ReportStatus;
+  pdfUrl?: string;
+}
+
+const REPORTS: AnnualReport[] = [
+  {
+    year: "FY 2024–25",
+    period: "1 July 2024 – 30 June 2025",
+    status: "preparing",
+  },
+];
+
+function AnnualReports() {
+  const t = useT();
+  return (
+    <section className="py-20 px-4 bg-[#f5f5f4]">
+      <div className="max-w-4xl mx-auto">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={stagger}
+          className="mb-10"
+        >
+          <motion.p variants={fadeUp} className="text-[#6366f1] text-sm uppercase tracking-widest mb-3 font-medium">
+            {t({ en: "Annual reports", ar: "التقارير السنوية" })}
+          </motion.p>
+          <motion.h2 variants={fadeUp} className="text-3xl sm:text-4xl font-light text-[#1e293b]" style={{ fontFamily: "var(--font-serif)" }}>
+            {t({ en: "Full income & expense statements.", ar: "بيانات الدخل والمصروفات الكاملة." })}
+          </motion.h2>
+          <motion.p variants={fadeUp} className="text-[#6b7280] mt-3 max-w-2xl">
+            {t({
+              en: "Audited financial statements prepared by our finance team and filed with the Australian Charities and Not-for-profits Commission (ACNC) each financial year.",
+              ar: "بيانات مالية مدقَّقة يُعدّها فريقنا المالي وتُودَع لدى هيئة الجمعيات الخيرية والمنظمات غير الربحية الأسترالية (ACNC) كل سنة مالية.",
+            })}
+          </motion.p>
+        </motion.div>
+
+        <motion.div
+          className="space-y-3"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
+          variants={stagger}
+        >
+          {REPORTS.map((r) => (
+            <motion.div
+              key={r.year}
+              variants={fadeUp}
+              className="flex items-center justify-between gap-4 rounded-xl bg-white border border-[#d6d3d1] px-5 py-4"
+            >
+              <div className="flex items-center gap-4">
+                <FileDown size={20} className="text-[#6366f1] flex-shrink-0" strokeWidth={1.75} />
+                <div>
+                  <p className="text-sm font-semibold text-[#1e293b]">{r.year}</p>
+                  <p className="text-xs text-[#9ca3af]">{r.period}</p>
+                </div>
+              </div>
+              {r.status === "available" && r.pdfUrl ? (
+                <a
+                  href={r.pdfUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold bg-[#6366f1] text-white hover:bg-[#4f46e5] transition-colors"
+                >
+                  <FileDown size={13} strokeWidth={2} />
+                  {t({ en: "Download PDF", ar: "تحميل PDF" })}
+                </a>
+              ) : (
+                <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-[#e7e5e4] text-[#6b7280]">
+                  {t({ en: "In preparation", ar: "قيد الإعداد" })}
+                </span>
+              )}
+            </motion.div>
+          ))}
+        </motion.div>
+
+        <motion.p
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeUp}
+          className="text-xs text-[#6b7280] italic mt-4"
+        >
+          {t({
+            en: "To request a report or ask a question about our finances, contact our finance team at pathways_of_hope@outlook.com",
+            ar: "للاستفسار عن تقرير أو طرح سؤال حول مالياتنا، تواصل مع فريقنا المالي على pathways_of_hope@outlook.com",
+          })}
+        </motion.p>
+      </div>
+    </section>
   );
 }

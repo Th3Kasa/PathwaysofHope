@@ -51,7 +51,7 @@ export function DonationPanel({ goal, part }: Props) {
     part ? part.amount : goal.presets[1] ?? goal.presets[0] ?? 50
   );
   const [customAmount, setCustomAmount] = useState("");
-  const [coverFee, setCoverFee] = useState(true);
+  const coverFee = true;
   const [recurringConsent, setRecurringConsent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -294,26 +294,14 @@ export function DonationPanel({ goal, part }: Props) {
           )}
         </AnimatePresence>
 
-        {/* Fee opt-in */}
-        <label className="flex items-start gap-3 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={coverFee}
-            onChange={(e) => setCoverFee(e.target.checked)}
-            className="mt-0.5 w-4 h-4 accent-[#6366f1]"
-          />
-          <span className="text-sm text-[#374151] leading-relaxed">
+        {/* Fee note — always included, no opt-out */}
+        {base > 0 && (
+          <div className="rounded-xl bg-[#f5f5f4] border border-[#d6d3d1] px-4 py-3 text-xs text-[#6b7280]">
             {t({
-              en: `Add the card processing fee (${formatMoney(fee || feeFor(base || 1))}) so 100% of my gift reaches the children.`,
-              ar: `أضِف رسم معالجة البطاقة (${formatMoney(fee || feeFor(base || 1))}) ليصل 100% من تبرّعي إلى الأطفال.`,
+              en: `A small card processing fee of ${formatMoney(fee)} has been added so 100% of your gift reaches the children.`,
+              ar: `تمت إضافة رسم معالجة بطاقة صغير بقيمة ${formatMoney(fee)} ليصل 100% من تبرّعك إلى الأطفال.`,
             })}
-          </span>
-        </label>
-
-        {/* Total breakdown */}
-        {coverFee && base > 0 && (
-          <div className="text-xs text-[#6b7280] -mt-4 pl-7">
-            {t({ en: "Gift", ar: "التبرّع" })} {formatMoney(base)} + {t({ en: "fee", ar: "رسم" })} {formatMoney(fee)} = <span className="font-semibold text-[#1e293b]">{formatMoney(total)}</span>
+            {" "}<span className="font-semibold text-[#1e293b]">{t({ en: "Total charged:", ar: "الإجمالي المحصَّل:" })} {formatMoney(total)}</span>
           </div>
         )}
 
