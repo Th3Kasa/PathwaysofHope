@@ -19,13 +19,21 @@ async function pollResult(requestId: string, apiKey: string): Promise<string> {
     const res = await fetch(`${MUAPI_BASE}/predictions/${requestId}/result`, {
       headers: { "x-api-key": apiKey },
     });
-    if (!res.ok) throw new Error(`Poll failed: ${res.status}`);
-    const data = await res.json();
-    if (data.status === "succeeded" && data.output) {
-      const outputUrl = Array.isArray(data.output) ? data.output[0] : data.output;
-      return String(outputUrl);
+    if (!res.ok) {
+      const body = await res.text().catch(() => "(unreadable)");
+      throw new Error(`Poll failed: ${res.status} — ${body}`);
     }
-    if (data.status === "failed") throw new Error("Image generation failed");
+    const data = await res.json();
+    // MUAPI uses "completed" (not "succeeded")
+    if (data.status === "completed") {
+      // Output can be in outputs[] or output field
+      const url = Array.isArray(data.outputs) ? data.outputs[0]
+        : Array.isArray(data.output) ? data.output[0]
+        : (data.outputs ?? data.output ?? data.image_url ?? data.url);
+      if (!url) throw new Error("Generation completed but no output URL found");
+      return String(url);
+    }
+    if (data.status === "failed") throw new Error(data.error ?? "Image generation failed on server");
   }
   throw new Error("Timed out waiting for image");
 }
@@ -54,18 +62,30 @@ export async function POST(req: NextRequest) {
   const submitRes = await fetch(`${MUAPI_BASE}/${MODEL}`, {
     method: "POST",
     headers: { "x-api-key": apiKey, "Content-Type": "application/json" },
-    body: JSON.stringify({ prompt, aspect_ratio: "16:9", num_images: 1 }),
+    body: JSON.stringify({ prompt, aspect_ratio: "16:9" }),
   });
   if (!submitRes.ok) {
     const err = await submitRes.text();
-    return NextResponse.json({ error: `MUAPI submit failed: ${err}` }, { status: 502 });
+    return NextResponse.json({ error: `MUAPI submit failed (${submitRes.status}): ${err}` }, { status: 502 });
   }
-  const { request_id } = await submitRes.json();
-  if (!request_id) return NextResponse.json({ error: "No request_id from MUAPI" }, { status: 502 });
+  const submitData = await submitRes.json();
 
-  // Poll, download, and save — all wrapped so errors return JSON not HTML
+  // Some endpoints return the result synchronously; handle that case too
+  let imageUrl: string;
   try {
-    const imageUrl = await pollResult(String(request_id), apiKey);
+    const syncUrl = Array.isArray(submitData.outputs) ? submitData.outputs[0]
+      : Array.isArray(submitData.output) ? submitData.output[0]
+      : (submitData.image_url ?? submitData.url ?? null);
+
+    if (syncUrl) {
+      imageUrl = String(syncUrl);
+    } else {
+      const request_id = submitData.request_id ?? submitData.id;
+      if (!request_id) {
+        return NextResponse.json({ error: `No request_id from MUAPI. Response: ${JSON.stringify(submitData)}` }, { status: 502 });
+      }
+      imageUrl = await pollResult(String(request_id), apiKey);
+    }
 
     const imgRes = await fetch(imageUrl);
     if (!imgRes.ok) throw new Error(`Failed to download generated image (${imgRes.status})`);
