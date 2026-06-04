@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { isAuthed } from "@/lib/admin/auth";
 import { getConfig, saveConfig, uploadFile } from "@/lib/admin/store";
 import { KAPOETA_GOALS } from "@/lib/goals";
+import { ALL_SECTION_KEYS } from "@/lib/admin/sections";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -35,17 +36,19 @@ export async function POST(req: NextRequest) {
   const apiKey = process.env.MUAPI_API_KEY_POH;
   if (!apiKey) return NextResponse.json({ error: "MUAPI not configured" }, { status: 503 });
 
-  let goalId: string, prompt: string;
+  let sectionKey: string, prompt: string;
   try {
     const body = await req.json();
-    goalId = String(body.goalId ?? "");
+    sectionKey = String(body.sectionKey ?? "");
     prompt = String(body.prompt ?? "");
   } catch {
     return NextResponse.json({ error: "Bad request" }, { status: 400 });
   }
 
-  const validGoal = KAPOETA_GOALS.find((g) => g.id === goalId);
-  if (!validGoal || !prompt) return NextResponse.json({ error: "Invalid goal or prompt" }, { status: 400 });
+  const validKeys = [...ALL_SECTION_KEYS, ...KAPOETA_GOALS.map((g) => g.id)];
+  if (!validKeys.includes(sectionKey) || !prompt) {
+    return NextResponse.json({ error: "Invalid section key or missing prompt" }, { status: 400 });
+  }
 
   // Submit generation job
   const submitRes = await fetch(`${MUAPI_BASE}/${MODEL}`, {
@@ -70,9 +73,9 @@ export async function POST(req: NextRequest) {
   const contentType = imgRes.headers.get("content-type") || "image/jpeg";
 
   // Save to Vercel Blob and update config
-  const blobUrl = await uploadFile(`sections/${goalId}-ai.jpg`, imgBuffer, contentType);
+  const blobUrl = await uploadFile(`sections/${sectionKey}-ai.jpg`, imgBuffer, contentType);
   const config = await getConfig();
-  config.images[goalId] = blobUrl;
+  config.images[sectionKey] = blobUrl;
   await saveConfig(config);
 
   return NextResponse.json({ ok: true, url: blobUrl });

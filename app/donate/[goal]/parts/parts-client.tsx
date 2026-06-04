@@ -10,7 +10,7 @@ import { BackLink } from "@/components/back-link";
 import { useLang, useT } from "@/lib/i18n";
 import { GOAL_AR } from "@/lib/goals-i18n";
 
-export function PartsClient({ goal }: { goal: Goal }) {
+export function PartsClient({ goal, imageOverride }: { goal: Goal; imageOverride?: string }) {
   const { lang } = useLang();
   const t = useT();
   const arGoal = GOAL_AR[goal.id];
@@ -25,7 +25,7 @@ export function PartsClient({ goal }: { goal: Goal }) {
 
         {/* Header */}
         <div className="relative h-52 rounded-3xl overflow-hidden mb-8">
-          <Image src={goal.image} alt={imageAlt} fill className="object-cover object-center" sizes="(max-width: 768px) 100vw, 768px" priority />
+          <Image src={imageOverride ?? goal.image} alt={imageAlt} fill className="object-cover object-center" sizes="(max-width: 768px) 100vw, 768px" priority />
           <div className="absolute inset-0 bg-gradient-to-t from-[#1e293b]/85 via-[#1e293b]/30 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-7">
             <p className="text-[#d6d3d1] text-xs uppercase tracking-widest mb-1">

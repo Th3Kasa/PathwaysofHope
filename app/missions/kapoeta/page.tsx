@@ -1,5 +1,6 @@
 import { KAPOETA_GOALS } from "@/lib/goals";
 import KapoetaClient from "./kapoeta-client";
+import { getConfig } from "@/lib/admin/store";
 
 export const metadata = {
   title: "Kapoeta Children's Shelter — Pathways of Hope",
@@ -21,6 +22,6 @@ async function getTotals() {
 }
 
 export default async function KapoetaPage() {
-  const totals = await getTotals();
-  return <KapoetaClient totals={totals} goals={KAPOETA_GOALS} />;
+  const [totals, { images }] = await Promise.all([getTotals(), getConfig()]);
+  return <KapoetaClient totals={totals} goals={KAPOETA_GOALS} imageOverrides={images} />;
 }

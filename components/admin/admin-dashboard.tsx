@@ -5,16 +5,19 @@ import Image from "next/image";
 import {
   Lock, LogOut, Loader2, Upload, Trash2, FileText,
   ImageIcon, Sparkles, CheckCircle2, TriangleAlert, RefreshCw,
+  ChevronDown, ChevronUp,
 } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
+interface SectionMeta { key: string; label: string; page: string; defaultImage: string; aiPrompt: string }
 interface GoalMeta { id: string; title: string; defaultImage: string }
 interface ReportItem { id: string; title: string; year: string; url: string; uploadedAt: string }
 interface Config {
   images: Record<string, string>;
   reports: ReportItem[];
   goals: GoalMeta[];
+  sections: SectionMeta[];
   blobReady: boolean;
 }
 
@@ -23,6 +26,7 @@ interface Config {
 const btn = "inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold transition-colors disabled:opacity-50";
 const btnPrimary = `${btn} bg-[#6366f1] text-white hover:bg-[#4f46e5]`;
 const btnGhost = `${btn} border border-[#d6d3d1] text-[#374151] hover:border-[#6366f1]`;
+const btnCompact = "inline-flex items-center justify-center gap-1 py-1 px-2 rounded-lg text-xs font-medium transition-colors disabled:opacity-50 border border-[#d6d3d1] text-[#374151] hover:border-[#6366f1]";
 const input = "w-full px-4 py-2.5 border-2 border-[#d6d3d1] rounded-xl text-sm text-[#1e293b] focus:outline-none focus:border-[#6366f1] transition-colors";
 const card = "bg-white rounded-2xl border border-[#d6d3d1] shadow-sm p-6 sm:p-8";
 
@@ -114,7 +118,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
                 </div>
               </div>
             )}
-            <PhotosSection config={config} reload={load} />
+            <PhotosPanel config={config} reload={load} />
             <ReportsSection config={config} reload={load} />
           </div>
         )}
@@ -123,42 +127,13 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   );
 }
 
-// ─── Section Photos ────────────────────────────────────────────────────────────
+// ─── Photo Row (row layout for Home / Kapoeta) ────────────────────────────────
 
-const AI_PROMPTS: Record<string, string> = {
-  "solar-system": "Photorealistic wide-angle shot of solar panels being installed on a rooftop in rural South Sudan, warm golden afternoon light, children visible in background near a simple concrete shelter, documentary photography style",
-  "chicken-coop": "Photorealistic image of African children feeding chickens outside a sturdy wooden chicken coop in a rural African setting, warm sunlight, candid documentary photo",
-  "water-pump": "Photorealistic photo of a young African girl operating a hand water pump in rural South Sudan, golden hour light, dusty earth, village in background, documentary style",
-  "ongoing-operations": "Photorealistic documentary photo of African children in school uniforms sitting at desks inside a simple classroom in South Sudan, natural window light, teacher visible",
-  "sponsor-a-child": "Photorealistic portrait-style photo of a group of smiling African children at a shelter in South Sudan, warm afternoon light, genuine candid expressions, documentary photography",
-  "where-most-needed": "Photorealistic wide-shot of a children's shelter compound in rural South Sudan, children playing in the courtyard, warm golden light, documentary style photography",
-};
-
-function PhotosSection({ config, reload }: { config: Config; reload: () => void }) {
-  return (
-    <section className={card}>
-      <h2 className="text-lg font-semibold text-[#1e293b] mb-1">Donation card photos</h2>
-      <p className="text-sm text-[#6b7280] mb-6">
-        Upload a new photo or generate one with AI for each donation section. Photos appear on the donation cards and individual donation pages.
-      </p>
-      <div className="space-y-6">
-        {config.goals.map((goal) => (
-          <PhotoRow
-            key={goal.id}
-            goal={goal}
-            currentImage={config.images[goal.id] ?? goal.defaultImage}
-            hasOverride={Boolean(config.images[goal.id])}
-            aiPrompt={AI_PROMPTS[goal.id] ?? `Photorealistic photo related to: ${goal.title}, South Sudan charity, documentary style`}
-            reload={reload}
-          />
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function PhotoRow({ goal, currentImage, hasOverride, aiPrompt, reload }: {
-  goal: GoalMeta; currentImage: string; hasOverride: boolean; aiPrompt: string; reload: () => void;
+function PhotoRow({
+  itemKey, label, currentImage, hasOverride, aiPrompt, reload,
+}: {
+  itemKey: string; label: string; currentImage: string; hasOverride: boolean;
+  aiPrompt: string; reload: () => void;
 }) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
@@ -168,7 +143,7 @@ function PhotoRow({ goal, currentImage, hasOverride, aiPrompt, reload }: {
   const upload = async (file: File) => {
     setUploading(true); setToast(null);
     const fd = new FormData();
-    fd.append("kind", "image"); fd.append("key", goal.id); fd.append("file", file);
+    fd.append("kind", "image"); fd.append("key", itemKey); fd.append("file", file);
     const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
     setUploading(false);
     if (res.ok) { setToast({ msg: "Photo updated.", kind: "ok" }); reload(); }
@@ -180,7 +155,7 @@ function PhotoRow({ goal, currentImage, hasOverride, aiPrompt, reload }: {
     const res = await fetch("/api/admin/generate-image", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ goalId: goal.id, prompt: aiPrompt }),
+      body: JSON.stringify({ sectionKey: itemKey, prompt: aiPrompt }),
     });
     setGenerating(false);
     if (res.ok) { setToast({ msg: "AI image generated and saved.", kind: "ok" }); reload(); }
@@ -188,7 +163,7 @@ function PhotoRow({ goal, currentImage, hasOverride, aiPrompt, reload }: {
   };
 
   const reset = async () => {
-    const res = await fetch("/api/admin/config", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ resetImageKey: goal.id }) });
+    const res = await fetch("/api/admin/config", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ resetImageKey: itemKey }) });
     if (res.ok) { setToast({ msg: "Reset to default photo.", kind: "ok" }); reload(); }
   };
 
@@ -196,7 +171,7 @@ function PhotoRow({ goal, currentImage, hasOverride, aiPrompt, reload }: {
     <div className="flex flex-col sm:flex-row gap-4 sm:items-start">
       {/* Preview */}
       <div className="relative w-full sm:w-40 h-28 sm:h-24 rounded-xl overflow-hidden flex-shrink-0 bg-[#f5f5f4] border border-[#d6d3d1]">
-        <Image src={currentImage} alt={goal.title} fill className="object-cover" sizes="160px" unoptimized />
+        <Image src={currentImage} alt={label} fill className="object-cover" sizes="160px" unoptimized />
         {hasOverride && (
           <span className="absolute top-1.5 left-1.5 text-[10px] bg-[#6366f1] text-white px-1.5 py-0.5 rounded-full font-semibold">Custom</span>
         )}
@@ -204,7 +179,7 @@ function PhotoRow({ goal, currentImage, hasOverride, aiPrompt, reload }: {
 
       {/* Controls */}
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold text-[#1e293b] mb-3">{goal.title}</p>
+        <p className="text-sm font-semibold text-[#1e293b] mb-3">{label}</p>
         <div className="flex flex-wrap gap-2">
           <input ref={fileRef} type="file" accept="image/*" hidden onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])} />
           <button onClick={() => fileRef.current?.click()} disabled={uploading || generating} className={btnGhost}>
@@ -223,6 +198,234 @@ function PhotoRow({ goal, currentImage, hasOverride, aiPrompt, reload }: {
         {toast && <div className="mt-2"><Toast msg={toast.msg} kind={toast.kind} /></div>}
       </div>
     </div>
+  );
+}
+
+// ─── Gallery Card (compact 2/3/4-col grid layout) ─────────────────────────────
+
+function GalleryCard({
+  itemKey, label, currentImage, hasOverride, aiPrompt, reload,
+}: {
+  itemKey: string; label: string; currentImage: string; hasOverride: boolean;
+  aiPrompt: string; reload: () => void;
+}) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+  const [generating, setGenerating] = useState(false);
+  const [toast, setToast] = useState<{ msg: string; kind: "ok" | "err" } | null>(null);
+
+  const upload = async (file: File) => {
+    setUploading(true); setToast(null);
+    const fd = new FormData();
+    fd.append("kind", "image"); fd.append("key", itemKey); fd.append("file", file);
+    const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+    setUploading(false);
+    if (res.ok) { setToast({ msg: "Updated.", kind: "ok" }); reload(); }
+    else { const d = await res.json().catch(() => ({})); setToast({ msg: d.error || "Upload failed", kind: "err" }); }
+  };
+
+  const generate = async () => {
+    setGenerating(true); setToast(null);
+    const res = await fetch("/api/admin/generate-image", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sectionKey: itemKey, prompt: aiPrompt }),
+    });
+    setGenerating(false);
+    if (res.ok) { setToast({ msg: "Generated.", kind: "ok" }); reload(); }
+    else { const d = await res.json().catch(() => ({})); setToast({ msg: d.error || "Failed", kind: "err" }); }
+  };
+
+  const reset = async () => {
+    const res = await fetch("/api/admin/config", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ resetImageKey: itemKey }) });
+    if (res.ok) { setToast({ msg: "Reset.", kind: "ok" }); reload(); }
+  };
+
+  return (
+    <div className="bg-[#f9f8f7] rounded-xl border border-[#d6d3d1] overflow-hidden">
+      {/* Thumbnail */}
+      <div className="relative w-full bg-[#e7e5e4]" style={{ aspectRatio: "4/3" }}>
+        <Image src={currentImage} alt={label} fill className="object-cover" sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 25vw" unoptimized />
+        {hasOverride && (
+          <span className="absolute top-1.5 left-1.5 text-[10px] bg-[#6366f1] text-white px-1.5 py-0.5 rounded-full font-semibold">Custom</span>
+        )}
+      </div>
+
+      {/* Label + buttons */}
+      <div className="p-2.5">
+        <p className="text-xs font-semibold text-[#1e293b] mb-2 truncate">{label}</p>
+        <div className="flex flex-wrap gap-1">
+          <input ref={fileRef} type="file" accept="image/*" hidden onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])} />
+          <button onClick={() => fileRef.current?.click()} disabled={uploading || generating} className={btnCompact}>
+            {uploading ? <Loader2 size={11} className="animate-spin" /> : <Upload size={11} />} Upload
+          </button>
+          <button onClick={generate} disabled={uploading || generating} className={btnCompact}>
+            {generating ? <Loader2 size={11} className="animate-spin" /> : <Sparkles size={11} />}
+            {generating ? "…" : "AI"}
+          </button>
+          {hasOverride && (
+            <button onClick={reset} disabled={uploading || generating} className={btnCompact} title="Reset to default">
+              <RefreshCw size={11} /> Reset
+            </button>
+          )}
+        </div>
+        {toast && <div className="mt-1.5 text-[10px] font-medium" style={{ color: toast.kind === "ok" ? "#15803d" : "#dc2626" }}>{toast.msg}</div>}
+      </div>
+    </div>
+  );
+}
+
+// ─── Accordion Group Header ───────────────────────────────────────────────────
+
+function GroupHeader({
+  title, count, overrides, open, onToggle,
+}: {
+  title: string; count: number; overrides: number; open: boolean; onToggle: () => void;
+}) {
+  return (
+    <button
+      onClick={onToggle}
+      className="w-full flex items-center justify-between gap-3 py-4 px-5 bg-[#f5f5f4] hover:bg-[#eeece9] rounded-xl border border-[#d6d3d1] transition-colors text-left"
+    >
+      <div className="flex items-center gap-3 min-w-0">
+        <span className="text-sm font-semibold text-[#1e293b]">{title}</span>
+        <span className="text-xs text-[#6b7280] font-medium">{count} photos</span>
+        {overrides > 0 && (
+          <span className="text-[10px] bg-[#6366f1]/10 text-[#6366f1] px-2 py-0.5 rounded-full font-semibold">
+            {overrides} custom
+          </span>
+        )}
+      </div>
+      {open ? <ChevronUp size={16} className="text-[#6b7280] flex-shrink-0" /> : <ChevronDown size={16} className="text-[#6b7280] flex-shrink-0" />}
+    </button>
+  );
+}
+
+// ─── Page Group (accordion for Home / Kapoeta Mission) ───────────────────────
+
+function PageGroup({
+  title, sections, images, reload,
+}: {
+  title: string; sections: SectionMeta[]; images: Record<string, string>; reload: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const overrides = sections.filter((s) => Boolean(images[s.key])).length;
+
+  return (
+    <div>
+      <GroupHeader title={title} count={sections.length} overrides={overrides} open={open} onToggle={() => setOpen((v) => !v)} />
+      {open && (
+        <div className="mt-3 space-y-6 px-1">
+          {sections.map((s) => (
+            <PhotoRow
+              key={s.key}
+              itemKey={s.key}
+              label={s.label}
+              currentImage={images[s.key] ?? s.defaultImage}
+              hasOverride={Boolean(images[s.key])}
+              aiPrompt={s.aiPrompt}
+              reload={reload}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Gallery Group (compact grid accordion) ───────────────────────────────────
+
+function GalleryGroup({
+  sections, images, reload,
+}: {
+  sections: SectionMeta[]; images: Record<string, string>; reload: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const overrides = sections.filter((s) => Boolean(images[s.key])).length;
+
+  return (
+    <div>
+      <GroupHeader title="Kapoeta Gallery" count={sections.length} overrides={overrides} open={open} onToggle={() => setOpen((v) => !v)} />
+      {open && (
+        <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 px-1">
+          {sections.map((s) => (
+            <GalleryCard
+              key={s.key}
+              itemKey={s.key}
+              label={s.label}
+              currentImage={images[s.key] ?? s.defaultImage}
+              hasOverride={Boolean(images[s.key])}
+              aiPrompt={s.aiPrompt}
+              reload={reload}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Goals Group (Donation Pages accordion) ───────────────────────────────────
+
+const GOAL_AI_PROMPTS: Record<string, string> = {
+  "solar-system": "Photorealistic wide-angle shot of solar panels being installed on a rooftop in rural South Sudan, warm golden afternoon light, children visible in background near a simple concrete shelter, documentary photography style",
+  "chicken-coop": "Photorealistic image of African children feeding chickens outside a sturdy wooden chicken coop in a rural African setting, warm sunlight, candid documentary photo",
+  "water-pump": "Photorealistic photo of a young African girl operating a hand water pump in rural South Sudan, golden hour light, dusty earth, village in background, documentary style",
+  "ongoing-operations": "Photorealistic documentary photo of African children in school uniforms sitting at desks inside a simple classroom in South Sudan, natural window light, teacher visible",
+  "sponsor-a-child": "Photorealistic portrait-style photo of a group of smiling African children at a shelter in South Sudan, warm afternoon light, genuine candid expressions, documentary photography",
+  "where-most-needed": "Photorealistic wide-shot of a children's shelter compound in rural South Sudan, children playing in the courtyard, warm golden light, documentary style photography",
+};
+
+function GoalsGroup({
+  goals, images, reload,
+}: {
+  goals: GoalMeta[]; images: Record<string, string>; reload: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const overrides = goals.filter((g) => Boolean(images[g.id])).length;
+
+  return (
+    <div>
+      <GroupHeader title="Donation Pages" count={goals.length} overrides={overrides} open={open} onToggle={() => setOpen((v) => !v)} />
+      {open && (
+        <div className="mt-3 space-y-6 px-1">
+          {goals.map((goal) => (
+            <PhotoRow
+              key={goal.id}
+              itemKey={goal.id}
+              label={goal.title}
+              currentImage={images[goal.id] ?? goal.defaultImage}
+              hasOverride={Boolean(images[goal.id])}
+              aiPrompt={GOAL_AI_PROMPTS[goal.id] ?? `Photorealistic photo related to: ${goal.title}, South Sudan charity, documentary style`}
+              reload={reload}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Photos Panel ─────────────────────────────────────────────────────────────
+
+function PhotosPanel({ config, reload }: { config: Config; reload: () => void }) {
+  const homeSections = config.sections.filter((s) => s.page === "Home");
+  const kapoetaSections = config.sections.filter((s) => s.page === "Kapoeta Mission");
+  const gallerySections = config.sections.filter((s) => s.page === "Kapoeta Gallery");
+
+  return (
+    <section className={card}>
+      <h2 className="text-lg font-semibold text-[#1e293b] mb-1">Site photos</h2>
+      <p className="text-sm text-[#6b7280] mb-6">
+        Manage photos across every page of the site. Click a group to expand it, then upload, generate with AI, or reset each photo.
+      </p>
+      <div className="space-y-3">
+        <PageGroup title="Home Page" sections={homeSections} images={config.images} reload={reload} />
+        <PageGroup title="Kapoeta Mission" sections={kapoetaSections} images={config.images} reload={reload} />
+        <GalleryGroup sections={gallerySections} images={config.images} reload={reload} />
+        <GoalsGroup goals={config.goals} images={config.images} reload={reload} />
+      </div>
+    </section>
   );
 }
 
@@ -284,8 +487,8 @@ function ReportsSection({ config, reload }: { config: Config; reload: () => void
               <a href={r.url} target="_blank" rel="noopener noreferrer" className="flex-1 min-w-0 text-sm text-[#1e293b] hover:underline truncate">
                 {r.title} · {r.year}
               </a>
-              <button onClick={() => remove(r.id)} className="text-[#6b7280] hover:text-red-600 transition-colors">
-                <Trash2 size={15} />
+              <button onClick={() => remove(r.id)} className="flex items-center gap-1.5 text-xs font-medium text-[#6b7280] hover:text-red-600 border border-[#d6d3d1] hover:border-red-300 rounded-lg px-2.5 py-1.5 transition-colors">
+                <Trash2 size={12} /> Delete
               </button>
             </li>
           ))}

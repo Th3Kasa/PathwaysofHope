@@ -3,6 +3,7 @@ import { randomBytes } from "node:crypto";
 import { isAuthed } from "@/lib/admin/auth";
 import { getConfig, saveConfig, uploadFile } from "@/lib/admin/store";
 import { KAPOETA_GOALS } from "@/lib/goals";
+import { ALL_SECTION_KEYS } from "@/lib/admin/sections";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -36,8 +37,8 @@ export async function POST(req: NextRequest) {
 
   if (kind === "image") {
     const key = String(form.get("key") ?? "");
-    const validKeys = KAPOETA_GOALS.map((g) => g.id);
-    if (!validKeys.includes(key as never)) return NextResponse.json({ error: "Unknown section" }, { status: 400 });
+    const validKeys = [...ALL_SECTION_KEYS, ...KAPOETA_GOALS.map((g) => g.id)];
+    if (!validKeys.includes(key)) return NextResponse.json({ error: "Unknown section" }, { status: 400 });
     if (!file.type.startsWith("image/")) return NextResponse.json({ error: "File must be an image" }, { status: 400 });
     const ext = file.type.split("/")[1]?.replace("jpeg", "jpg") || "jpg";
     const url = await uploadFile(`sections/${key}-${randomBytes(4).toString("hex")}.${ext}`, buffer, file.type);
