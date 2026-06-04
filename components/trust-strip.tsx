@@ -20,10 +20,10 @@ const items: Item[] = [
   },
   {
     icon: ShieldCheck,
-    heading: { en: "Registered Australian charity", ar: "جمعية خيرية أسترالية مسجّلة" },
+    heading: { en: "DGR — tax-deductible receipt", ar: "إيصال معفى من الضرائب (DGR)" },
     body: {
-      en: "Pathways of Hope Ltd · ABN 40 686 574 630. Registered with the ACNC; donations are tax-deductible.",
-      ar: "Pathways of Hope Ltd · ABN 40 686 574 630. مسجّلة لدى هيئة الجمعيات الخيرية الأسترالية (ACNC)؛ والتبرّعات معفاة من الضرائب.",
+      en: "Pathways of Hope Ltd · ABN 40 686 574 630. ACNC-registered and endorsed by the ATO as a Deductible Gift Recipient (DGR) — every gift of $2+ receives a tax-deductible invoice.",
+      ar: "Pathways of Hope Ltd · ABN 40 686 574 630. مسجّلة لدى ACNC ومعتمدة من مكتب الضرائب الأسترالي كجهة مؤهَّلة لاستلام الهبات المعفاة (DGR) — كل تبرّع بقيمة $2 فأكثر يحصل على إيصال معفى من الضرائب.",
     },
   },
   {
@@ -47,15 +47,15 @@ const items: Item[] = [
 export function TrustStrip() {
   const t = useT();
   return (
-    <section className="bg-[#f5f5f4] border-y border-[#d6d3d1] py-16 px-4">
+    <section className="bg-[#f5f5f4] border-y border-[#d6d3d1] py-10 sm:py-16 px-4">
       <div className="max-w-6xl mx-auto">
         <p
-          className="text-center text-[#6366f1] text-xs font-semibold uppercase tracking-widest mb-10"
+          className="text-center text-[#6366f1] text-xs font-semibold uppercase tracking-widest mb-6 sm:mb-10"
           style={{ fontFamily: "var(--font-sans)" }}
         >
           {t({ en: "Why trust us with your giving", ar: "لماذا تثق بنا في عطائك" })}
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
           {items.map((item) => {
             const Icon = item.icon;
             return (

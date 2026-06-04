@@ -19,9 +19,8 @@ const NAV_LINKS: { href: string; label: Dict<string> }[] = [
 const PROMISES: Dict<string>[] = [
   { en: "100% of donations reach the children", ar: "100% من التبرّعات تصل إلى الأطفال" },
   { en: "All travel costs self-funded by volunteers", ar: "المتطوّعون يموّلون كل نفقات سفرهم بأنفسهم" },
-  { en: "Registered charity — donations tax-deductible", ar: "جمعية مسجّلة — التبرّعات معفاة من الضرائب" },
+  { en: "DGR-endorsed — every gift gets a tax-deductible receipt", ar: "معتمدة كجهة DGR — كل تبرّع يحصل على إيصال معفى من الضرائب" },
   { en: "Full financial transparency on request", ar: "شفافية مالية كاملة عند الطلب" },
-  { en: "Led by Brother Hakim — on the ground in Kapoeta", ar: "بقيادة الأخ حكيم — في الميدان بكاپويتا" },
 ];
 
 export function Footer() {
@@ -37,8 +36,8 @@ export function Footer() {
       {/* Gold accent line */}
       <div className="h-[2px] w-full bg-[#C9952A]" />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12 mb-8 sm:mb-12">
           {/* Brand */}
           <div>
             <div className="flex items-center gap-3 mb-4">
@@ -114,7 +113,10 @@ export function Footer() {
               {t({ en: "FAQ", ar: "الأسئلة الشائعة" })}
             </Link>
             <Link href="/privacy" className="hover:text-[#C4AE9A] transition-colors duration-200">
-              {t({ en: "Privacy", ar: "الخصوصية" })}
+              {t({ en: "Privacy Policy", ar: "سياسة الخصوصية" })}
+            </Link>
+            <Link href="/terms" className="hover:text-[#C4AE9A] transition-colors duration-200">
+              {t({ en: "Terms of Use", ar: "شروط الاستخدام" })}
             </Link>
             <Link href="/donate" className="hover:text-[#C4AE9A] transition-colors duration-200">
               {t({ en: "Donate", ar: "تبرّع" })}

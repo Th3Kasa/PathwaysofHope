@@ -1,0 +1,50 @@
+import { NextRequest, NextResponse } from "next/server";
+import { randomBytes } from "node:crypto";
+import { isAuthed } from "@/lib/admin/auth";
+import { getConfig, saveConfig, uploadFile } from "@/lib/admin/store";
+import { KAPOETA_GOALS } from "@/lib/goals";
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+const MAX_BYTES = 15 * 1024 * 1024; // 15 MB
+
+export async function POST(req: NextRequest) {
+  if (!(await isAuthed())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  let form: FormData;
+  try { form = await req.formData(); } catch { return NextResponse.json({ error: "Invalid upload" }, { status: 400 }); }
+
+  const kind = String(form.get("kind") ?? "");
+  const file = form.get("file");
+  if (!(file instanceof File)) return NextResponse.json({ error: "No file" }, { status: 400 });
+  if (file.size > MAX_BYTES) return NextResponse.json({ error: "File too large (max 15 MB)" }, { status: 400 });
+
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const config = await getConfig();
+
+  if (kind === "report") {
+    if (file.type !== "application/pdf") return NextResponse.json({ error: "Reports must be PDF" }, { status: 400 });
+    const title = String(form.get("title") ?? "Annual Report").trim();
+    const year = String(form.get("year") ?? new Date().getFullYear()).trim();
+    const id = randomBytes(8).toString("hex");
+    const url = await uploadFile(`reports/${id}.pdf`, buffer, "application/pdf");
+    config.reports.unshift({ id, title, year, url, uploadedAt: new Date().toISOString() });
+    await saveConfig(config);
+    return NextResponse.json({ ok: true, url });
+  }
+
+  if (kind === "image") {
+    const key = String(form.get("key") ?? "");
+    const validKeys = KAPOETA_GOALS.map((g) => g.id);
+    if (!validKeys.includes(key as never)) return NextResponse.json({ error: "Unknown section" }, { status: 400 });
+    if (!file.type.startsWith("image/")) return NextResponse.json({ error: "File must be an image" }, { status: 400 });
+    const ext = file.type.split("/")[1]?.replace("jpeg", "jpg") || "jpg";
+    const url = await uploadFile(`sections/${key}-${randomBytes(4).toString("hex")}.${ext}`, buffer, file.type);
+    config.images[key] = url;
+    await saveConfig(config);
+    return NextResponse.json({ ok: true, url });
+  }
+
+  return NextResponse.json({ error: "Unknown kind" }, { status: 400 });
+}

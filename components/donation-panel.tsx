@@ -143,7 +143,7 @@ export function DonationPanel({ goal, part }: Props) {
         </div>
       </div>
 
-      <div className="p-6 sm:p-8 space-y-8">
+      <div className="p-5 sm:p-8 space-y-6 sm:space-y-8">
         <p className="text-[#6b7280] text-sm leading-relaxed">
           {part ? partNote : goalDesc}
         </p>

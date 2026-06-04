@@ -45,7 +45,7 @@ export default function MissionsClient() {
                 en: "Brother Hakim Peter shelters 70 children in Kapoeta — providing food, safety, and schooling to children who had none. Supported by communities across Australia, the US, the UK, and Egypt.",
                 ar: "يأوي الأخ حكيم بيتر 70 طفلاً في كاپويتا — موفّرًا الطعام والأمان والتعليم لأطفال لم يكن لديهم شيء من ذلك. وتدعمه مجتمعات في أستراليا والولايات المتحدة وبريطانيا ومصر.",
               })}
-              imageSrc="/images/kapoeta/field/children-group-portrait-shelter.jpg"
+              imageSrc="/images/kapoeta/field/children-large-group-activity-kapoeta.jpg"
               imageAlt={t({
                 en: "Children gathered at the Kapoeta shelter",
                 ar: "أطفال مجتمعون في ملجأ كاپويتا",

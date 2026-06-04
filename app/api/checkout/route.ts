@@ -102,6 +102,21 @@ export async function POST(req: NextRequest) {
             quantity: 1,
           },
         ],
+        // Generate a proper tax-deductible PDF invoice for every one-off gift,
+        // which Stripe emails to the donor automatically (Dashboard → Settings →
+        // Invoicing → "Email finalised invoices to customers" must be on).
+        invoice_creation: {
+          enabled: true,
+          invoice_data: {
+            description: `Tax-deductible donation to Pathways of Hope — ${label.replace(/^POH-/, "")}`,
+            metadata,
+            footer:
+              "Pathways of Hope Ltd (ABN 40 686 574 630) is a registered charity " +
+              "endorsed by the ATO as a Deductible Gift Recipient (DGR). Gifts of " +
+              "$2 or more are tax-deductible. No goods or services were provided in " +
+              "return for this gift. Please retain this invoice as your receipt.",
+          },
+        },
         payment_intent_data: { metadata, statement_descriptor: statementDescriptor },
         success_url: `${siteUrl}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: cancelUrl,
