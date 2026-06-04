@@ -6,6 +6,7 @@ import { ShieldCheck, FileText, HeartHandshake, type LucideIcon } from "lucide-r
 
 interface Props {
   totals: Record<string, { raised: number; supporters: number }> | null;
+  imageOverrides?: Record<string, string>;
 }
 
 const TRUST: { icon: LucideIcon; label: Dict<string> }[] = [
@@ -14,7 +15,7 @@ const TRUST: { icon: LucideIcon; label: Dict<string> }[] = [
   { icon: HeartHandshake, label: { en: "100% reaches the children", ar: "100% يصل إلى الأطفال" } },
 ];
 
-export function DonateClient({ totals }: Props) {
+export function DonateClient({ totals, imageOverrides }: Props) {
   const t = useT();
   return (
     <div className="bg-[#e7e5e4] min-h-screen">
@@ -37,7 +38,7 @@ export function DonateClient({ totals }: Props) {
           </p>
         </div>
 
-        <DonateHub totals={totals} />
+        <DonateHub totals={totals} imageOverrides={imageOverrides} />
 
         <div className="mt-8 sm:mt-14 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 text-center">
           {TRUST.map((item) => {

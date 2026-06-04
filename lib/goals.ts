@@ -9,7 +9,8 @@ export type GoalId =
   | "chicken-coop"
   | "water-pump"
   | "ongoing-operations"
-  | "sponsor-a-child";
+  | "sponsor-a-child"
+  | "where-most-needed";
 
 export type GoalKind = "bundle" | "leaf" | "leaf-qty";
 
@@ -43,6 +44,8 @@ export interface Goal {
   imageAlt: string;
   /** Component parts for bundle goals. */
   breakdown?: BreakdownPart[];
+  /** Hide progress meter — open-ended gift with no fixed target. */
+  hideMeter?: boolean;
 }
 
 export const KAPOETA_GOALS: Goal[] = [
@@ -177,6 +180,21 @@ export const KAPOETA_GOALS: Goal[] = [
     presets: [600],
     image: "/images/kapoeta/field/children-group-portrait-shelter.jpg",
     imageAlt: "Children at the Kapoeta Children's Shelter",
+  },
+  {
+    id: "where-most-needed",
+    title: "Custom Donation",
+    short:
+      "Give any amount you choose — directed to wherever the need is greatest at the shelter right now.",
+    description:
+      "Not sure which project to choose? Enter your own amount and we'll direct it to wherever the need is greatest — food, medical care, schooling, or the next building stage. Give once or set up recurring support. Every dollar reaches the Kapoeta Children's Shelter.",
+    goalAmount: 0,
+    kind: "leaf",
+    recurringByNature: false,
+    hideMeter: true,
+    presets: [25, 50, 100, 250, 500],
+    image: "/images/kapoeta/field/children-large-group-activity-kapoeta.jpg",
+    imageAlt: "Children gathered together at the Kapoeta Children's Shelter",
   },
 ];
 

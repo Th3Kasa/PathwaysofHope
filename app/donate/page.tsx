@@ -1,4 +1,5 @@
 import { DonateClient } from "@/app/donate/donate-client";
+import { getConfig } from "@/lib/admin/store";
 
 async function getTotals() {
   try {
@@ -12,6 +13,6 @@ async function getTotals() {
 }
 
 export default async function DonatePage() {
-  const totals = await getTotals();
-  return <DonateClient totals={totals} />;
+  const [totals, { images }] = await Promise.all([getTotals(), getConfig()]);
+  return <DonateClient totals={totals} imageOverrides={images} />;
 }

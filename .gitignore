@@ -46,3 +46,5 @@ public/videos/
 .devlog.txt
 .devserver*.log
 .cookies.txt
+
+.env*.local

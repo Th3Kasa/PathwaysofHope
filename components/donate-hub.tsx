@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion, type Variants } from "framer-motion";
-import { Sun, Egg, Droplets, HeartHandshake, Baby, ArrowRight } from "lucide-react";
+import { Sun, Egg, Droplets, HeartHandshake, Baby, Heart, ArrowRight } from "lucide-react";
 import { KAPOETA_GOALS, type GoalId, type Goal } from "@/lib/goals";
 import { formatAUDFull } from "@/lib/utils";
 import { useLang, useT } from "@/lib/i18n";
@@ -10,6 +10,7 @@ import { GOAL_AR } from "@/lib/goals-i18n";
 
 interface Props {
   totals: Record<string, { raised: number; supporters: number }> | null;
+  imageOverrides?: Record<string, string>;
 }
 
 const ICONS: Record<GoalId, React.ElementType> = {
@@ -18,6 +19,7 @@ const ICONS: Record<GoalId, React.ElementType> = {
   "water-pump": Droplets,
   "ongoing-operations": HeartHandshake,
   "sponsor-a-child": Baby,
+  "where-most-needed": Heart,
 };
 
 const fadeUp: Variants = {
@@ -30,7 +32,7 @@ function hrefFor(goal: Goal): string {
   return goal.kind === "bundle" ? `/donate/${goal.id}/parts` : `/donate/${goal.id}`;
 }
 
-export function DonateHub({ totals }: Props) {
+export function DonateHub({ totals, imageOverrides }: Props) {
   const { lang } = useLang();
   const t = useT();
   return (
@@ -48,7 +50,9 @@ export function DonateHub({ totals }: Props) {
         const unitLabel = lang === "ar" ? arGoal.unitLabel ?? goal.unitLabel : goal.unitLabel;
         const raised = totals?.[goal.id]?.raised ?? 0;
         const supporters = totals?.[goal.id]?.supporters ?? 0;
-        const pct = Math.min(Math.round((raised / goal.goalAmount) * 100), 100);
+        const pct = goal.goalAmount > 0
+          ? Math.min(Math.round((raised / goal.goalAmount) * 100), 100)
+          : 0;
 
         return (
           <motion.div
@@ -74,29 +78,38 @@ export function DonateHub({ totals }: Props) {
 
             <p className="text-[#6b7280] text-sm leading-relaxed mb-5 flex-grow">{short}</p>
 
-            {/* Compact progress meter */}
-            <div className="mb-6">
-              <div className="flex items-end justify-between mb-2">
-                <span className="text-lg font-bold" style={{ fontFamily: "var(--font-serif)", color: "#C9952A" }}>
-                  {formatAUDFull(raised)}
-                </span>
-                <span className="text-xs text-[#6b7280]">
-                  {t({ en: "of", ar: "من" })} {formatAUDFull(goal.goalAmount)}
+            {/* Progress meter — hidden for open-ended custom gifts */}
+            {goal.hideMeter ? (
+              <div className="mb-6 rounded-xl bg-[#f5f5f4] border border-[#d6d3d1] px-4 py-3 flex items-center gap-2.5">
+                <Heart size={14} className="text-[#6366f1] flex-shrink-0" />
+                <span className="text-xs text-[#6b7280] leading-relaxed">
+                  {t({ en: "You choose the amount — we direct it where it's needed most.", ar: "أنت تحدّد المبلغ — ونحن نوجّهه إلى حيثما يكون الاحتياج أشدّ." })}
                 </span>
               </div>
-              <div className="w-full h-2.5 rounded-full bg-[#f5f5f4] overflow-hidden">
-                <div
-                  className="h-full rounded-full"
-                  style={{ width: `${pct}%`, background: "linear-gradient(90deg,#C9952A,#E4B84A,#F0C84E)" }}
-                />
+            ) : (
+              <div className="mb-6">
+                <div className="flex items-end justify-between mb-2">
+                  <span className="text-lg font-bold" style={{ fontFamily: "var(--font-serif)", color: "#C9952A" }}>
+                    {formatAUDFull(raised)}
+                  </span>
+                  <span className="text-xs text-[#6b7280]">
+                    {t({ en: "of", ar: "من" })} {formatAUDFull(goal.goalAmount)}
+                  </span>
+                </div>
+                <div className="w-full h-2.5 rounded-full bg-[#f5f5f4] overflow-hidden">
+                  <div
+                    className="h-full rounded-full"
+                    style={{ width: `${pct}%`, background: "linear-gradient(90deg,#C9952A,#E4B84A,#F0C84E)" }}
+                  />
+                </div>
+                <div className="flex items-center justify-between mt-2">
+                  <span className="text-xs font-semibold" style={{ color: "#C9952A" }}>{pct}% {t({ en: "funded", ar: "مموَّل" })}</span>
+                  {supporters > 0 && (
+                    <span className="text-xs text-[#6b7280]">{supporters.toLocaleString()} {t({ en: "supporters", ar: "داعمًا" })}</span>
+                  )}
+                </div>
               </div>
-              <div className="flex items-center justify-between mt-2">
-                <span className="text-xs font-semibold" style={{ color: "#C9952A" }}>{pct}% {t({ en: "funded", ar: "مموَّل" })}</span>
-                {supporters > 0 && (
-                  <span className="text-xs text-[#6b7280]">{supporters.toLocaleString()} {t({ en: "supporters", ar: "داعمًا" })}</span>
-                )}
-              </div>
-            </div>
+            )}
 
             <Link
               href={hrefFor(goal)}

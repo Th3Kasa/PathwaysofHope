@@ -95,7 +95,9 @@ const TIMELINE: { period: Dict<string>; title: Dict<string>; body: Dict<string> 
   },
 ];
 
-const GOAL_ICONS: Record<GoalId, React.ElementType> = {
+// Custom Donation has no fixed project target, so it's excluded from the
+// mission page's "2026 goals" section. Only the 5 project goals appear here.
+const GOAL_ICONS: Partial<Record<GoalId, React.ElementType>> = {
   "sponsor-a-child": Baby,
   "solar-system": Sun,
   "chicken-coop": Egg,
@@ -103,7 +105,7 @@ const GOAL_ICONS: Record<GoalId, React.ElementType> = {
   "ongoing-operations": HeartHandshake,
 };
 
-const GOAL_META: Record<GoalId, { priority: number; why: Dict<string> }> = {
+const GOAL_META: Partial<Record<GoalId, { priority: number; why: Dict<string> }>> = {
   "solar-system": {
     priority: 1,
     why: {
@@ -987,9 +989,10 @@ function Achievements() {
 
 function DonationsSection({ goals, totals }: Props) {
   const t = useT();
-  const sorted = [...goals].sort(
-    (a, b) => (GOAL_META[a.id]?.priority ?? 99) - (GOAL_META[b.id]?.priority ?? 99)
-  );
+  // Exclude open-ended goals (no priority entry) from the 2026 goals section.
+  const sorted = goals
+    .filter((g) => GOAL_META[g.id] !== undefined)
+    .sort((a, b) => (GOAL_META[a.id]?.priority ?? 99) - (GOAL_META[b.id]?.priority ?? 99));
 
   return (
     <section className="py-14 sm:py-24 px-4 bg-[#1e293b] relative overflow-hidden">
@@ -1033,6 +1036,7 @@ function DonationsSection({ goals, totals }: Props) {
         >
           {sorted.map((goal) => {
             const meta = GOAL_META[goal.id];
+            if (!meta) return null;
             const GoalIcon = GOAL_ICONS[goal.id];
             const live = totals?.[goal.id];
             return (
