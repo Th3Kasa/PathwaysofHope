@@ -118,8 +118,7 @@ export function buildReceiptHtml(opts: {
                 <tr>
                   <td>
                     <p style="margin:0;font-size:12px;line-height:1.7;color:#2D5A2D;">
-                      <strong>Tax information:</strong> ${ORG_NAME} (ABN ${ABN}) is a registered charity with the Australian Charities and Not-for-profits Commission (ACNC).
-                      Please retain this receipt for your tax records. Consult your tax adviser regarding the deductibility of your donation.
+                      <strong>Tax-deductible receipt:</strong> ${ORG_NAME} (ABN ${ABN}) is a registered charity with the Australian Charities and Not-for-profits Commission (ACNC) and is endorsed by the Australian Taxation Office as a Deductible Gift Recipient (DGR). Gifts of $2 or more are tax-deductible. No goods or services were provided in return for this gift. Please retain this receipt for your tax records.
                     </p>
                   </td>
                 </tr>

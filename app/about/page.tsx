@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { TrustStrip } from "@/components/trust-strip";
 import { DonateButton } from "@/components/donate-button";
 import { motion, type Variants } from "framer-motion";
@@ -16,29 +15,6 @@ const BOARD: { name: string; roles: Dict<string>[]; bio: Dict<string> }[] = [
     bio: {
       en: "As Chairman of Pathways of Hope, Waleed brings a deep commitment to transparent governance and community-driven charity, ensuring the organisation's mission remains accountable to those it serves.",
       ar: "بصفته رئيسًا لمجلس إدارة دروب الأمل، يحمل وليد التزامًا عميقًا بالحوكمة الشفافة والعمل الخيري النابع من المجتمع، حرصًا على أن تظلّ رسالة المنظمة مسؤولة أمام من تخدمهم.",
-    },
-  },
-  {
-    name: "Sylvia Mansour",
-    roles: [
-      { en: "Director", ar: "عضو مجلس إدارة" },
-      { en: "Legal Advisor", ar: "مستشارة قانونية" },
-      { en: "Public Officer", ar: "مسؤولة عامة" },
-    ],
-    bio: {
-      en: "Sylvia holds responsibility for the organisation's legal and public obligations and governance records. Her diligence ensures Pathways of Hope meets all regulatory requirements as a registered Australian charity.",
-      ar: "تتولّى سيلفيا مسؤولية الالتزامات القانونية والعامة للمنظمة وسجلّات الحوكمة. ودقّتها تكفل وفاء دروب الأمل بجميع المتطلبات التنظيمية بوصفها جمعية خيرية أسترالية مسجّلة.",
-    },
-  },
-  {
-    name: "Hanan Mansour",
-    roles: [
-      { en: "Director", ar: "عضو مجلس إدارة" },
-      { en: "Coordinator", ar: "منسّقة" },
-    ],
-    bio: {
-      en: "As Coordinator, Hanan is committed to building sustainable charitable structures that honour both donors and recipients. Her focus is on long-term impact over short-term visibility.",
-      ar: "بصفتها منسّقة، تلتزم حنان ببناء هياكل خيرية مستدامة تُكرّم المتبرّعين والمستفيدين على حدّ سواء. وينصبّ تركيزها على الأثر طويل الأمد بدلًا من البروز قصير المدى.",
     },
   },
 ];
@@ -222,77 +198,6 @@ export default function AboutPage() {
         </motion.div>
       </section>
 
-      {/* Community — field photos */}
-      <section className="py-20 px-4 bg-[#e7e5e4] overflow-hidden">
-        <div className="max-w-6xl mx-auto">
-          <motion.div
-            className="mb-10"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-            variants={fadeUp}
-          >
-            <p className="text-[#6366f1] text-sm uppercase tracking-widest mb-3 font-medium">
-              {t({ en: "From the field", ar: "من الميدان" })}
-            </p>
-            <h2
-              className="text-3xl sm:text-4xl font-light text-[#1e293b]"
-              style={{ fontFamily: "var(--font-serif)" }}
-            >
-              {t({ en: "The people and places behind our work.", ar: "الناس والأماكن وراء عملنا." })}
-            </h2>
-          </motion.div>
-
-          <motion.div
-            className="grid grid-cols-2 lg:grid-cols-4 gap-3"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1 } } }}
-          >
-            {[
-              {
-                src: "/images/kapoeta/field/children-large-group-activity-kapoeta.jpg",
-                alt: "Children gathered together at the Kapoeta Children's Shelter",
-                caption: { en: "Kapoeta, South Sudan", ar: "كاپويتا، جنوب السودان" },
-              },
-              {
-                src: "/images/people/ezzat-morkos-portrait.jpg",
-                alt: "Ezzat Morkos — community partner of Pathways of Hope",
-                caption: { en: "Ezzat Morkos — community partner", ar: "Ezzat Morkos — شريك مجتمعي" },
-              },
-              {
-                src: "/images/kapoeta/field/visitor-women-session-children-kapoeta.jpg",
-                alt: "Visitors from Australia leading a session with children at the shelter",
-                caption: { en: "Partners across four continents", ar: "شركاء عبر أربع قارّات" },
-              },
-              {
-                src: "/images/people/mamdouh-mansour-children-kapoeta.jpg",
-                alt: "Elder Mamdouh Mansour with the children in Kapoeta",
-                caption: { en: "Elder Mamdouh in Kapoeta", ar: "الشيخ Mamdouh في كاپويتا" },
-              },
-            ].map((img) => (
-              <motion.div
-                key={img.src}
-                variants={{ hidden: { opacity: 0, scale: 0.95 }, visible: { opacity: 1, scale: 1, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
-                className="relative overflow-hidden rounded-2xl aspect-[3/4] group"
-              >
-                <Image
-                  src={img.src}
-                  alt={img.alt}
-                  fill
-                  className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
-                  sizes="(max-width: 640px) 50vw, 25vw"
-                />
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#1e293b]/80 to-transparent pt-8 pb-3 px-3">
-                  <p className="text-white text-xs font-medium">{t(img.caption)}</p>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
       {/* Board of Directors */}
       <section className="py-20 px-4">
         <div className="max-w-6xl mx-auto">
@@ -321,7 +226,7 @@ export default function AboutPage() {
           </motion.div>
 
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-3 gap-10"
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 max-w-md"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
