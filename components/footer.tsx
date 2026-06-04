@@ -21,7 +21,6 @@ const PROMISES: Dict<string>[] = [
   { en: "All travel costs self-funded by volunteers", ar: "المتطوّعون يموّلون كل نفقات سفرهم بأنفسهم" },
   { en: "DGR-endorsed — every gift gets a tax-deductible receipt", ar: "معتمدة كجهة DGR — كل تبرّع يحصل على إيصال معفى من الضرائب" },
   { en: "Full financial transparency on request", ar: "شفافية مالية كاملة عند الطلب" },
-  { en: "Led by Brother Hakim — on the ground in Kapoeta", ar: "بقيادة الأخ حكيم — في الميدان بكاپويتا" },
 ];
 
 export function Footer() {
@@ -114,7 +113,10 @@ export function Footer() {
               {t({ en: "FAQ", ar: "الأسئلة الشائعة" })}
             </Link>
             <Link href="/privacy" className="hover:text-[#C4AE9A] transition-colors duration-200">
-              {t({ en: "Privacy", ar: "الخصوصية" })}
+              {t({ en: "Privacy Policy", ar: "سياسة الخصوصية" })}
+            </Link>
+            <Link href="/terms" className="hover:text-[#C4AE9A] transition-colors duration-200">
+              {t({ en: "Terms of Use", ar: "شروط الاستخدام" })}
             </Link>
             <Link href="/donate" className="hover:text-[#C4AE9A] transition-colors duration-200">
               {t({ en: "Donate", ar: "تبرّع" })}

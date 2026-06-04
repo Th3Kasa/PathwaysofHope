@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
+import { cookies } from "next/headers";
 import { KAPOETA_GOALS } from "@/lib/goals";
 
 // Cache totals for 60 seconds to avoid hammering Stripe.
@@ -43,6 +44,22 @@ export async function GET() {
         totals[goalId].raised += (inv.amount_paid ?? 0) / 100;
         // Supporters counted from the originating payment, not each invoice.
       }
+    }
+
+    // Manual adjustments from the admin panel (offline/bank-transfer gifts).
+    try {
+      const store = await cookies();
+      const raw = store.get("poh_adjustments")?.value;
+      if (raw) {
+        const adjustments = JSON.parse(Buffer.from(raw, "base64").toString()) as Record<string, number>;
+        for (const [id, amount] of Object.entries(adjustments)) {
+          if (id in totals && typeof amount === "number" && amount > 0) {
+            totals[id].raised += amount;
+          }
+        }
+      }
+    } catch {
+      // Ignore malformed adjustment cookie — never inflate on error.
     }
 
     // Round raised figures.
