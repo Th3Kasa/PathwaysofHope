@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 const MUAPI_BASE = "https://api.muapi.ai/api/v1";
-const MODEL = "google-imagen4"; // $0.03/image — photorealistic
+const MODEL = "google-imagen4-ultra"; // higher quality photorealistic
 
 async function pollResult(requestId: string, apiKey: string): Promise<string> {
   const maxAttempts = 30;
