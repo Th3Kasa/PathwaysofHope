@@ -2,7 +2,10 @@
 // All admin-editable content (section photos, annual reports) lives in a
 // single JSON blob. The Vercel filesystem is read-only at runtime, so we
 // persist in Blob object storage instead.
-// Requires BLOB_READ_WRITE_TOKEN (auto-injected once Vercel Blob is enabled).
+// Requires a Blob read-write token. Vercel injects BLOB_READ_WRITE_TOKEN when
+// a Blob store is connected, but the Marketplace integration sometimes names
+// it with a store-specific prefix (e.g. SomeStore_READ_WRITE_TOKEN), so we
+// detect the token under any matching name and pass it explicitly to the SDK.
 
 import { put, list } from "@vercel/blob";
 
@@ -29,10 +32,36 @@ export function defaultConfig(): AdminConfig {
   return { images: {}, titles: {}, reports: [] };
 }
 
+/**
+ * Find the Vercel Blob read-write token. Prefers the standard name, then falls
+ * back to any env var ending in READ_WRITE_TOKEN (Marketplace integrations may
+ * prefix it with the store name). Returns undefined if none is configured.
+ */
+export function getBlobToken(): string | undefined {
+  if (process.env.BLOB_READ_WRITE_TOKEN) return process.env.BLOB_READ_WRITE_TOKEN;
+  for (const [name, value] of Object.entries(process.env)) {
+    if (value && /READ_WRITE_TOKEN$/.test(name) && value.startsWith("vercel_blob_")) {
+      return value;
+    }
+  }
+  // Last resort: any var whose name mentions BLOB and TOKEN.
+  for (const [name, value] of Object.entries(process.env)) {
+    if (value && /BLOB/i.test(name) && /TOKEN/i.test(name) && value.startsWith("vercel_blob_")) {
+      return value;
+    }
+  }
+  return undefined;
+}
+
+export function blobReady(): boolean {
+  return Boolean(getBlobToken());
+}
+
 export async function getConfig(): Promise<AdminConfig> {
   try {
-    if (!process.env.BLOB_READ_WRITE_TOKEN) return defaultConfig();
-    const { blobs } = await list({ prefix: CONFIG_PATH, limit: 1 });
+    const token = getBlobToken();
+    if (!token) return defaultConfig();
+    const { blobs } = await list({ prefix: CONFIG_PATH, limit: 1, token });
     if (blobs.length === 0) return defaultConfig();
     const res = await fetch(blobs[0].url, { cache: "no-store" });
     if (!res.ok) return defaultConfig();
@@ -44,7 +73,8 @@ export async function getConfig(): Promise<AdminConfig> {
 }
 
 export async function saveConfig(config: AdminConfig): Promise<void> {
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+  const token = getBlobToken();
+  if (!token) {
     throw new Error("Vercel Blob not configured. Enable it in your Vercel dashboard.");
   }
   await put(CONFIG_PATH, JSON.stringify(config, null, 2), {
@@ -52,6 +82,7 @@ export async function saveConfig(config: AdminConfig): Promise<void> {
     contentType: "application/json",
     addRandomSuffix: false,
     allowOverwrite: true,
+    token,
   });
 }
 
@@ -60,13 +91,15 @@ export async function uploadFile(
   data: Buffer,
   contentType: string
 ): Promise<string> {
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+  const token = getBlobToken();
+  if (!token) {
     throw new Error("Vercel Blob not configured. Enable it in your Vercel dashboard.");
   }
   const blob = await put(pathname, data, {
     access: "public",
     contentType,
     addRandomSuffix: true,
+    token,
   });
   return blob.url;
 }
