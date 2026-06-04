@@ -187,9 +187,9 @@ function HeroSection() {
         <div className="absolute inset-0 bg-gradient-to-t from-[#1e293b]/90 via-[#1e293b]/40 to-[#1e293b]/10" />
       </motion.div>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 w-full">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 sm:pb-20 w-full">
         <motion.div variants={staggerContainer} initial="hidden" animate="visible">
-          <motion.div variants={fadeUp} className="flex items-center gap-2 mb-6">
+          <motion.div variants={fadeUp} className="flex items-center gap-2 mb-4 sm:mb-6">
             <Link href="/missions" className="text-[#C4AE9A] text-sm hover:text-white transition-colors">
               {t({ en: "Missions", ar: "مهامّنا" })}
             </Link>
@@ -199,7 +199,7 @@ function HeroSection() {
 
           <motion.h1
             variants={fadeUp}
-            className="text-5xl sm:text-7xl font-light text-white leading-[1.05] mb-6 max-w-3xl"
+            className="text-[2.25rem] sm:text-5xl lg:text-7xl font-light text-white leading-[1.1] sm:leading-[1.05] mb-4 sm:mb-6 max-w-3xl"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {t({
@@ -208,7 +208,7 @@ function HeroSection() {
             })}
           </motion.h1>
 
-          <motion.p variants={fadeUp} className="text-[#C4AE9A] text-xl sm:text-2xl max-w-xl leading-relaxed font-light">
+          <motion.p variants={fadeUp} className="text-[#C4AE9A] text-base sm:text-2xl max-w-xl leading-relaxed font-light">
             {t({
               en: "A children's home in South Sudan — built by a community of believers across four continents.",
               ar: "بيت للأطفال في جنوب السودان — بناه مجتمع من المؤمنين عبر أربع قارّات.",
@@ -229,10 +229,10 @@ function StoryChapter1() {
   const imageY = useTransform(scrollYProgress, [0, 1], ["-5%", "5%"]);
 
   return (
-    <section ref={ref} className="py-24 px-4 bg-[#f5f5f4]">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+    <section ref={ref} className="py-14 sm:py-24 px-4 bg-[#f5f5f4]">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-16 items-center">
         <motion.div
-          className="relative h-[520px] rounded-2xl overflow-hidden shadow-2xl"
+          className="relative h-64 sm:h-[520px] rounded-2xl overflow-hidden shadow-2xl"
           initial={{ opacity: 0, x: -40 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, amount: 0.3 }}
@@ -268,7 +268,7 @@ function StoryChapter1() {
           </motion.p>
           <motion.h2
             variants={fadeUp}
-            className="text-4xl sm:text-5xl font-light text-[#1e293b] mb-6 leading-tight"
+            className="text-2xl sm:text-4xl font-light text-[#1e293b] mb-4 sm:mb-6 leading-tight"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {t({ en: "A native son returns home.", ar: "ابنٌ من أبناء البلد يعود إلى وطنه." })}
@@ -319,7 +319,7 @@ function StatsStrip() {
   ];
 
   return (
-    <section className="bg-[#1e293b] py-16 px-4">
+    <section className="bg-[#1e293b] py-8 sm:py-16 px-4">
       <motion.div
         className="max-w-6xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-8 text-center"
         initial="hidden"
@@ -330,7 +330,7 @@ function StatsStrip() {
         {stats.map((s) => (
           <motion.div key={s.label.en} variants={fadeUp}>
             <div
-              className="text-3xl sm:text-4xl font-light mb-2 tabular-nums"
+              className="text-2xl sm:text-4xl font-light mb-1 sm:mb-2 tabular-nums"
               style={{ fontFamily: "var(--font-serif)", color: "#C9952A" }}
             >
               <Counter value={s.value} prefix={"prefix" in s ? (s as { prefix: string }).prefix : ""} suffix={s.suffix} />
@@ -364,7 +364,7 @@ function StoryChapter2() {
   ];
 
   return (
-    <section className="py-24 px-4 bg-[#e7e5e4]">
+    <section className="py-14 sm:py-24 px-4 bg-[#e7e5e4]">
       <div className="max-w-6xl mx-auto">
         <motion.div
           className="max-w-3xl mb-14"
@@ -381,7 +381,7 @@ function StoryChapter2() {
           </motion.p>
           <motion.h2
             variants={fadeUp}
-            className="text-4xl sm:text-5xl font-light text-[#1e293b] mb-6 leading-tight"
+            className="text-2xl sm:text-4xl font-light text-[#1e293b] mb-4 sm:mb-6 leading-tight"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {t({ en: "A 40-foot box, packed in Sydney.", ar: "صندوق طوله 40 قدمًا، عُبّئ في سيدني." })}
@@ -432,7 +432,7 @@ function StoryChapter2() {
 function StoryChapter3() {
   const t = useT();
   return (
-    <section className="py-24 px-4 bg-[#f5f5f4]">
+    <section className="py-14 sm:py-24 px-4 bg-[#f5f5f4]">
       <div className="max-w-5xl mx-auto">
         <motion.div
           className="mb-14 max-w-2xl"
@@ -449,7 +449,7 @@ function StoryChapter3() {
           </motion.p>
           <motion.h2
             variants={fadeUp}
-            className="text-4xl sm:text-5xl font-light text-[#1e293b] mb-5 leading-tight"
+            className="text-2xl sm:text-4xl font-light text-[#1e293b] mb-4 sm:mb-5 leading-tight"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {t({ en: "How a building rose, and a shelter took shape.", ar: "كيف نهض مبنى، وتشكّل ملجأ." })}
@@ -546,7 +546,7 @@ function OnTheGround() {
   ];
 
   return (
-    <section className="py-24 px-4 bg-[#e7e5e4]">
+    <section className="py-14 sm:py-24 px-4 bg-[#e7e5e4]">
       <div className="max-w-6xl mx-auto">
         <motion.div
           className="mb-14 max-w-2xl"
@@ -563,7 +563,7 @@ function OnTheGround() {
           </motion.p>
           <motion.h2
             variants={fadeUp}
-            className="text-4xl sm:text-5xl font-light text-[#1e293b] leading-tight"
+            className="text-2xl sm:text-4xl font-light text-[#1e293b] leading-tight"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {t({ en: "The people who make the days work.", ar: "أناسٌ تسير الأيام بهم." })}
@@ -876,7 +876,7 @@ function Gallery() {
   ];
 
   return (
-    <section className="py-20 px-4 bg-[#1e293b] overflow-hidden">
+    <section className="py-12 sm:py-20 px-4 bg-[#1e293b] overflow-hidden">
       <motion.div
         className="max-w-6xl mx-auto"
         initial="hidden"
@@ -925,7 +925,7 @@ function Gallery() {
 function Achievements() {
   const t = useT();
   return (
-    <section className="py-24 px-4 bg-[#f5f5f4]">
+    <section className="py-14 sm:py-24 px-4 bg-[#f5f5f4]">
       <div className="max-w-5xl mx-auto">
         <motion.div
           className="mb-12 max-w-2xl"
@@ -939,7 +939,7 @@ function Achievements() {
           </motion.p>
           <motion.h2
             variants={fadeUp}
-            className="text-4xl sm:text-5xl font-light text-[#1e293b] mb-4 leading-tight"
+            className="text-2xl sm:text-4xl font-light text-[#1e293b] mb-4 leading-tight"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {t({
@@ -992,7 +992,7 @@ function DonationsSection({ goals, totals }: Props) {
   );
 
   return (
-    <section className="py-24 px-4 bg-[#1e293b] relative overflow-hidden">
+    <section className="py-14 sm:py-24 px-4 bg-[#1e293b] relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-[#1e293b] via-[#2A1F18] to-[#1e293b] opacity-90" />
 
       <div className="relative max-w-6xl mx-auto">
@@ -1011,7 +1011,7 @@ function DonationsSection({ goals, totals }: Props) {
           </motion.p>
           <motion.h2
             variants={fadeUp}
-            className="text-4xl sm:text-5xl font-light text-white mb-5 leading-tight"
+            className="text-2xl sm:text-4xl font-light text-white mb-4 sm:mb-5 leading-tight"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {t({ en: "The 2026 goals.", ar: "أهداف 2026." })}
@@ -1093,7 +1093,7 @@ function DonationsSection({ goals, totals }: Props) {
 function FinalCTA() {
   const t = useT();
   return (
-    <section className="py-24 px-4 bg-[#e7e5e4] text-center">
+    <section className="py-14 sm:py-24 px-4 bg-[#e7e5e4] text-center">
       <motion.div
         className="max-w-2xl mx-auto"
         initial="hidden"
@@ -1103,7 +1103,7 @@ function FinalCTA() {
       >
         <motion.h2
           variants={fadeUp}
-          className="text-4xl sm:text-5xl font-light text-[#1e293b] mb-6"
+          className="text-2xl sm:text-4xl font-light text-[#1e293b] mb-4 sm:mb-6"
           style={{ fontFamily: "var(--font-serif)" }}
         >
           {t({ en: "Join the story.", ar: "كن جزءًا من القصة." })}

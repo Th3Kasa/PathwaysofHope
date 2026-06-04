@@ -105,10 +105,10 @@ export default function AboutPage() {
     <div className="bg-[#e7e5e4]">
 
       {/* Hero */}
-      <section className="py-28 px-4 bg-[#f5f5f4]">
+      <section className="py-16 sm:py-28 px-4 bg-[#f5f5f4]">
         <div className="max-w-4xl mx-auto">
           <motion.p
-            className="text-[#6366f1] text-sm uppercase tracking-widest mb-4 font-medium"
+            className="text-[#6366f1] text-sm uppercase tracking-widest mb-3 sm:mb-4 font-medium"
             initial="hidden"
             animate="visible"
             variants={fadeUp}
@@ -116,7 +116,7 @@ export default function AboutPage() {
             {t({ en: "Who we are", ar: "من نحن" })}
           </motion.p>
           <motion.h1
-            className="text-5xl sm:text-6xl font-light text-[#1e293b] mb-6 leading-tight"
+            className="text-[2rem] sm:text-5xl font-light text-[#1e293b] mb-4 sm:mb-6 leading-tight"
             style={{ fontFamily: "var(--font-serif)" }}
             initial="hidden"
             animate="visible"
@@ -128,7 +128,7 @@ export default function AboutPage() {
             })}
           </motion.h1>
           <motion.p
-            className="text-[#374151] text-xl leading-relaxed max-w-2xl"
+            className="text-[#374151] text-base sm:text-xl leading-relaxed max-w-2xl"
             initial="hidden"
             animate="visible"
             variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] } } }}
@@ -142,10 +142,10 @@ export default function AboutPage() {
       </section>
 
       {/* Our Model */}
-      <section className="py-20 px-4">
+      <section className="py-12 sm:py-20 px-4">
         <div className="max-w-3xl mx-auto">
           <motion.h2
-            className="text-3xl font-light text-[#1e293b] mb-8"
+            className="text-2xl sm:text-3xl font-light text-[#1e293b] mb-6 sm:mb-8"
             style={{ fontFamily: "var(--font-serif)" }}
             initial="hidden"
             whileInView="visible"
@@ -175,7 +175,7 @@ export default function AboutPage() {
       </section>
 
       {/* Pull Quote */}
-      <section className="bg-[#6366f1] py-20 px-4">
+      <section className="bg-[#6366f1] py-12 sm:py-20 px-4">
         <motion.div
           className="max-w-3xl mx-auto text-center"
           initial="hidden"
@@ -184,7 +184,7 @@ export default function AboutPage() {
           variants={fadeUp}
         >
           <blockquote
-            className="text-2xl sm:text-3xl font-light text-white leading-relaxed italic"
+            className="text-xl sm:text-3xl font-light text-white leading-relaxed italic"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {t({
@@ -199,10 +199,10 @@ export default function AboutPage() {
       </section>
 
       {/* Board of Directors */}
-      <section className="py-20 px-4">
+      <section className="py-12 sm:py-20 px-4">
         <div className="max-w-6xl mx-auto">
           <motion.div
-            className="mb-14"
+            className="mb-10 sm:mb-14"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
@@ -265,10 +265,10 @@ export default function AboutPage() {
       </section>
 
       {/* Commitments */}
-      <section className="py-20 px-4 bg-[#f5f5f4]">
+      <section className="py-12 sm:py-20 px-4 bg-[#f5f5f4]">
         <div className="max-w-4xl mx-auto">
           <motion.div
-            className="mb-12"
+            className="mb-8 sm:mb-12"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
@@ -308,7 +308,7 @@ export default function AboutPage() {
       <TrustStrip />
 
       {/* CTA */}
-      <section className="py-20 px-4 text-center">
+      <section className="py-12 sm:py-20 px-4 text-center">
         <motion.div
           className="max-w-xl mx-auto"
           initial="hidden"

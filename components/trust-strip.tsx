@@ -47,15 +47,15 @@ const items: Item[] = [
 export function TrustStrip() {
   const t = useT();
   return (
-    <section className="bg-[#f5f5f4] border-y border-[#d6d3d1] py-16 px-4">
+    <section className="bg-[#f5f5f4] border-y border-[#d6d3d1] py-10 sm:py-16 px-4">
       <div className="max-w-6xl mx-auto">
         <p
-          className="text-center text-[#6366f1] text-xs font-semibold uppercase tracking-widest mb-10"
+          className="text-center text-[#6366f1] text-xs font-semibold uppercase tracking-widest mb-6 sm:mb-10"
           style={{ fontFamily: "var(--font-sans)" }}
         >
           {t({ en: "Why trust us with your giving", ar: "لماذا تثق بنا في عطائك" })}
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
           {items.map((item) => {
             const Icon = item.icon;
             return (

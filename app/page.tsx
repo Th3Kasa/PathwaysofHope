@@ -194,17 +194,17 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-t from-[#1e293b]/90 via-[#1e293b]/40 to-transparent" />
         </div>
 
-        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 pt-32 w-full">
+        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 pt-24 sm:pb-24 sm:pt-32 w-full">
           <motion.div initial="hidden" animate="show" variants={stagger}>
             <motion.p
               variants={fadeUp}
-              className="text-[#d6d3d1] text-xs font-bold uppercase tracking-[0.25em] mb-5 drop-shadow"
+              className="text-[#d6d3d1] text-xs font-bold uppercase tracking-[0.25em] mb-4 sm:mb-5 drop-shadow"
             >
               {t({ en: "Faith · Partnership · Dignity", ar: "إيمان · شراكة · كرامة" })}
             </motion.p>
             <motion.h1
               variants={fadeUp}
-              className="text-5xl sm:text-6xl lg:text-[4.5rem] font-light text-white leading-[1.05] mb-7 max-w-3xl"
+              className="text-[2rem] sm:text-5xl lg:text-[4.5rem] font-light text-white leading-[1.1] sm:leading-[1.05] mb-5 sm:mb-7 max-w-3xl"
               style={{ fontFamily: "var(--font-serif)" }}
             >
               {t({
@@ -212,13 +212,13 @@ export default function Home() {
                 ar: "نحوّل الحياة بالإيمان والشراكة والكرامة.",
               })}
             </motion.h1>
-            <motion.p variants={fadeUp} className="text-lg sm:text-xl text-[#C4AE9A] max-w-xl mb-10 leading-relaxed">
+            <motion.p variants={fadeUp} className="text-base sm:text-xl text-[#C4AE9A] max-w-xl mb-8 sm:mb-10 leading-relaxed">
               {t({
                 en: "Pathways of Hope partners with trusted local leaders to bring safety, education, and sustainable futures to vulnerable children — beginning in Kapoeta, South Sudan.",
                 ar: "تشارك دروب الأمل قادةً محليين موثوقين لتوفير الأمان والتعليم ومستقبلٍ مستدام للأطفال المستضعفين — بدءًا من كاپويتا في جنوب السودان.",
               })}
             </motion.p>
-            <motion.div variants={fadeUp} className="flex flex-wrap gap-4">
+            <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <Link
                 href="/missions/kapoeta"
                 className="inline-flex items-center gap-2 justify-center px-7 py-4 text-base font-semibold rounded-full bg-[#6366f1] text-white hover:bg-[#4f46e5] transition-colors duration-200"
@@ -234,10 +234,10 @@ export default function Home() {
       </section>
 
       {/* Stats bar — warm dark, directly below hero, intentional */}
-      <section className="bg-[#1e293b] py-14 px-4">
+      <section className="bg-[#1e293b] py-8 sm:py-14 px-4">
         <div className="max-w-6xl mx-auto">
           <motion.div
-            className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center"
+            className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8 text-center"
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.3 }}
@@ -246,7 +246,7 @@ export default function Home() {
             {STATS.map(({ value, prefix, suffix, label }) => (
               <motion.div key={label.en} variants={fadeUp}>
                 <div
-                  className="text-3xl sm:text-4xl font-light mb-2 tabular-nums"
+                  className="text-2xl sm:text-4xl font-light mb-1 sm:mb-2 tabular-nums"
                   style={{ fontFamily: "var(--font-serif)", color: "#C9952A" }}
                 >
                   <AnimatedCounter value={value} prefix={prefix ?? ""} suffix={suffix} />
@@ -259,20 +259,20 @@ export default function Home() {
       </section>
 
       {/* What We Do */}
-      <section className="py-24 px-4 bg-[#e7e5e4]">
+      <section className="py-14 sm:py-24 px-4 bg-[#e7e5e4]">
         <div className="max-w-6xl mx-auto">
           <motion.div
-            className="mb-16"
+            className="mb-10 sm:mb-16"
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.3 }}
             variants={fadeUp}
           >
-            <p className="text-[#6366f1] text-xs font-semibold uppercase tracking-widest mb-4">
+            <p className="text-[#6366f1] text-xs font-semibold uppercase tracking-widest mb-3 sm:mb-4">
               {t({ en: "Our approach", ar: "نهجنا" })}
             </p>
             <h2
-              className="text-4xl sm:text-5xl font-light text-[#1e293b] max-w-2xl"
+              className="text-2xl sm:text-4xl font-light text-[#1e293b] max-w-2xl"
               style={{ fontFamily: "var(--font-serif)" }}
             >
               {t({ en: "Not aid from a distance. Partnership from within.", ar: "ليست مساعدةً من بعيد، بل شراكةٌ من الداخل." })}
@@ -291,7 +291,7 @@ export default function Home() {
                 key={title.en}
                 variants={fadeUp}
                 whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                className="bg-white rounded-2xl p-8 border border-[#d6d3d1] shadow-sm hover:shadow-md transition-shadow"
+                className="bg-white rounded-2xl p-5 sm:p-8 border border-[#d6d3d1] shadow-sm hover:shadow-md transition-shadow"
               >
                 <div className="w-11 h-11 rounded-xl bg-[#6366f1]/10 flex items-center justify-center mb-5">
                   <Icon size={20} className="text-[#6366f1]" strokeWidth={1.75} />
@@ -310,7 +310,7 @@ export default function Home() {
       </section>
 
       {/* Pull quote — terracotta accent band */}
-      <section className="bg-[#6366f1] py-16 px-4">
+      <section className="bg-[#6366f1] py-10 sm:py-16 px-4">
         <motion.div
           className="max-w-3xl mx-auto text-center"
           initial="hidden"
@@ -319,7 +319,7 @@ export default function Home() {
           variants={fadeUp}
         >
           <blockquote
-            className="text-2xl sm:text-3xl lg:text-4xl font-light text-white leading-relaxed"
+            className="text-xl sm:text-2xl lg:text-4xl font-light text-white leading-relaxed"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {t({
@@ -334,20 +334,20 @@ export default function Home() {
       </section>
 
       {/* Our Missions */}
-      <section className="py-24 px-4 bg-[#e7e5e4]">
+      <section className="py-14 sm:py-24 px-4 bg-[#e7e5e4]">
         <div className="max-w-6xl mx-auto">
           <motion.div
-            className="mb-12"
+            className="mb-8 sm:mb-12"
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.3 }}
             variants={fadeUp}
           >
-            <p className="text-[#6366f1] text-xs font-semibold uppercase tracking-widest mb-4">
+            <p className="text-[#6366f1] text-xs font-semibold uppercase tracking-widest mb-3 sm:mb-4">
               {t({ en: "Where we work", ar: "أين نعمل" })}
             </p>
             <h2
-              className="text-4xl font-light text-[#1e293b]"
+              className="text-2xl sm:text-4xl font-light text-[#1e293b]"
               style={{ fontFamily: "var(--font-serif)" }}
             >
               {t({ en: "Our missions", ar: "مهامّنا" })}
@@ -420,20 +420,20 @@ export default function Home() {
       </section>
 
       {/* How It Works — warm cream, no more jarring dark break */}
-      <section className="py-24 px-4 bg-[#f5f5f4]">
+      <section className="py-14 sm:py-24 px-4 bg-[#f5f5f4]">
         <div className="max-w-6xl mx-auto">
           <motion.div
-            className="text-center mb-16"
+            className="text-center mb-10 sm:mb-16"
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.3 }}
             variants={fadeUp}
           >
-            <p className="text-[#6366f1] text-xs font-semibold uppercase tracking-widest mb-4">
+            <p className="text-[#6366f1] text-xs font-semibold uppercase tracking-widest mb-3 sm:mb-4">
               {t({ en: "Our process", ar: "آليّة عملنا" })}
             </p>
             <h2
-              className="text-4xl font-light text-[#1e293b]"
+              className="text-2xl sm:text-4xl font-light text-[#1e293b]"
               style={{ fontFamily: "var(--font-serif)" }}
             >
               {t({ en: "How it works", ar: "كيف نعمل" })}
@@ -474,7 +474,7 @@ export default function Home() {
       <TrustStrip />
 
       {/* Final CTA */}
-      <section className="py-28 px-4 bg-[#e7e5e4] text-center">
+      <section className="py-16 sm:py-28 px-4 bg-[#e7e5e4] text-center">
         <motion.div
           className="max-w-2xl mx-auto"
           initial="hidden"
@@ -484,18 +484,18 @@ export default function Home() {
         >
           <motion.h2
             variants={fadeUp}
-            className="text-4xl sm:text-5xl font-light text-[#1e293b] mb-6"
+            className="text-2xl sm:text-4xl font-light text-[#1e293b] mb-4 sm:mb-6"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {t({ en: "Walk this path with us.", ar: "اسلك هذا الدرب معنا." })}
           </motion.h2>
-          <motion.p variants={fadeUp} className="text-[#6b7280] text-lg mb-10 leading-relaxed">
+          <motion.p variants={fadeUp} className="text-[#6b7280] text-base sm:text-lg mb-8 sm:mb-10 leading-relaxed">
             {t({
               en: "Whether you give once, give monthly, or sponsor a child — you become part of a story that started in Kapoeta and will not stop there.",
               ar: "سواء تبرّعت مرة واحدة، أو شهريًا، أو كفلت طفلًا — تصبح جزءًا من قصةٍ بدأت في كاپويتا ولن تتوقّف عندها.",
             })}
           </motion.p>
-          <motion.div variants={fadeUp} className="flex flex-wrap gap-4 justify-center">
+          <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
             <DonateButton size="lg">
               {t({ en: "Support our missions", ar: "ادعم مهامّنا" })}
             </DonateButton>
