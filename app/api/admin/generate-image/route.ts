@@ -6,36 +6,95 @@ import { ALL_SECTION_KEYS } from "@/lib/admin/sections";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-// MUAPI image generation can take up to 60 seconds
+// MUAPI image generation can take up to ~60 seconds
 export const maxDuration = 60;
 
 const MUAPI_BASE = "https://api.muapi.ai/api/v1";
 const MODEL = "google-imagen4-ultra"; // higher quality photorealistic
+const MAX_ATTEMPTS = 3; // retry transient "Internal Error" failures
+
+/** Error thrown when MUAPI reports the generation itself failed (vs a transient network/poll error). */
+class GenerationFailedError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "GenerationFailedError";
+  }
+}
+
+/** Pull the meaningful body out of a MUAPI response, which may wrap data under `detail`. */
+function unwrap(data: unknown): Record<string, unknown> {
+  if (data && typeof data === "object" && "detail" in data) {
+    const d = (data as { detail: unknown }).detail;
+    if (d && typeof d === "object") return d as Record<string, unknown>;
+  }
+  return (data ?? {}) as Record<string, unknown>;
+}
+
+function extractUrl(obj: Record<string, unknown>): string | null {
+  if (Array.isArray(obj.outputs) && obj.outputs.length) return String(obj.outputs[0]);
+  if (Array.isArray(obj.output) && obj.output.length) return String(obj.output[0]);
+  if (typeof obj.image_url === "string") return obj.image_url;
+  if (typeof obj.url === "string") return obj.url;
+  return null;
+}
 
 async function pollResult(requestId: string, apiKey: string): Promise<string> {
-  const maxAttempts = 30;
-  for (let i = 0; i < maxAttempts; i++) {
+  const maxPolls = 25;
+  for (let i = 0; i < maxPolls; i++) {
     await new Promise((r) => setTimeout(r, 2000));
     const res = await fetch(`${MUAPI_BASE}/predictions/${requestId}/result`, {
       headers: { "x-api-key": apiKey },
     });
-    if (!res.ok) {
-      const body = await res.text().catch(() => "(unreadable)");
-      throw new Error(`Poll failed: ${res.status} — ${body}`);
+
+    const raw = await res.text();
+    let data: unknown;
+    try { data = JSON.parse(raw); } catch { data = {}; }
+    const body = unwrap(data);
+    const status = String(body.status ?? "");
+
+    // MUAPI reports a failed generation either with a "failed" status or a 4xx + detail.
+    if (status === "failed") {
+      throw new GenerationFailedError(String(body.error ?? "Image generation failed"));
     }
-    const data = await res.json();
-    // MUAPI uses "completed" (not "succeeded")
-    if (data.status === "completed") {
-      // Output can be in outputs[] or output field
-      const url = Array.isArray(data.outputs) ? data.outputs[0]
-        : Array.isArray(data.output) ? data.output[0]
-        : (data.outputs ?? data.output ?? data.image_url ?? data.url);
-      if (!url) throw new Error("Generation completed but no output URL found");
-      return String(url);
+    if (status === "completed") {
+      const url = extractUrl(body);
+      if (!url) throw new GenerationFailedError("Generation completed but no output URL was returned");
+      return url;
     }
-    if (data.status === "failed") throw new Error(data.error ?? "Image generation failed on server");
+    // Non-OK with no recognised status — surface what we can, then keep polling once more in case it's transient.
+    if (!res.ok && !status) {
+      throw new GenerationFailedError(String(body.error ?? raw.slice(0, 200) ?? `Poll failed (${res.status})`));
+    }
+    // otherwise still processing — keep polling
   }
   throw new Error("Timed out waiting for image");
+}
+
+/** Submit + poll once. Throws GenerationFailedError if the model rejected/failed the request. */
+async function generateOnce(prompt: string, apiKey: string): Promise<string> {
+  const submitRes = await fetch(`${MUAPI_BASE}/${MODEL}`, {
+    method: "POST",
+    headers: { "x-api-key": apiKey, "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt, aspect_ratio: "16:9" }),
+  });
+  const submitRaw = await submitRes.text();
+  let submitData: unknown;
+  try { submitData = JSON.parse(submitRaw); } catch { submitData = {}; }
+  const submitBody = unwrap(submitData);
+
+  if (!submitRes.ok) {
+    throw new GenerationFailedError(String(submitBody.error ?? submitRaw.slice(0, 200) ?? `Submit failed (${submitRes.status})`));
+  }
+
+  // Some endpoints return the image directly on submit.
+  const syncUrl = extractUrl(submitBody);
+  if (syncUrl) return syncUrl;
+
+  const requestId = submitBody.request_id ?? submitBody.id;
+  if (!requestId) {
+    throw new GenerationFailedError(`No request_id from MUAPI. Response: ${submitRaw.slice(0, 200)}`);
+  }
+  return pollResult(String(requestId), apiKey);
 }
 
 export async function POST(req: NextRequest) {
@@ -58,35 +117,27 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid section key or missing prompt" }, { status: 400 });
   }
 
-  // Submit generation job
-  const submitRes = await fetch(`${MUAPI_BASE}/${MODEL}`, {
-    method: "POST",
-    headers: { "x-api-key": apiKey, "Content-Type": "application/json" },
-    body: JSON.stringify({ prompt, aspect_ratio: "16:9" }),
-  });
-  if (!submitRes.ok) {
-    const err = await submitRes.text();
-    return NextResponse.json({ error: `MUAPI submit failed (${submitRes.status}): ${err}` }, { status: 502 });
-  }
-  const submitData = await submitRes.json();
-
-  // Some endpoints return the result synchronously; handle that case too
-  let imageUrl: string;
-  try {
-    const syncUrl = Array.isArray(submitData.outputs) ? submitData.outputs[0]
-      : Array.isArray(submitData.output) ? submitData.output[0]
-      : (submitData.image_url ?? submitData.url ?? null);
-
-    if (syncUrl) {
-      imageUrl = String(syncUrl);
-    } else {
-      const request_id = submitData.request_id ?? submitData.id;
-      if (!request_id) {
-        return NextResponse.json({ error: `No request_id from MUAPI. Response: ${JSON.stringify(submitData)}` }, { status: 502 });
-      }
-      imageUrl = await pollResult(String(request_id), apiKey);
+  // Retry transient failures (e.g. "Internal Error, Please try again later").
+  let imageUrl: string | null = null;
+  let lastError = "Generation failed";
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    try {
+      imageUrl = await generateOnce(prompt, apiKey);
+      break;
+    } catch (err) {
+      lastError = err instanceof Error ? err.message : "Generation failed";
+      // Don't burn retries on clearly non-transient problems.
+      const transient = /internal error|try again|timeout|timed out|temporarily|503|502|500/i.test(lastError);
+      if (!transient || attempt === MAX_ATTEMPTS) break;
     }
+  }
 
+  if (!imageUrl) {
+    return NextResponse.json({ error: lastError, attempts: MAX_ATTEMPTS }, { status: 502 });
+  }
+
+  // Download the generated image and save it to Blob storage.
+  try {
     const imgRes = await fetch(imageUrl);
     if (!imgRes.ok) throw new Error(`Failed to download generated image (${imgRes.status})`);
     const imgBuffer = Buffer.from(await imgRes.arrayBuffer());
@@ -99,7 +150,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ ok: true, url: blobUrl });
   } catch (err) {
-    const msg = err instanceof Error ? err.message : "Generation failed";
+    const msg = err instanceof Error ? err.message : "Failed to save generated image";
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
