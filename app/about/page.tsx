@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { TrustStrip } from "@/components/trust-strip";
 import { DonateButton } from "@/components/donate-button";
 import { motion, type Variants } from "framer-motion";
@@ -219,6 +220,77 @@ export default function AboutPage() {
             {t({ en: "— 2 Corinthians 9:7", ar: "— كورنثوس الثانية 9:7" })}
           </cite>
         </motion.div>
+      </section>
+
+      {/* Community — field photos */}
+      <section className="py-20 px-4 bg-[#e7e5e4] overflow-hidden">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            className="mb-10"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            variants={fadeUp}
+          >
+            <p className="text-[#6366f1] text-sm uppercase tracking-widest mb-3 font-medium">
+              {t({ en: "From the field", ar: "من الميدان" })}
+            </p>
+            <h2
+              className="text-3xl sm:text-4xl font-light text-[#1e293b]"
+              style={{ fontFamily: "var(--font-serif)" }}
+            >
+              {t({ en: "The people and places behind our work.", ar: "الناس والأماكن وراء عملنا." })}
+            </h2>
+          </motion.div>
+
+          <motion.div
+            className="grid grid-cols-2 lg:grid-cols-4 gap-3"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1 } } }}
+          >
+            {[
+              {
+                src: "/images/kapoeta/field/children-large-group-activity-kapoeta.jpg",
+                alt: "Children gathered together at the Kapoeta Children's Shelter",
+                caption: { en: "Kapoeta, South Sudan", ar: "كاپويتا، جنوب السودان" },
+              },
+              {
+                src: "/images/people/ezzat-morkos-portrait.jpg",
+                alt: "Ezzat Morkos — community partner of Pathways of Hope",
+                caption: { en: "Ezzat Morkos — community partner", ar: "Ezzat Morkos — شريك مجتمعي" },
+              },
+              {
+                src: "/images/kapoeta/field/visitor-women-session-children-kapoeta.jpg",
+                alt: "Visitors from Australia leading a session with children at the shelter",
+                caption: { en: "Partners across four continents", ar: "شركاء عبر أربع قارّات" },
+              },
+              {
+                src: "/images/people/mamdouh-mansour-children-kapoeta.jpg",
+                alt: "Elder Mamdouh Mansour with the children in Kapoeta",
+                caption: { en: "Elder Mamdouh in Kapoeta", ar: "الشيخ Mamdouh في كاپويتا" },
+              },
+            ].map((img) => (
+              <motion.div
+                key={img.src}
+                variants={{ hidden: { opacity: 0, scale: 0.95 }, visible: { opacity: 1, scale: 1, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
+                className="relative overflow-hidden rounded-2xl aspect-[3/4] group"
+              >
+                <Image
+                  src={img.src}
+                  alt={img.alt}
+                  fill
+                  className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
+                  sizes="(max-width: 640px) 50vw, 25vw"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#1e293b]/80 to-transparent pt-8 pb-3 px-3">
+                  <p className="text-white text-xs font-medium">{t(img.caption)}</p>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
       </section>
 
       {/* Board of Directors */}

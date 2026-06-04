@@ -615,6 +615,14 @@ function ContainerCarousel() {
       caption: { en: "Mattresses packed in Sydney, bound for Kapoeta", ar: "مراتب عُبّئت في سيدني، في طريقها إلى كاپويتا" },
     },
     {
+      src: "/images/kapoeta/field/cooking-pots-donated-australia.jpg",
+      caption: { en: "Donated cookware — every pot shipped from Australia", ar: "أدوات طهي مُهداة — كل قدر شُحن من أستراليا" },
+    },
+    {
+      src: "/images/kapoeta/field/food-supplies-bags-rice-beans.jpg",
+      caption: { en: "Rice and beans — months of food for the children", ar: "أرز وفاصوليا — أشهر من الطعام للأطفال" },
+    },
+    {
       src: "/images/kapoeta/field/shelter-steel-frame-construction-kapoeta.jpg",
       caption: { en: "The steel frame going up on site", ar: "الهيكل الفولاذي يرتفع في الموقع" },
     },
@@ -627,12 +635,20 @@ function ContainerCarousel() {
       caption: { en: "Brick walls meet steel frame", ar: "الجدران الطوبية تلتقي بالهيكل الفولاذي" },
     },
     {
+      src: "/images/kapoeta/field/shelter-steel-frame-exterior-kapoeta.jpg",
+      caption: { en: "The completed building from outside", ar: "المبنى المكتمل من الخارج" },
+    },
+    {
       src: "/images/kapoeta/field/bunkbeds-assembled-outdoor-kapoeta.jpg",
       caption: { en: "Bunkbeds assembled and ready to move in", ar: "الأسرّة المزدوجة جاهزة للاستخدام" },
     },
     {
+      src: "/images/kapoeta/field/bunkbeds-dormitory-interior-kapoeta-2.jpg",
+      caption: { en: "The dormitory inside — a bed for every child", ar: "المهجع من الداخل — سرير لكل طفل" },
+    },
+    {
       src: "/images/kapoeta/field/community-hall-worship-service-kapoeta.jpg",
-      caption: { en: "The finished dormitory — safe beds for every child", ar: "المهجع المكتمل — سرير آمن لكل طفل" },
+      caption: { en: "A gathering space and a home", ar: "مساحة للتجمّع وبيت" },
     },
   ];
 
@@ -724,33 +740,78 @@ function Gallery() {
   const images: { src: string; alt: Dict<string>; caption: Dict<string> }[] = [
     {
       src: "/images/kapoeta/field/child-eating-bowl-rice-kapoeta.jpg",
-      alt: { en: "A young child eating rice from a bowl — one of the children found on the streets of Kapoeta", ar: "طفل صغير يأكل الأرز من وعاء — أحد الأطفال الذين وُجدوا في شوارع كاپويتا" },
+      alt: { en: "A young child eating rice from a bowl", ar: "طفل صغير يأكل الأرز من وعاء" },
       caption: { en: "A child found on the streets", ar: "طفل وُجد في الشوارع" },
     },
     {
       src: "/images/kapoeta/field/child-sibling-carrying-baby-kapoeta.jpg",
-      alt: { en: "An older child carrying a baby sibling — family bonds in Kapoeta", ar: "طفل أكبر سنًّا يحمل رضيعًا — روابط عائلية في كاپويتا" },
+      alt: { en: "An older child carrying a baby sibling", ar: "طفل أكبر سنًّا يحمل رضيعًا" },
       caption: { en: "Brothers and sisters", ar: "إخوة وأخوات" },
     },
     {
-      src: "/images/kapoeta/field/shelter-brickwall-construction-progress.jpg",
-      alt: { en: "A worker laying bricks by hand — the shelter walls being built in Kapoeta, 2024", ar: "عامل يضع الطوب يدويًا — جدران الملجأ قيد البناء في كاپويتا، 2024" },
-      caption: { en: "Built brick by brick", ar: "بُني لبنةً فلبنة" },
+      src: "/images/kapoeta/field/children-sitting-bench-kapoeta.jpg",
+      alt: { en: "Children sitting on a bench together at the Kapoeta shelter", ar: "أطفال يجلسون على مقعد معًا في ملجأ كاپويتا" },
+      caption: { en: "A quiet moment", ar: "لحظة هادئة" },
     },
     {
-      src: "/images/kapoeta/field/shelter-steel-frame-construction-kapoeta.jpg",
-      alt: { en: "The Kapoeta shelter steel frame rising from the ground, 2024", ar: "الهيكل الفولاذي لملجأ كاپويتا يرتفع من الأرض، 2024" },
-      caption: { en: "The building going up", ar: "المبنى يرتفع" },
+      src: "/images/kapoeta/field/children-sitting-bench-kapoeta-2.jpg",
+      alt: { en: "Children together on a bench at the shelter compound", ar: "أطفال معًا على مقعد في مجمّع الملجأ" },
+      caption: { en: "All together", ar: "معًا جميعًا" },
     },
     {
-      src: "/images/kapoeta/field/community-hall-worship-service-kapoeta.jpg",
-      alt: { en: "Rows of white bunk beds inside the completed Kapoeta Children's Shelter dormitory", ar: "صفوف من الأسرّة المزدوجة البيضاء داخل مهجع ملجأ كاپويتا المكتمل" },
-      caption: { en: "Their first safe beds", ar: "أوّل أسرّةٍ آمنة لهم" },
+      src: "/images/kapoeta/field/child-tricycle-wheelchair-kapoeta.jpg",
+      alt: { en: "A child on a tricycle or wheelchair at the Kapoeta shelter — medical supplies were shipped from Australia", ar: "طفل على درّاجة ثلاثية أو كرسي متحرّك في ملجأ كاپويتا — شُحنت المستلزمات الطبية من أستراليا" },
+      caption: { en: "Every child cared for", ar: "كل طفل في رعاية" },
+    },
+    {
+      src: "/images/kapoeta/field/tukul-mud-hut-construction-kapoeta.jpg",
+      alt: { en: "A traditional tukul mud hut being constructed — the kind of shelter many children had before", ar: "كوخ طيني تقليدي قيد الإنشاء — نوع المأوى الذي كان لدى كثير من الأطفال من قبل" },
+      caption: { en: "Before the shelter", ar: "قبل الملجأ" },
+    },
+    {
+      src: "/images/kapoeta/field/community-hall-chairs-interior-kapoeta.jpg",
+      alt: { en: "The interior of the community hall at the Kapoeta shelter with rows of chairs", ar: "داخل قاعة المجتمع في ملجأ كاپويتا مع صفوف من الكراسي" },
+      caption: { en: "The community space", ar: "مساحة المجتمع" },
     },
     {
       src: "/images/kapoeta/field/children-large-group-activity-kapoeta.jpg",
-      alt: { en: "Children gathered in a circle under a tree for a structured activity at the Kapoeta shelter", ar: "أطفال مجتمعون في دائرة تحت شجرة لنشاط منظّم في ملجأ كاپويتا" },
+      alt: { en: "Children gathered in a circle under a tree for a structured activity", ar: "أطفال مجتمعون في دائرة تحت شجرة لنشاط منظّم" },
       caption: { en: "Together every day", ar: "معًا كل يوم" },
+    },
+    {
+      src: "/images/kapoeta/field/children-outdoor-activity-kapoeta.jpg",
+      alt: { en: "Children in an outdoor activity in the shelter compound, Kapoeta", ar: "أطفال في نشاط خارجي في مجمّع الملجأ، كاپويتا" },
+      caption: { en: "In the compound", ar: "في المجمّع" },
+    },
+    {
+      src: "/images/kapoeta/field/children-coloring-activity-kapoeta.jpg",
+      alt: { en: "Children coloring together at the Kapoeta Children's Shelter", ar: "أطفال يلوّنون معًا في ملجأ كاپويتا للأطفال" },
+      caption: { en: "Coloring together", ar: "نلوّن معًا" },
+    },
+    {
+      src: "/images/kapoeta/field/children-drawing-activity-outdoor-kapoeta.jpg",
+      alt: { en: "Children crouched around paper doing an outdoor drawing activity under tree shade", ar: "أطفال ينحنون على أوراق في نشاط رسم خارجي تحت ظل الأشجار" },
+      caption: { en: "Drawing and learning", ar: "يرسمون ويتعلّمون" },
+    },
+    {
+      src: "/images/kapoeta/field/children-toys-activity-kapoeta.jpg",
+      alt: { en: "Children playing with donated toys at the Kapoeta shelter", ar: "أطفال يلعبون بألعاب مُهداة في ملجأ كاپويتا" },
+      caption: { en: "Play is learning", ar: "اللعب تعلّم" },
+    },
+    {
+      src: "/images/kapoeta/field/children-playing-mats-evening-kapoeta.jpg",
+      alt: { en: "Children playing on mats in the evening at the Kapoeta shelter", ar: "أطفال يلعبون على الحصائر في المساء في ملجأ كاپويتا" },
+      caption: { en: "Evening play", ar: "اللعب المسائي" },
+    },
+    {
+      src: "/images/kapoeta/field/children-playing-mats-evening-kapoeta-2.jpg",
+      alt: { en: "Children enjoying themselves on mats together as the sun goes down in Kapoeta", ar: "أطفال يستمتعون معًا على الحصائر مع غروب الشمس في كاپويتا" },
+      caption: { en: "Joy in simple things", ar: "الفرح في الأشياء البسيطة" },
+    },
+    {
+      src: "/images/kapoeta/field/children-group-sunset-kapoeta.jpg",
+      alt: { en: "A group of children at the Kapoeta shelter at golden hour — safe, together, at peace", ar: "مجموعة من الأطفال في ملجأ كاپويتا في ساعة الذهب — آمنون، معًا، في سلام" },
+      caption: { en: "End of the day", ar: "نهاية اليوم" },
     },
     {
       src: "/images/kapoeta/field/children-school-uniforms-group-kapoeta.jpg",
@@ -758,19 +819,24 @@ function Gallery() {
       caption: { en: "Going to school", ar: "ذاهبون إلى المدرسة" },
     },
     {
-      src: "/images/people/mamdouh-mansour-cornfield-kapoeta.jpg",
-      alt: { en: "A thriving maize crop growing on the shelter grounds — the children grow their own food", ar: "محصول ذرة مزدهر ينمو في أرض الملجأ — الأطفال يزرعون طعامهم بأنفسهم" },
-      caption: { en: "Growing their own food", ar: "يزرعون طعامهم" },
-    },
-    {
       src: "/images/kapoeta/field/girl-child-water-pump-kapoeta.jpg",
       alt: { en: "A young girl collecting water at the pump on the Kapoeta shelter grounds", ar: "فتاة صغيرة تجمع الماء من المضخة في أرض ملجأ كاپويتا" },
       caption: { en: "Clean water on site", ar: "مياه نظيفة في الموقع" },
     },
     {
-      src: "/images/kapoeta/field/children-drawing-activity-outdoor-kapoeta.jpg",
-      alt: { en: "Children crouched around paper doing an outdoor drawing activity under tree shade in Kapoeta", ar: "أطفال ينحنون على أوراق في نشاط رسم خارجي تحت ظل الأشجار في كاپويتا" },
-      caption: { en: "Drawing and learning", ar: "يرسمون ويتعلّمون" },
+      src: "/images/people/mamdouh-mansour-cornfield-kapoeta.jpg",
+      alt: { en: "A thriving maize crop growing on the shelter grounds", ar: "محصول ذرة مزدهر ينمو في أرض الملجأ" },
+      caption: { en: "Growing their own food", ar: "يزرعون طعامهم" },
+    },
+    {
+      src: "/images/kapoeta/field/girl-child-yellow-dress-holding-paper.jpg",
+      alt: { en: "A small girl in a bright yellow dress holding a piece of paper — learning every day in Kapoeta", ar: "فتاة صغيرة بفستان أصفر زاهٍ تحمل ورقة — تتعلّم كل يوم في كاپويتا" },
+      caption: { en: "Learning every day", ar: "تتعلّم كل يوم" },
+    },
+    {
+      src: "/images/kapoeta/field/visitor-woman-teaching-children-kapoeta.jpg",
+      alt: { en: "A volunteer from Australia teaching children at the Kapoeta shelter", ar: "متطوّعة من أستراليا تعلّم الأطفال في ملجأ كاپويتا" },
+      caption: { en: "Teaching together", ar: "نتعلّم معًا" },
     },
     {
       src: "/images/kapoeta/field/visitor-women-session-children-kapoeta.jpg",
@@ -778,9 +844,34 @@ function Gallery() {
       caption: { en: "Partners from four continents", ar: "شركاء من أربع قارّات" },
     },
     {
-      src: "/images/kapoeta/field/girl-child-yellow-dress-holding-paper.jpg",
-      alt: { en: "A small girl in a bright yellow dress holding a piece of paper — learning every day in Kapoeta", ar: "فتاة صغيرة بفستان أصفر زاهٍ تحمل ورقة — تتعلّم كل يوم في كاپويتا" },
-      caption: { en: "Learning every day", ar: "تتعلّم كل يوم" },
+      src: "/images/kapoeta/field/tribal-women-visitors-kapoeta.jpg",
+      alt: { en: "Tribal women from the local community welcoming visitors to the Kapoeta shelter", ar: "نساء من القبيلة المحلية يرحّبن بالزوّار في ملجأ كاپويتا" },
+      caption: { en: "Community welcomes visitors", ar: "المجتمع يرحّب بالزوّار" },
+    },
+    {
+      src: "/images/people/mamdouh-mansour-children-kapoeta.jpg",
+      alt: { en: "Elder Mamdouh Mansour with the children at the Kapoeta shelter — one of the Sydney volunteers who organised the container", ar: "الشيخ Mamdouh Mansour مع الأطفال في ملجأ كاپويتا — أحد متطوّعي سيدني الذين نظّموا شحن الحاوية" },
+      caption: { en: "Elder Mamdouh with the children", ar: "الشيخ Mamdouh مع الأطفال" },
+    },
+    {
+      src: "/images/people/mamdouh-mansour-kapoeta-field-2.jpg",
+      alt: { en: "Mamdouh Mansour in the field in Kapoeta, South Sudan", ar: "Mamdouh Mansour في الميدان في كاپويتا، جنوب السودان" },
+      caption: { en: "On the ground in Kapoeta", ar: "في الميدان في كاپويتا" },
+    },
+    {
+      src: "/images/people/mamdouh-mansour-kapoeta-field-3.jpg",
+      alt: { en: "Community partner Mamdouh Mansour in the Kapoeta compound", ar: "الشريك المجتمعي Mamdouh Mansour في مجمّع كاپويتا" },
+      caption: { en: "Community partners", ar: "شركاء مجتمعيون" },
+    },
+    {
+      src: "/images/people/mamdouh-child-woman-selfie-kapoeta.jpg",
+      alt: { en: "Mamdouh Mansour sharing a joyful moment with a child and a woman at the shelter", ar: "Mamdouh Mansour يتقاسم لحظة بهيجة مع طفل وامرأة في الملجأ" },
+      caption: { en: "Shared joy", ar: "فرح مشترك" },
+    },
+    {
+      src: "/images/people/mamdouh-woman-child-selfie-kapoeta.jpg",
+      alt: { en: "A warm moment between Mamdouh, a woman and a child — connection across continents", ar: "لحظة دافئة بين Mamdouh وامرأة وطفل — تواصل عبر القارّات" },
+      caption: { en: "Connection across continents", ar: "تواصل عبر القارّات" },
     },
   ];
 

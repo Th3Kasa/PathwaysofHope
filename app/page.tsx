@@ -126,6 +126,16 @@ const PHOTOS: { src: string; alt: string; caption: Dict<string> }[] = [
     alt: "Children in school uniforms enrolled in the Catholic school system, Kapoeta 2025",
     caption: { en: "Going to school", ar: "إلى المدرسة" },
   },
+  {
+    src: "/images/kapoeta/field/visitor-woman-teaching-children-kapoeta.jpg",
+    alt: "A volunteer from Australia teaching children at the Kapoeta shelter",
+    caption: { en: "Teaching together", ar: "نتعلّم معًا" },
+  },
+  {
+    src: "/images/people/mamdouh-mansour-children-kapoeta.jpg",
+    alt: "Elder Mamdouh Mansour from Sydney with the children in Kapoeta",
+    caption: { en: "Partners from Australia", ar: "شركاء من أستراليا" },
+  },
 ];
 
 /* ─── Animated Counter ───────────────────────────────────────── */
@@ -359,8 +369,8 @@ export default function Home() {
                 en: "Children given safety, meals, and schooling in one of South Sudan's most remote towns — through the work of a local leader and a global community of believers.",
                 ar: "أطفالٌ نالوا الأمان والطعام والتعليم في واحدةٍ من أبعد بلدات جنوب السودان — بفضل عمل قائدٍ محلي ومجتمعٍ عالمي من المؤمنين.",
               })}
-              imageSrc="/images/kapoeta/field/children-group-portrait-shelter.jpg"
-              imageAlt="Children waving in front of the completed Kapoeta shelter"
+              imageSrc="/images/kapoeta/field/children-large-group-activity-kapoeta.jpg"
+              imageAlt="Children gathered together at the Kapoeta Children's Shelter"
               childCount={70}
               status="active"
             />
@@ -383,7 +393,7 @@ export default function Home() {
 
       {/* Photo strip — 5 images telling the arc: before → building → home → beds → school */}
       <section className="overflow-hidden bg-[#1e293b]">
-        <div className="grid grid-cols-2 sm:grid-cols-5 h-56 sm:h-72">
+        <div className="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-7 h-56 sm:h-72">
           {PHOTOS.map((img, i) => (
             <motion.div
               key={img.src}
