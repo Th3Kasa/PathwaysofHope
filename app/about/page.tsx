@@ -17,6 +17,26 @@ const BOARD: { name: string; roles: Dict<string>[]; bio: Dict<string> }[] = [
       ar: "بصفته رئيسًا لمجلس إدارة دروب الأمل، يحمل وليد التزامًا عميقًا بالحوكمة الشفافة والعمل الخيري النابع من المجتمع، حرصًا على أن تظلّ رسالة المنظمة مسؤولة أمام من تخدمهم.",
     },
   },
+  {
+    name: "Sylvia Mansour",
+    roles: [
+      { en: "Director", ar: "عضو مجلس إدارة" },
+    ],
+    bio: {
+      en: "Sylvia serves as a Director of Pathways of Hope, contributing her dedication and passion to advancing the organisation's mission of supporting communities in need.",
+      ar: "تشغل سيلفيا منصب عضو في مجلس إدارة دروب الأمل، مُسهِمةً بتفانيها وشغفها في دفع مسيرة المنظمة نحو دعم المجتمعات المحتاجة.",
+    },
+  },
+  {
+    name: "Hanan Morkos",
+    roles: [
+      { en: "Director", ar: "عضو مجلس إدارة" },
+    ],
+    bio: {
+      en: "Hanan serves as a Director of Pathways of Hope, bringing her commitment and care to help guide the organisation in fulfilling its mission of hope and service.",
+      ar: "تشغل حنان منصب عضو في مجلس إدارة دروب الأمل، حاملةً التزامها واهتمامها لمساعدة المنظمة في أداء رسالتها المتمثّلة في الأمل والخدمة.",
+    },
+  },
 ];
 
 const COMMITMENTS: { title: Dict<string>; body: Dict<string> }[] = [
@@ -226,7 +246,7 @@ export default function AboutPage() {
           </motion.div>
 
           <motion.div
-            className="grid grid-cols-1 gap-10 max-w-md"
+            className="grid grid-cols-1 sm:grid-cols-3 gap-8"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
