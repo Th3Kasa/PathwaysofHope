@@ -92,10 +92,11 @@ export function Nav() {
           <div className="md:hidden flex items-center gap-2">
             <LanguageToggle scrolled={scrolled} />
             <button
-              className="p-2 rounded-lg transition-colors"
+              className="-mr-2 inline-flex items-center justify-center w-11 h-11 rounded-lg transition-colors"
               style={{ color: scrolled ? "#374151" : "#ffffff" }}
               onClick={() => setOpen(!open)}
               aria-label="Toggle navigation"
+              aria-expanded={open}
             >
               {open ? <X size={22} /> : <Menu size={22} />}
             </button>

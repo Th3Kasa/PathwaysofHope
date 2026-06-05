@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
+import { revalidateDonationTotals } from "@/lib/admin/revalidate";
 
 const getStripe = () => new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2026-04-22.dahlia",
@@ -23,6 +24,20 @@ export async function POST(req: NextRequest) {
   }
 
   console.log("[webhook] received event:", event.type, event.id);
+
+  // Refresh the public progress meters as soon as money actually moves, so a
+  // new gift shows up without waiting out the totals cache.
+  const movesMoney =
+    event.type === "checkout.session.completed" ||
+    event.type === "payment_intent.succeeded" ||
+    event.type === "invoice.paid";
+  if (movesMoney) {
+    try {
+      revalidateDonationTotals();
+    } catch (err) {
+      console.warn("[webhook] revalidate failed (non-fatal):", err);
+    }
+  }
 
   switch (event.type) {
     // Receipts/invoices are now issued by Stripe itself:
