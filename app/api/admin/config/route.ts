@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAuthed } from "@/lib/admin/auth";
 import { getConfig, saveConfig, blobReady } from "@/lib/admin/store";
+import { revalidatePublicContent } from "@/lib/admin/revalidate";
 import { KAPOETA_GOALS } from "@/lib/goals";
 import { ALL_SITE_SECTIONS } from "@/lib/admin/sections";
 
@@ -58,5 +59,6 @@ export async function PATCH(req: NextRequest) {
   }
 
   await saveConfig(config);
+  revalidatePublicContent();
   return NextResponse.json({ ok: true });
 }

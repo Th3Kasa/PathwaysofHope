@@ -528,7 +528,7 @@ function ReportsSection({ config, reload }: { config: Config; reload: () => void
   return (
     <section className={card}>
       <h2 className="text-lg font-semibold text-[#1e293b] mb-1">Annual reports</h2>
-      <p className="text-sm text-[#6b7280] mb-6">Upload PDF annual reports. They appear publicly on the <a href="/reports" className="text-[#6366f1] underline" target="_blank">/reports</a> page.</p>
+      <p className="text-sm text-[#6b7280] mb-6">Upload PDF annual reports. They appear publicly on the <a href="/financials" className="text-[#6366f1] underline" target="_blank">Transparency</a> page.</p>
 
       <div className="space-y-3 mb-5">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

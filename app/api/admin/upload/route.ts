@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { randomBytes } from "node:crypto";
 import { isAuthed } from "@/lib/admin/auth";
 import { getConfig, saveConfig, uploadFile } from "@/lib/admin/store";
+import { revalidatePublicContent } from "@/lib/admin/revalidate";
 import { KAPOETA_GOALS } from "@/lib/goals";
 import { ALL_SECTION_KEYS } from "@/lib/admin/sections";
 
@@ -32,6 +33,7 @@ export async function POST(req: NextRequest) {
     const url = await uploadFile(`reports/${id}.pdf`, buffer, "application/pdf");
     config.reports.unshift({ id, title, year, url, uploadedAt: new Date().toISOString() });
     await saveConfig(config);
+    revalidatePublicContent();
     return NextResponse.json({ ok: true, url });
   }
 
@@ -44,6 +46,7 @@ export async function POST(req: NextRequest) {
     const url = await uploadFile(`sections/${key}-${randomBytes(4).toString("hex")}.${ext}`, buffer, file.type);
     config.images[key] = url;
     await saveConfig(config);
+    revalidatePublicContent();
     return NextResponse.json({ ok: true, url });
   }
 

@@ -399,12 +399,17 @@ export function HomeClient({ imageOverrides, titleOverrides }: { imageOverrides?
       </section>
 
       {/* Photo strip */}
+      {/* 7 photos. They only tile into a clean single row at lg (7 cols), so on
+          smaller screens we show 6 in an even grid (2 then 3 cols) and reveal
+          the 7th only at lg — otherwise the odd one out leaves an empty cell. */}
       <section className="overflow-hidden bg-[#1e293b]">
-        <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-7 sm:h-72">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 lg:h-72">
           {photos.map((img, i) => (
             <motion.div
               key={img.alt}
-              className="relative overflow-hidden group aspect-square sm:aspect-auto"
+              className={`relative overflow-hidden group aspect-square lg:aspect-auto ${
+                i === 6 ? "hidden lg:block" : ""
+              }`}
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true, amount: 0.3 }}
@@ -415,7 +420,7 @@ export function HomeClient({ imageOverrides, titleOverrides }: { imageOverrides?
                 alt={img.alt}
                 fill
                 className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
-                sizes="(max-width: 640px) 33vw, 20vw"
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 14vw"
               />
               {/* Caption on hover */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#1e293b]/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
