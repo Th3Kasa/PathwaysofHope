@@ -122,9 +122,15 @@ export async function POST(req: NextRequest) {
     }
 
     // Async response
-    if (submitData.request_id) {
-      const result = await pollResult(String(submitData.request_id), apiKey);
-      return NextResponse.json({ ok: true, title: result.title, body: result.body });
+    const reqId = submitData.request_id ?? submitData.id ?? submitData.requestId ?? submitData.prediction_id;
+    if (reqId) {
+      try {
+        const result = await pollResult(String(reqId), apiKey);
+        return NextResponse.json({ ok: true, title: result.title, body: result.body });
+      } catch (e) {
+        lastError = `${(e as Error).message} | submit was: ${JSON.stringify(submitData).slice(0, 250)}`;
+        continue;
+      }
     }
 
     lastError = `Unexpected response shape: ${JSON.stringify(submitData).slice(0, 300)}`;

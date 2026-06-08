@@ -571,15 +571,22 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
 
     setFormatting(false);
 
-    // Apply formatted text
+    // Apply formatted text — capture the exact failure reason
+    let textOk = false;
+    let textError = "";
     if (formatRes.status === "fulfilled" && formatRes.value.ok) {
       const d = await formatRes.value.json().catch(() => ({})) as Record<string, unknown>;
-      if (d.body) setForm(f => ({ ...f, titleEn: d.title ? String(d.title) : f.titleEn, bodyEn: String(d.body) }));
+      if (d.body) {
+        setForm(f => ({ ...f, titleEn: d.title ? String(d.title) : f.titleEn, bodyEn: String(d.body) }));
+        textOk = true;
+      } else {
+        textError = "Model returned no text";
+      }
     } else if (formatRes.status === "rejected") {
-      setToast({ msg: `Formatting failed — ${(formatRes as PromiseRejectedResult).reason?.message ?? "unknown"}`, kind: "err" });
+      textError = (formatRes as PromiseRejectedResult).reason?.message ?? "network error";
     } else if (formatRes.status === "fulfilled" && !formatRes.value.ok) {
       const d = await formatRes.value.json().catch(() => ({})) as Record<string, unknown>;
-      setToast({ msg: String(d.error ?? `Format error ${formatRes.value.status}`), kind: "err" });
+      textError = String(d.error ?? `Format error ${formatRes.value.status}`);
     }
 
     // Apply images (partial success is fine)
@@ -590,14 +597,14 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
 
     if (urls.length > 0) setForm(f => ({ ...f, imageUrls: urls }));
 
-    const textOk = formatRes.status === "fulfilled" && formatRes.value.ok;
+    const imgNote = imgErrors ? ` (${imgErrors} image${imgErrors > 1 ? "s" : ""} failed)` : "";
     if (textOk && urls.length > 0) {
-      const note = imgErrors ? ` (${imgErrors} image${imgErrors > 1 ? "s" : ""} failed)` : "";
-      setToast({ msg: `Ready — review and publish.${note}`, kind: "ok" });
+      setToast({ msg: `Ready — review and publish.${imgNote}`, kind: "ok" });
     } else if (textOk) {
       setToast({ msg: "Text formatted. Images failed — you can still publish.", kind: "err" });
-    } else if (urls.length > 0) {
-      setToast({ msg: `${urls.length} images ready. Text formatting failed — check above.`, kind: "err" });
+    } else {
+      // Text failed — always show the real error so we can diagnose
+      setToast({ msg: `Text formatting failed: ${textError}`, kind: "err" });
     }
   };
 
