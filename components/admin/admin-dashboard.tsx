@@ -42,6 +42,7 @@ interface NewsletterPost {
   bodyEn: string;
   bodyAr?: string;
   imageUrl?: string;
+  imageUrls: string[];
   imageAlt?: string;
   author: string;
   publishedAt: string;
@@ -485,6 +486,7 @@ function emptyPostForm() {
   return {
     titleEn: "", titleAr: "", bodyEn: "", bodyAr: "",
     imageAlt: "", author: DEFAULT_AUTHOR, publishedAt: TODAY,
+    imageUrls: [] as string[],
   };
 }
 
@@ -498,10 +500,12 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
   const [uploading, setUploading] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [formatting, setFormatting] = useState(false);
+  const [generatingImages, setGeneratingImages] = useState(false);
   const [toast, setToast] = useState<{ msg: string; kind: "ok" | "err" } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const busy = uploading || generating || saving;
+  const busy = uploading || generating || saving || formatting || generatingImages;
 
   const openAdd = () => {
     setForm(emptyPostForm());
@@ -516,6 +520,7 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
     setForm({
       titleEn: post.titleEn, titleAr: "", bodyEn: post.bodyEn, bodyAr: "",
       imageAlt: "", author: post.author, publishedAt: post.publishedAt.split("T")[0],
+      imageUrls: post.imageUrls ?? [],
     });
     setPendingImage(null);
     setExistingImage(post.imageUrl ?? null);
@@ -525,6 +530,60 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
   };
 
   const cancel = () => { setMode("list"); setToast(null); };
+
+  const formatPost = async () => {
+    if (!form.titleEn.trim() || !form.bodyEn.trim()) {
+      setToast({ msg: "Add a title and body first.", kind: "err" }); return;
+    }
+    setFormatting(true); setToast(null);
+    const res = await fetch("/api/admin/format-post", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: form.titleEn, body: form.bodyEn }),
+    });
+    setFormatting(false);
+    if (res.ok) {
+      const d = await res.json();
+      setForm(f => ({ ...f, titleEn: d.title, bodyEn: d.body }));
+      setToast({ msg: "Formatted! Review and publish.", kind: "ok" });
+    } else {
+      const d = await res.json().catch(() => ({}));
+      setToast({ msg: d.error || "Formatting failed", kind: "err" });
+    }
+  };
+
+  const IMAGE_PROMPTS = [
+    "Photorealistic wide-angle documentary photo — children at the Kapoeta shelter in South Sudan, warm golden hour light, hopeful atmosphere",
+    "Photorealistic close-up — smiling South Sudanese child at a shelter, warm natural light, dignity and joy",
+    "Photorealistic documentary — community gathering or activity at a charity mission in South Sudan, people working together",
+    "Photorealistic wide shot — sunset over a shelter in South Sudan, hope and peace, golden light",
+  ];
+
+  const generateImages = async () => {
+    setGeneratingImages(true); setToast(null);
+    const titleHint = form.titleEn.trim() ? ` — related to: ${form.titleEn}` : "";
+    const prompts = IMAGE_PROMPTS.map((basePrompt, i) => ({
+      prompt: basePrompt + titleHint,
+      goalId: `newsletter-img-${i + 1}-${editId ?? "new"}`,
+    }));
+    try {
+      const results = await Promise.all(
+        prompts.map(({ prompt, goalId }) =>
+          fetch("/api/admin/generate-image", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ goalId, prompt, commit: false }),
+          }).then(r => r.json())
+        )
+      );
+      const urls = results.filter(r => r.ok && r.url).map(r => r.url as string);
+      if (urls.length === 0) { setToast({ msg: "Image generation failed", kind: "err" }); }
+      else { setForm(f => ({ ...f, imageUrls: urls })); setToast({ msg: `${urls.length} images ready — publish to save.`, kind: "ok" }); }
+    } catch {
+      setToast({ msg: "Image generation failed", kind: "err" });
+    }
+    setGeneratingImages(false);
+  };
 
   const upload = async (file: File) => {
     setUploading(true); setToast(null);
@@ -580,11 +639,12 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
       } catch { /* image generation failure is non-fatal */ }
     }
 
-    const imageUrl = autoImageUrl ?? pendingImage ?? existingImage ?? undefined;
+    const imageUrl = autoImageUrl ?? form.imageUrls[0] ?? pendingImage ?? existingImage ?? undefined;
     const payload: Record<string, unknown> = {
       titleEn: form.titleEn.trim(),
       bodyEn: form.bodyEn.trim(),
       imageUrl,
+      imageUrls: form.imageUrls,
       author: form.author.trim() || DEFAULT_AUTHOR,
       publishedAt: mode === "add" ? new Date().toISOString() : new Date(form.publishedAt).toISOString(),
     };
@@ -654,6 +714,30 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
             <textarea required rows={8} value={form.bodyEn} onChange={e => setForm(f => ({ ...f, bodyEn: e.target.value }))} className={`${input} resize-y`} placeholder="Write the full update here…" />
           </div>
 
+          <div className="flex flex-wrap gap-2">
+            <button type="button" onClick={formatPost} disabled={formatting || saving || generatingImages} className={btnGhost}>
+              {formatting ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
+              {formatting ? "Formatting…" : "Format with AI"}
+            </button>
+            <button type="button" onClick={generateImages} disabled={generatingImages || saving || formatting} className={btnGhost}>
+              {generatingImages ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
+              {generatingImages ? "Generating images…" : "Generate 4 images"}
+            </button>
+          </div>
+
+          {form.imageUrls.length > 0 && (
+            <div>
+              <p className="text-xs font-medium text-[#374151] mb-2">Generated images</p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {form.imageUrls.map((url, i) => (
+                  <div key={i} className="relative aspect-video rounded-lg overflow-hidden bg-[#f5f5f4] border border-[#d6d3d1]">
+                    <img src={url} alt={`Image ${i + 1}`} className="w-full h-full object-cover" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div>
             <label className="block text-xs font-medium text-[#374151] mb-1">Author</label>
             <input value={form.author} onChange={e => setForm(f => ({ ...f, author: e.target.value }))} className={input} placeholder="Hanan Morkos" />
@@ -662,7 +746,7 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
           {toast && <Toast msg={toast.msg} kind={toast.kind} />}
 
           <div className="flex gap-3">
-            <button type="submit" disabled={saving} className={btnPrimary}>
+            <button type="submit" disabled={saving || formatting || generatingImages} className={btnPrimary}>
               {saving ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle2 size={14} />}
               {mode === "edit" ? "Save changes" : "Publish post"}
             </button>

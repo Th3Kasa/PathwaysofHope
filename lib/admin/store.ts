@@ -45,6 +45,7 @@ export interface NewsletterPost {
   bodyEn: string;
   bodyAr?: string;
   imageUrl?: string;
+  imageUrls: string[];
   imageAlt?: string;
   author: string;
   publishedAt: string;
@@ -81,7 +82,7 @@ export async function getConfig(): Promise<AdminConfig> {
       sql`SELECT id, title, year, url, uploaded_at FROM reports ORDER BY uploaded_at DESC`,
       sql`SELECT id, mission_name, title, short, description, goal_amount, recurring, image, image_alt, added_at FROM extra_goals ORDER BY added_at ASC`,
       sql`SELECT id, goal_id, amount, note, added_at FROM manual_donations ORDER BY added_at ASC`,
-      sql`SELECT id, title_en, title_ar, body_en, body_ar, image_url, image_alt, author, published_at FROM newsletter_posts ORDER BY published_at DESC`,
+      sql`SELECT id, title_en, title_ar, body_en, body_ar, image_url, image_urls, image_alt, author, published_at FROM newsletter_posts ORDER BY published_at DESC`,
     ]);
 
   const images: Record<string, string> = {};
@@ -133,6 +134,7 @@ export async function getConfig(): Promise<AdminConfig> {
       bodyEn: p.body_en as string,
       bodyAr: (p.body_ar as string) ?? undefined,
       imageUrl: (p.image_url as string) ?? undefined,
+      imageUrls: (p.image_urls as string[]) ?? [],
       imageAlt: (p.image_alt as string) ?? undefined,
       author: p.author as string,
       publishedAt: toStr(p.published_at),
@@ -268,9 +270,9 @@ export async function dbRemoveGalleryExtra(id: string): Promise<void> {
 export async function dbAddNewsletterPost(post: NewsletterPost): Promise<void> {
   await ensureSchema();
   await sql`
-    INSERT INTO newsletter_posts(id, title_en, title_ar, body_en, body_ar, image_url, image_alt, author, published_at)
+    INSERT INTO newsletter_posts(id, title_en, title_ar, body_en, body_ar, image_url, image_urls, image_alt, author, published_at)
     VALUES(${post.id}, ${post.titleEn}, ${post.titleAr ?? null}, ${post.bodyEn}, ${post.bodyAr ?? null},
-           ${post.imageUrl ?? null}, ${post.imageAlt ?? null}, ${post.author}, ${post.publishedAt})
+           ${post.imageUrl ?? null}, ${post.imageUrls ?? []}, ${post.imageAlt ?? null}, ${post.author}, ${post.publishedAt})
   `;
 }
 
@@ -284,6 +286,7 @@ export async function dbUpdateNewsletterPost(
   if (fields.bodyEn !== undefined)     await sql`UPDATE newsletter_posts SET body_en     = ${fields.bodyEn}               WHERE id = ${id}`;
   if (fields.bodyAr !== undefined)     await sql`UPDATE newsletter_posts SET body_ar     = ${fields.bodyAr ?? null}       WHERE id = ${id}`;
   if (fields.imageUrl !== undefined)   await sql`UPDATE newsletter_posts SET image_url   = ${fields.imageUrl ?? null}     WHERE id = ${id}`;
+  if (fields.imageUrls !== undefined)  await sql`UPDATE newsletter_posts SET image_urls  = ${fields.imageUrls}             WHERE id = ${id}`;
   if (fields.imageAlt !== undefined)   await sql`UPDATE newsletter_posts SET image_alt   = ${fields.imageAlt ?? null}     WHERE id = ${id}`;
   if (fields.author !== undefined)     await sql`UPDATE newsletter_posts SET author      = ${fields.author}               WHERE id = ${id}`;
   if (fields.publishedAt !== undefined) await sql`UPDATE newsletter_posts SET published_at = ${fields.publishedAt}        WHERE id = ${id}`;

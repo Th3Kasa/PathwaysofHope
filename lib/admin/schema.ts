@@ -75,5 +75,8 @@ export async function ensureSchema(): Promise<void> {
     )
   `;
 
+  // Add image_urls column to existing tables (idempotent)
+  await sql`ALTER TABLE newsletter_posts ADD COLUMN IF NOT EXISTS image_urls TEXT[] NOT NULL DEFAULT '{}'`;
+
   initialized = true;
 }

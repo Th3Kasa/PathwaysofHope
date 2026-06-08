@@ -2,143 +2,119 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import { useT } from "@/lib/i18n";
 import type { NewsletterPost } from "@/lib/admin/store";
-import { ArrowLeft } from "lucide-react";
+import { Calendar, User, ArrowLeft } from "lucide-react";
 
-const PLACEHOLDER = "/images/kapoeta/field/children-large-group-activity-kapoeta.jpg";
+function splitIntoParagraphs(text: string): string[] {
+  return text.split(/\n\n+/).map(p => p.trim()).filter(Boolean);
+}
 
 export function NewsletterPostClient({ post }: { post: NewsletterPost }) {
   const t = useT();
-  const lang = typeof document !== "undefined"
-    ? (document.documentElement.lang as "en" | "ar") || "en"
-    : "en";
+  const title = post.titleEn;
+  const body = post.bodyEn;
+  const paragraphs = splitIntoParagraphs(body);
+  const images = post.imageUrls?.length ? post.imageUrls : post.imageUrl ? [post.imageUrl] : [];
 
-  const titleText = lang === "ar" && post.titleAr ? post.titleAr : post.titleEn;
-  const bodyText  = lang === "ar" && post.bodyAr  ? post.bodyAr  : post.bodyEn;
-
-  const dateStr = new Date(post.publishedAt).toLocaleDateString("en-AU", {
-    weekday: "long", day: "numeric", month: "long", year: "numeric",
-  });
+  // Split paragraphs into three sections around images
+  const third = Math.max(1, Math.floor(paragraphs.length / 3));
+  const section1 = paragraphs.slice(0, third);
+  const section2 = paragraphs.slice(third, third * 2);
+  const section3 = paragraphs.slice(third * 2);
 
   return (
-    <div className="bg-[#faf9f7] min-h-screen">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-20">
-
-        {/* Back link */}
-        <Link
-          href="/newsletter"
-          className="inline-flex items-center gap-1.5 text-sm text-[#9ca3af] hover:text-[#6366f1] transition-colors mb-10"
-        >
-          <ArrowLeft size={14} />
-          {t({ en: "All updates", ar: "جميع الأخبار" })}
-        </Link>
-
-        <motion.article
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        >
-          {/* ── Masthead ── */}
-          <div className="border-t-4 border-b border-[#1e293b] pt-3 pb-2 mb-6">
-            <p className="text-[10px] uppercase tracking-[0.2em] text-[#6b7280] font-medium">
-              Pathways of Hope · Field Dispatch
-            </p>
+    <div className="bg-[#f5f5f4] min-h-screen">
+      {/* Hero */}
+      {images[0] && (
+        <div className="relative w-full h-64 sm:h-96 overflow-hidden">
+          <Image
+            src={images[0]}
+            alt={post.imageAlt || title}
+            fill
+            className="object-cover"
+            priority
+            unoptimized
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10 max-w-4xl mx-auto">
+            <h1
+              className="text-3xl sm:text-5xl font-light text-white leading-tight"
+              style={{ fontFamily: "var(--font-serif)" }}
+            >
+              {title}
+            </h1>
           </div>
+        </div>
+      )}
 
-          {/* ── Headline ── */}
+      <div className="max-w-3xl mx-auto px-4 py-10">
+        {/* If no hero image, show title here */}
+        {!images[0] && (
           <h1
-            className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#0f172a] leading-[1.1] mb-4"
+            className="text-3xl sm:text-5xl font-light text-[#1e293b] leading-tight mb-6"
             style={{ fontFamily: "var(--font-serif)" }}
           >
-            {titleText}
+            {title}
           </h1>
+        )}
 
-          {/* ── Byline ── */}
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-[#6b7280] border-b border-[#d6d3d1] pb-4 mb-8">
-            <span className="font-medium text-[#374151]">By {post.author}</span>
-            <span>·</span>
-            <span>{dateStr}</span>
-          </div>
+        {/* Meta */}
+        <div className="flex items-center gap-5 text-sm text-[#6b7280] mb-8 pb-6 border-b border-[#d6d3d1]">
+          <span className="flex items-center gap-1.5"><User size={14} />{post.author}</span>
+          <span className="flex items-center gap-1.5">
+            <Calendar size={14} />
+            {new Date(post.publishedAt).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" })}
+          </span>
+        </div>
 
-          {/* ── Hero image ── */}
-          <div className="relative w-full aspect-[16/9] rounded-lg overflow-hidden mb-2 bg-[#e7e5e4]">
-            <Image
-              src={post.imageUrl || PLACEHOLDER}
-              alt={post.imageAlt || titleText}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 896px"
-              unoptimized
-              priority
-            />
-          </div>
-          {post.imageAlt && (
-            <p className="text-xs text-[#9ca3af] italic mb-8 pl-1">{post.imageAlt}</p>
-          )}
-          {!post.imageAlt && <div className="mb-8" />}
+        {/* Section 1 */}
+        {section1.map((p, i) => (
+          <p key={i} className="text-[#374151] leading-relaxed text-lg mb-5">{p}</p>
+        ))}
 
-          {/* ── Body (newspaper prose) ── */}
-          <div className="max-w-2xl mx-auto">
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              components={{
-                h1: ({ children }) => (
-                  <h2 className="text-2xl font-bold text-[#0f172a] mt-10 mb-3 border-b border-[#e5e7eb] pb-2" style={{ fontFamily: "var(--font-serif)" }}>{children}</h2>
-                ),
-                h2: ({ children }) => (
-                  <h3 className="text-xl font-bold text-[#0f172a] mt-8 mb-2" style={{ fontFamily: "var(--font-serif)" }}>{children}</h3>
-                ),
-                h3: ({ children }) => (
-                  <h4 className="text-base font-semibold uppercase tracking-wide text-[#6366f1] mt-6 mb-2">{children}</h4>
-                ),
-                p: ({ children }) => (
-                  <p className="text-[1.05rem] leading-[1.85] text-[#374151] mb-5">{children}</p>
-                ),
-                strong: ({ children }) => (
-                  <strong className="font-semibold text-[#1e293b]">{children}</strong>
-                ),
-                em: ({ children }) => (
-                  <em className="italic text-[#4b5563]">{children}</em>
-                ),
-                ul: ({ children }) => (
-                  <ul className="list-none space-y-2 my-5 pl-0">{children}</ul>
-                ),
-                ol: ({ children }) => (
-                  <ol className="list-decimal list-inside space-y-2 my-5 text-[#374151]">{children}</ol>
-                ),
-                li: ({ children }) => (
-                  <li className="flex gap-2 text-[1.05rem] leading-relaxed text-[#374151] before:content-['—'] before:text-[#6366f1] before:flex-shrink-0">{children}</li>
-                ),
-                hr: () => (
-                  <div className="flex items-center gap-3 my-10">
-                    <div className="flex-1 h-px bg-[#d6d3d1]" />
-                    <span className="text-[#9ca3af] text-xs">✦</span>
-                    <div className="flex-1 h-px bg-[#d6d3d1]" />
-                  </div>
-                ),
-                blockquote: ({ children }) => (
-                  <blockquote className="border-l-4 border-[#6366f1] pl-5 py-1 my-6 italic text-xl text-[#374151] leading-relaxed" style={{ fontFamily: "var(--font-serif)" }}>{children}</blockquote>
-                ),
-                a: ({ href, children }) => (
-                  <a href={href} className="text-[#6366f1] underline underline-offset-2 hover:text-[#4f46e5]" target="_blank" rel="noopener noreferrer">{children}</a>
-                ),
-              }}
-            >
-              {bodyText}
-            </ReactMarkdown>
+        {/* Images 2 + 3 side by side */}
+        {(images[1] || images[2]) && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 my-8">
+            {images[1] && (
+              <div className="relative aspect-video rounded-xl overflow-hidden">
+                <Image src={images[1]} alt="" fill className="object-cover" unoptimized />
+              </div>
+            )}
+            {images[2] && (
+              <div className="relative aspect-video rounded-xl overflow-hidden">
+                <Image src={images[2]} alt="" fill className="object-cover" unoptimized />
+              </div>
+            )}
           </div>
+        )}
 
-          {/* ── Footer rule ── */}
-          <div className="max-w-2xl mx-auto mt-16 pt-6 border-t border-[#d6d3d1]">
-            <p className="text-xs text-[#9ca3af] text-center">
-              Pathways of Hope · <a href="/newsletter" className="hover:text-[#6366f1] transition-colors">More updates</a>
-            </p>
+        {/* Section 2 */}
+        {section2.map((p, i) => (
+          <p key={i} className="text-[#374151] leading-relaxed text-lg mb-5">{p}</p>
+        ))}
+
+        {/* Image 4 full width */}
+        {images[3] && (
+          <div className="relative w-full aspect-video rounded-xl overflow-hidden my-8">
+            <Image src={images[3]} alt="" fill className="object-cover" unoptimized />
           </div>
-        </motion.article>
+        )}
+
+        {/* Section 3 */}
+        {section3.map((p, i) => (
+          <p key={i} className="text-[#374151] leading-relaxed text-lg mb-5">{p}</p>
+        ))}
+
+        <div className="mt-10 pt-6 border-t border-[#d6d3d1]">
+          <Link
+            href="/newsletter"
+            className="inline-flex items-center gap-1.5 text-sm text-[#6b7280] hover:text-[#6366f1] transition-colors"
+          >
+            <ArrowLeft size={14} />
+            {t({ en: "Back to Updates", ar: "العودة للأخبار" })}
+          </Link>
+        </div>
       </div>
     </div>
   );
