@@ -38,7 +38,7 @@ const items: Item[] = [
     icon: Globe,
     heading: { en: "Multi-continental partnership", ar: "شراكة عابرة للقارات" },
     body: {
-      en: "Toongabbie Church and a community of partners across Australia, the US, UK, and Egypt.",
+      en: "Multiple churches from Australia and communities of Australia, the US, UK, and Egypt.",
       ar: "كنيسة تونغابي ومجتمع من الشركاء في أستراليا والولايات المتحدة وبريطانيا ومصر.",
     },
   },

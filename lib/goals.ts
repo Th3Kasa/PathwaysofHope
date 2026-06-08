@@ -24,7 +24,7 @@ export interface BreakdownPart {
 }
 
 export interface Goal {
-  id: GoalId;
+  id: string;
   title: string;
   /** One-line summary for the hub card. */
   short: string;

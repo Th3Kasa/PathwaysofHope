@@ -9,7 +9,7 @@ import {
 } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { formatAUDFull } from "@/lib/utils";
-import type { Goal } from "@/lib/goals";
+import type { Goal, GoalId } from "@/lib/goals";
 import { useLang, useT } from "@/lib/i18n";
 import { GOAL_AR } from "@/lib/goals-i18n";
 
@@ -26,10 +26,10 @@ export function GoalMeter({
 }: GoalMeterProps) {
   const { lang } = useLang();
   const t = useT();
-  const arGoal = GOAL_AR[goal.id];
-  const title = lang === "ar" ? arGoal.title : goal.title;
-  const description = lang === "ar" ? arGoal.description : goal.description;
-  const unitLabel = lang === "ar" ? arGoal.unitLabel ?? goal.unitLabel : goal.unitLabel;
+  const arGoal = GOAL_AR[goal.id as GoalId];
+  const title = lang === "ar" ? (arGoal?.title ?? goal.title) : goal.title;
+  const description = lang === "ar" ? (arGoal?.description ?? goal.description) : goal.description;
+  const unitLabel = lang === "ar" ? (arGoal?.unitLabel ?? goal.unitLabel) : goal.unitLabel;
 
   const raised = raisedProp ?? 0;
   const supporters = supportersProp ?? 0;

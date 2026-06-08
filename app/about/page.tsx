@@ -23,8 +23,8 @@ const BOARD: { name: string; roles: Dict<string>[]; bio: Dict<string> }[] = [
       { en: "Director", ar: "عضو مجلس إدارة" },
     ],
     bio: {
-      en: "Sylvia serves as a Director of Pathways of Hope, contributing her dedication and passion to advancing the organisation's mission of supporting communities in need.",
-      ar: "تشغل سيلفيا منصب عضو في مجلس إدارة دروب الأمل، مُسهِمةً بتفانيها وشغفها في دفع مسيرة المنظمة نحو دعم المجتمعات المحتاجة.",
+      en: "Sylvia serves as a Director of Pathways of Hope, contributing to the governance and strategic direction of the organisation with a commitment to the welfare of the children in our care.",
+      ar: "تشغل سيلفيا منصب عضو في مجلس إدارة دروب الأمل، وتُسهم في حوكمة المنظمة وتوجيهها الاستراتيجي بالتزامٍ راسخ برفاه الأطفال في رعايتنا.",
     },
   },
   {
@@ -33,8 +33,8 @@ const BOARD: { name: string; roles: Dict<string>[]; bio: Dict<string> }[] = [
       { en: "Director", ar: "عضو مجلس إدارة" },
     ],
     bio: {
-      en: "Hanan serves as a Director of Pathways of Hope, bringing her commitment and care to help guide the organisation in fulfilling its mission of hope and service.",
-      ar: "تشغل حنان منصب عضو في مجلس إدارة دروب الأمل، حاملةً التزامها واهتمامها لمساعدة المنظمة في أداء رسالتها المتمثّلة في الأمل والخدمة.",
+      en: "Hanan serves as a Director of Pathways of Hope, contributing to the governance and strategic direction of the organisation with a passion for transparent, community-driven charity.",
+      ar: "تشغل حنان منصب عضو في مجلس إدارة دروب الأمل، وتُسهم في حوكمة المنظمة وتوجيهها الاستراتيجي بشغفٍ نحو العمل الخيري الشفاف النابع من المجتمع.",
     },
   },
 ];
@@ -208,12 +208,12 @@ export default function AboutPage() {
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {t({
-              en: “”We make a living by what we get, but we make a life by what we give.””,
-              ar: “«نحن نكسب رزقنا بما نأخذه، لكننا نصنع حياتنا بما نعطيه.»”,
+              en: "\"Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver.\"",
+              ar: "«كُلُّ وَاحِدٍ كَمَا يَنْوِي بِقَلْبِهِ، لَيْسَ عَنْ حُزْنٍ أَوِ اضْطِرَارٍ، لِأَنَّ الْمُعْطِيَ الْمَسْرُورَ يُحِبُّهُ اللهُ.»",
             })}
           </blockquote>
-          <cite className=”block mt-5 text-[#d6d3d1] text-sm not-italic tracking-wide”>
-            {t({ en: “— Winston Churchill”, ar: “— ونستون تشرشل” })}
+          <cite className="block mt-5 text-[#d6d3d1] text-sm not-italic tracking-wide">
+            {t({ en: "— 2 Corinthians 9:7", ar: "— كورنثوس الثانية 9:7" })}
           </cite>
         </motion.div>
       </section>
@@ -246,7 +246,7 @@ export default function AboutPage() {
           </motion.div>
 
           <motion.div
-            className="grid grid-cols-1 sm:grid-cols-3 gap-8"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
@@ -257,9 +257,9 @@ export default function AboutPage() {
                 key={person.name}
                 variants={fadeUp}
                 whileHover={{ y: -4 }}
-                className="bg-white rounded-2xl border border-[#d6d3d1] overflow-hidden shadow-sm transition-shadow hover:shadow-md"
+                className="bg-white rounded-2xl border border-[#d6d3d1] overflow-hidden shadow-sm transition-shadow hover:shadow-md flex flex-col"
               >
-                <div className="p-7">
+                <div className="p-7 flex flex-col h-full">
                   <h3
                     className="text-xl font-semibold text-[#1e293b] mb-2"
                     style={{ fontFamily: "var(--font-serif)" }}

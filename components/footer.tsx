@@ -12,12 +12,13 @@ const NAV_LINKS: { href: string; label: Dict<string> }[] = [
   { href: "/about", label: { en: "About Us", ar: "من نحن" } },
   { href: "/governance", label: { en: "Governance", ar: "الحوكمة" } },
   { href: "/financials", label: { en: "Transparency", ar: "الشفافية" } },
+  { href: "/reports", label: { en: "Annual Reports", ar: "التقارير السنوية" } },
   { href: "/faq", label: { en: "FAQ", ar: "الأسئلة الشائعة" } },
   { href: "/donate", label: { en: "Give Now", ar: "تبرّع الآن" } },
 ];
 
 const PROMISES: Dict<string>[] = [
-  { en: "100% of donations reach the children", ar: "100% من التبرّعات تصل إلى الأطفال" },
+  { en: "100% of donations support the children (less any unavoidable bank, transfer or currency conversion fees)", ar: "100% من التبرّعات تدعم الأطفال (باستثناء أي رسوم بنكية أو تحويل أو تحويل عملة لا مناص منها)" },
   { en: "All travel costs self-funded by volunteers", ar: "المتطوّعون يموّلون كل نفقات سفرهم بأنفسهم" },
   { en: "DGR-endorsed — every gift gets a tax-deductible receipt", ar: "معتمدة كجهة DGR — كل تبرّع يحصل على إيصال معفى من الضرائب" },
   { en: "Full financial transparency on request", ar: "شفافية مالية كاملة عند الطلب" },

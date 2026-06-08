@@ -2,9 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { randomBytes } from "node:crypto";
 import { isAuthed } from "@/lib/admin/auth";
 import { getConfig, saveConfig, uploadFile } from "@/lib/admin/store";
-import { revalidatePublicContent } from "@/lib/admin/revalidate";
-import { KAPOETA_GOALS } from "@/lib/goals";
-import { ALL_SECTION_KEYS } from "@/lib/admin/sections";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -33,21 +30,24 @@ export async function POST(req: NextRequest) {
     const url = await uploadFile(`reports/${id}.pdf`, buffer, "application/pdf");
     config.reports.unshift({ id, title, year, url, uploadedAt: new Date().toISOString() });
     await saveConfig(config);
-    revalidatePublicContent();
     return NextResponse.json({ ok: true, url });
   }
 
   if (kind === "image") {
     const key = String(form.get("key") ?? "");
-    const validKeys = [...ALL_SECTION_KEYS, ...KAPOETA_GOALS.map((g) => g.id)];
-    if (!validKeys.includes(key)) return NextResponse.json({ error: "Unknown section" }, { status: 400 });
+    if (!key || !/^[a-z0-9-]+$/.test(key)) return NextResponse.json({ error: "Invalid key" }, { status: 400 });
     if (!file.type.startsWith("image/")) return NextResponse.json({ error: "File must be an image" }, { status: 400 });
     const ext = file.type.split("/")[1]?.replace("jpeg", "jpg") || "jpg";
     const url = await uploadFile(`sections/${key}-${randomBytes(4).toString("hex")}.${ext}`, buffer, file.type);
-    config.images[key] = url;
-    await saveConfig(config);
-    revalidatePublicContent();
-    return NextResponse.json({ ok: true, url });
+    // When commit !== "true" the file is only staged in storage; the admin
+    // publishes it later by clicking Save (config PATCH setImage). This lets
+    // the user preview an upload before it goes live.
+    const commit = String(form.get("commit") ?? "true") === "true";
+    if (commit) {
+      config.images[key] = url;
+      await saveConfig(config);
+    }
+    return NextResponse.json({ ok: true, url, committed: commit });
   }
 
   return NextResponse.json({ error: "Unknown kind" }, { status: 400 });

@@ -79,7 +79,7 @@ const GROUPS: { heading: Dict<string>; items: QA[] }[] = [
               For card donations, a DGR tax-deductible invoice is emailed automatically by Stripe
               when your payment is confirmed. If you don&apos;t receive one within a few minutes,
               check your spam folder or{" "}
-              <a href="mailto:contact@pathwaysofhope.org.au" className="text-[#6366f1] underline">
+              <a href="mailto:pathways_of_hope@outlook.com" className="text-[#6366f1] underline">
                 email us
               </a>{" "}
               and we&apos;ll send it through. For bank transfers, email us and we&apos;ll issue your

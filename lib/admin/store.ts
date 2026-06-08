@@ -2,10 +2,7 @@
 // All admin-editable content (section photos, annual reports) lives in a
 // single JSON blob. The Vercel filesystem is read-only at runtime, so we
 // persist in Blob object storage instead.
-// Requires a Blob read-write token. Vercel injects BLOB_READ_WRITE_TOKEN when
-// a Blob store is connected, but the Marketplace integration sometimes names
-// it with a store-specific prefix (e.g. SomeStore_READ_WRITE_TOKEN), so we
-// detect the token under any matching name and pass it explicitly to the SDK.
+// Requires BLOB_READ_WRITE_TOKEN (auto-injected once Vercel Blob is enabled).
 
 import { put, list } from "@vercel/blob";
 
@@ -19,75 +16,102 @@ export interface ReportItem {
   uploadedAt: string;
 }
 
-export interface AdminConfig {
-  /** Per-section image URL overrides, keyed by goal ID or page section key. */
-  images: Record<string, string>;
-  /** Per-section caption/alt text overrides, keyed by section key. */
-  titles: Record<string, string>;
-  /** Annual reports listed on the public /reports page. */
-  reports: ReportItem[];
-}
-
-export function defaultConfig(): AdminConfig {
-  return { images: {}, titles: {}, reports: [] };
+export interface ExtraGoal {
+  id: string;          // e.g. "extra-a1b2c3d4"
+  missionName: string; // e.g. "Kapoeta", "Uganda Mission"
+  title: string;
+  short: string;
+  description: string;
+  goalAmount: number;  // AUD, 0 = open-ended
+  recurring: boolean;
+  image?: string;      // blob URL if uploaded
+  imageAlt?: string;
+  addedAt: string;     // ISO date
 }
 
 /**
- * Find the Vercel Blob read-write token. Prefers the standard name, then falls
- * back to any env var ending in READ_WRITE_TOKEN (Marketplace integrations may
- * prefix it with the store name). Returns undefined if none is configured.
+ * A manually-recorded offline gift (bank transfer / direct debit) entered by
+ * an admin. Each entry adds its amount to the goal's raised total and counts
+ * as one supporter on the live progress bars.
  */
-export function getBlobToken(): string | undefined {
-  if (process.env.BLOB_READ_WRITE_TOKEN) {
-    console.log("[blob] found token via BLOB_READ_WRITE_TOKEN");
-    return process.env.BLOB_READ_WRITE_TOKEN;
-  }
-  // Marketplace integrations may prefix the token with the store name,
-  // e.g. pathwaysofhope-blob_READ_WRITE_TOKEN. Match by name only — no
-  // value-prefix check, since token formats differ across Vercel products.
-  for (const [name, value] of Object.entries(process.env)) {
-    if (value && /READ_WRITE_TOKEN$/i.test(name)) {
-      console.log(`[blob] found token via ${name}`);
-      return value;
-    }
-  }
-  // Last resort: any var whose name mentions BLOB and TOKEN.
-  for (const [name, value] of Object.entries(process.env)) {
-    if (value && /BLOB/i.test(name) && /TOKEN/i.test(name)) {
-      console.log(`[blob] found token via ${name} (fallback)`);
-      return value;
-    }
-  }
-  // Log all env var names to help diagnose missing token.
-  const blobish = Object.keys(process.env).filter(
-    (k) => /blob|token|storage/i.test(k)
-  );
-  console.log("[blob] no token found. Blob-related env vars:", blobish.length ? blobish.join(", ") : "(none)");
-  return undefined;
+export interface ManualDonation {
+  id: string;
+  goalId: string;
+  amount: number;   // AUD
+  note?: string;
+  addedAt: string;  // ISO date
 }
 
-export function blobReady(): boolean {
-  return Boolean(getBlobToken());
+export interface AdminConfig {
+  /** Per-section image URL overrides, keyed by goal ID or page section key. */
+  images: Record<string, string>;
+  /** Per-section caption/alt text, keyed by goal ID. */
+  captions: Record<string, string>;
+  /** Annual reports listed on the public /reports page. */
+  reports: ReportItem[];
+  disabledGoalIds: string[];
+  extraGoals: ExtraGoal[];
+  /** Manually-recorded offline donations (bank transfer / direct debit). */
+  manualDonations: ManualDonation[];
+  /** Built-in Kapoeta gallery image keys the admin has hidden from the site. */
+  hiddenGalleryKeys: string[];
+  /** IDs of extra photos the admin added to the Kapoeta gallery. The image and
+   *  caption live under config.images/captions keyed by `kapoeta-gallery-extra-<id>`. */
+  galleryExtraIds: string[];
+}
+
+export function defaultConfig(): AdminConfig {
+  return {
+    images: {}, captions: {}, reports: [], disabledGoalIds: [], extraGoals: [],
+    manualDonations: [], hiddenGalleryKeys: [], galleryExtraIds: [],
+  };
 }
 
 export async function getConfig(): Promise<AdminConfig> {
   try {
-    const token = getBlobToken();
-    if (!token) return defaultConfig();
-    const { blobs } = await list({ prefix: CONFIG_PATH, limit: 1, token });
+    if (!process.env.BLOB_READ_WRITE_TOKEN) return defaultConfig();
+    const { blobs } = await list({ prefix: CONFIG_PATH, limit: 1 });
     if (blobs.length === 0) return defaultConfig();
-    const res = await fetch(blobs[0].url, { cache: "no-store" });
+    // Append timestamp to bust Vercel Blob CDN cache — without this, overwrites
+    // to the same path are served stale for several requests.
+    const res = await fetch(`${blobs[0].url}?t=${Date.now()}`, { cache: "no-store" });
     if (!res.ok) return defaultConfig();
     const parsed = (await res.json()) as Partial<AdminConfig>;
-    return { ...defaultConfig(), ...parsed, titles: { ...{}, ...(parsed.titles ?? {}) } };
+    return sanitizeConfig(parsed);
   } catch {
     return defaultConfig();
   }
 }
 
+/**
+ * Build a clean AdminConfig from stored JSON. Whitelists known fields (so stray
+ * fields from older builds — e.g. a `titles` map — are dropped) and removes
+ * orphaned image/caption keys left by a previous version of the admin
+ * (`kapoeta-container-*`, `kapoeta-chapter1`). The next saveConfig persists the
+ * cleaned result, so the config self-heals on the first admin action.
+ */
+function sanitizeConfig(parsed: Partial<AdminConfig>): AdminConfig {
+  const base = defaultConfig();
+  const isOrphanKey = (k: string) => k.startsWith("kapoeta-container-") || k.startsWith("kapoeta-chapter1");
+  const clean = (rec?: Record<string, string>): Record<string, string> => {
+    const out: Record<string, string> = {};
+    for (const [k, v] of Object.entries(rec ?? {})) if (!isOrphanKey(k)) out[k] = v;
+    return out;
+  };
+  return {
+    images: clean(parsed.images),
+    captions: clean(parsed.captions),
+    reports: parsed.reports ?? base.reports,
+    disabledGoalIds: parsed.disabledGoalIds ?? base.disabledGoalIds,
+    extraGoals: parsed.extraGoals ?? base.extraGoals,
+    manualDonations: parsed.manualDonations ?? base.manualDonations,
+    hiddenGalleryKeys: parsed.hiddenGalleryKeys ?? base.hiddenGalleryKeys,
+    galleryExtraIds: parsed.galleryExtraIds ?? base.galleryExtraIds,
+  };
+}
+
 export async function saveConfig(config: AdminConfig): Promise<void> {
-  const token = getBlobToken();
-  if (!token) {
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
     throw new Error("Vercel Blob not configured. Enable it in your Vercel dashboard.");
   }
   await put(CONFIG_PATH, JSON.stringify(config, null, 2), {
@@ -95,7 +119,10 @@ export async function saveConfig(config: AdminConfig): Promise<void> {
     contentType: "application/json",
     addRandomSuffix: false,
     allowOverwrite: true,
-    token,
+    // Never CDN-cache the config blob — admin edits must read back immediately.
+    // Without this, Blob defaults to a 1-year immutable cache and serves stale
+    // config (uploaded photos / edits appear to "not save").
+    cacheControlMaxAge: 0,
   });
 }
 
@@ -104,15 +131,13 @@ export async function uploadFile(
   data: Buffer,
   contentType: string
 ): Promise<string> {
-  const token = getBlobToken();
-  if (!token) {
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
     throw new Error("Vercel Blob not configured. Enable it in your Vercel dashboard.");
   }
   const blob = await put(pathname, data, {
     access: "public",
     contentType,
     addRandomSuffix: true,
-    token,
   });
   return blob.url;
 }

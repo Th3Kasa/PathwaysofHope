@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { motion, type Variants } from "framer-motion";
 import { Sun, Egg, Droplets, HeartHandshake, Baby, Heart, ArrowRight } from "lucide-react";
-import { KAPOETA_GOALS, type GoalId, type Goal } from "@/lib/goals";
+import { type GoalId, type Goal } from "@/lib/goals";
 import { formatAUDFull } from "@/lib/utils";
 import { useLang, useT } from "@/lib/i18n";
 import { GOAL_AR } from "@/lib/goals-i18n";
@@ -11,6 +11,8 @@ import { GOAL_AR } from "@/lib/goals-i18n";
 interface Props {
   totals: Record<string, { raised: number; supporters: number }> | null;
   imageOverrides?: Record<string, string>;
+  captionOverrides?: Record<string, string>;
+  goals: Goal[];
 }
 
 const ICONS: Record<GoalId, React.ElementType> = {
@@ -32,7 +34,7 @@ function hrefFor(goal: Goal): string {
   return goal.kind === "bundle" ? `/donate/${goal.id}/parts` : `/donate/${goal.id}`;
 }
 
-export function DonateHub({ totals, imageOverrides }: Props) {
+export function DonateHub({ totals, goals }: Props) {
   const { lang } = useLang();
   const t = useT();
   return (
@@ -42,12 +44,12 @@ export function DonateHub({ totals, imageOverrides }: Props) {
       animate="show"
       variants={stagger}
     >
-      {KAPOETA_GOALS.map((goal) => {
-        const Icon = ICONS[goal.id];
-        const arGoal = GOAL_AR[goal.id];
-        const title = lang === "ar" ? arGoal.title : goal.title;
-        const short = lang === "ar" ? arGoal.short : goal.short;
-        const unitLabel = lang === "ar" ? arGoal.unitLabel ?? goal.unitLabel : goal.unitLabel;
+      {goals.map((goal) => {
+        const Icon = ICONS[goal.id as GoalId] ?? Heart;
+        const arGoal = GOAL_AR[goal.id as GoalId];
+        const title = lang === "ar" && arGoal ? arGoal.title : goal.title;
+        const short = lang === "ar" && arGoal ? arGoal.short : goal.short;
+        const unitLabel = lang === "ar" && arGoal ? (arGoal.unitLabel ?? goal.unitLabel) : goal.unitLabel;
         const raised = totals?.[goal.id]?.raised ?? 0;
         const supporters = totals?.[goal.id]?.supporters ?? 0;
         const pct = goal.goalAmount > 0

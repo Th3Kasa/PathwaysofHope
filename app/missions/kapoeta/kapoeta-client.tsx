@@ -17,6 +17,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { GoalMeter } from "@/components/goal-meter";
 import { DonateButton } from "@/components/donate-button";
 import { TrustStrip } from "@/components/trust-strip";
+import { ManagedImagesProvider, useManagedImages } from "@/components/managed-images";
 import { Baby, Droplets, Egg, HeartHandshake, Sun, CheckCircle2, ChevronLeft, ChevronRight } from "lucide-react";
 import { DELIVERED, DELIVERED_TOTAL, type Goal, type GoalId } from "@/lib/goals";
 import { formatAUDFull } from "@/lib/utils";
@@ -25,8 +26,10 @@ import { useT, type Dict } from "@/lib/i18n";
 interface Props {
   totals: Record<string, { raised: number; supporters: number }> | null;
   goals: Goal[];
-  imageOverrides?: Record<string, string>;
-  titleOverrides?: Record<string, string>;
+  images?: Record<string, string>;
+  captions?: Record<string, string>;
+  hiddenGalleryKeys?: string[];
+  galleryExtraIds?: string[];
 }
 
 const fadeUp: Variants = {
@@ -67,7 +70,7 @@ const TIMELINE: { period: Dict<string>; title: Dict<string>; body: Dict<string> 
     period: { en: "September–October 2024", ar: "سبتمبر–أكتوبر 2024" },
     title: { en: "Container Dispatched from Sydney", ar: "إرسال الحاوية من سيدني" },
     body: {
-      en: "The container was packed in Sydney by volunteers including Elders Mamdouh Mansour, Philip Hanna, engineer Michael Elmasri, Emil Girgis and many others — and shipped via Mombasa, Kenya, then by road through Nadapal to Kapoeta South.",
+      en: "The container was packed in Sydney by volunteers including Elders Mamdouh Mansour, Philip Hanna, Ezzat Morkos, Adel Mansour and many others — and shipped via Mombasa, Kenya, then by road through Nadapal to Kapoeta South.",
       ar: "عبّأ المتطوّعون الحاوية في سيدني، ومنهم الشيخان Mamdouh Mansour وPhilip Hanna، والمهندس Michael Elmasri، وEmil Girgis وكثيرون غيرهم — ثم شُحنت عبر مومباسا في كينيا، ومنها برًّا عبر نادابال إلى كاپويتا الجنوبية.",
     },
   },
@@ -168,8 +171,9 @@ function Counter({ value, prefix = "", suffix = "" }: { value: number; prefix?: 
 
 /* ─── Hero ───────────────────────────────────────────────────── */
 
-function HeroSection({ imageOverrides }: { imageOverrides?: Record<string, string> }) {
+function HeroSection() {
   const t = useT();
+  const { img } = useManagedImages();
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
@@ -178,7 +182,7 @@ function HeroSection({ imageOverrides }: { imageOverrides?: Record<string, strin
     <section ref={ref} className="relative h-screen min-h-[600px] flex items-end overflow-hidden">
       <motion.div className="absolute inset-0" style={{ y: imageY }}>
         <Image
-          src={imageOverrides?.["kapoeta-hero"] ?? "/images/kapoeta/field/children-large-group-activity-kapoeta.jpg"}
+          src={img("kapoeta-hero", "/images/kapoeta/field/children-large-group-activity-kapoeta.jpg")}
           alt={t({
             en: "Children gathered together at the Kapoeta Children's Shelter, South Sudan",
             ar: "أطفال مجتمعون في ملجأ كاپويتا للأطفال، جنوب السودان",
@@ -226,8 +230,9 @@ function HeroSection({ imageOverrides }: { imageOverrides?: Record<string, strin
 
 /* ─── Chapter 1: The Calling ─────────────────────────────────── */
 
-function StoryChapter1({ imageOverrides }: { imageOverrides?: Record<string, string> }) {
+function StoryChapter1() {
   const t = useT();
+  const { img } = useManagedImages();
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const imageY = useTransform(scrollYProgress, [0, 1], ["-5%", "5%"]);
@@ -242,10 +247,9 @@ function StoryChapter1({ imageOverrides }: { imageOverrides?: Record<string, str
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
-          {/* Replace with hakim-peter-compound-kapoeta.jpg once uploaded */}
           <motion.div className="absolute inset-0" style={{ y: imageY }}>
             <Image
-              src={imageOverrides?.["kapoeta-chapter1"] ?? "/images/kapoeta/field/children-outdoor-activity-kapoeta.jpg"}
+              src={img("kapoeta-story-calling", "/images/kapoeta/field/children-outdoor-activity-kapoeta.jpg")}
               alt={t({
                 en: "Children gathered at the Kapoeta shelter — the community Brother Hakim built from nothing",
                 ar: "أطفال مجتمعون في ملجأ كاپويتا — المجتمع الذي بناه الأخ حكيم من لا شيء",
@@ -286,8 +290,8 @@ function StoryChapter1({ imageOverrides }: { imageOverrides?: Record<string, str
             </p>
             <p>
               {t({
-                en: "He found children there: approximately 320 boys and girls, sleeping near the local market, wearing tattered clothes, eating from trash bins, with no access to school. Hakim began with what he had — gathering them by day to teach Bible stories and hymns, share one meal, and offer the safety of presence.",
-                ar: "هناك وجد الأطفال: نحو 320 من الأولاد والبنات، ينامون قرب السوق المحلي، يرتدون ثيابًا رثّة، يأكلون من صناديق القمامة، بلا فرصة للالتحاق بالمدرسة. وبدأ حكيم بما لديه — يجمعهم نهارًا ليعلّمهم قصص الكتاب المقدس والتراتيل، ويتقاسم معهم وجبة واحدة، ويمنحهم أمان الحضور.",
+                en: "He found children there: approximately 320 boys and girls, sleeping near the local market, wearing tattered clothes, eating from trash bins, with no access to school. Hakim began with what he had — gathering them by day to provide basic education, share one meal, and offer the safety of presence.",
+                ar: "هناك وجد الأطفال: نحو 320 من الأولاد والبنات، ينامون قرب السوق المحلي، يرتدون ثيابًا رثّة، يأكلون من صناديق القمامة، بلا فرصة للالتحاق بالمدرسة. وبدأ حكيم بما لديه — يجمعهم نهارًا ليوفّر لهم التعليم الأساسي، ويتقاسم معهم وجبة واحدة، ويمنحهم أمان الحضور.",
               })}
             </p>
           </motion.div>
@@ -351,7 +355,7 @@ function StatsStrip() {
 
 /* ─── Chapter 2: The Container ───────────────────────────────── */
 
-function StoryChapter2({ imageOverrides, titleOverrides }: { imageOverrides?: Record<string, string>; titleOverrides?: Record<string, string> }) {
+function StoryChapter2() {
   const t = useT();
   const containerContents: Dict<string>[] = [
     {
@@ -406,7 +410,7 @@ function StoryChapter2({ imageOverrides, titleOverrides }: { imageOverrides?: Re
           variants={staggerContainer}
         >
           <motion.div variants={scaleIn}>
-            <ContainerCarousel imageOverrides={imageOverrides} titleOverrides={titleOverrides} />
+            <ContainerCarousel />
           </motion.div>
 
           <motion.div variants={fadeUp}>
@@ -608,63 +612,68 @@ function OnTheGround() {
 
 /* ─── Container Carousel ─────────────────────────────────────── */
 
-function ContainerCarousel({ imageOverrides, titleOverrides }: { imageOverrides?: Record<string, string>; titleOverrides?: Record<string, string> }) {
+function ContainerCarousel() {
   const t = useT();
+  const { img, cap } = useManagedImages();
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(0);
 
-  const slides: { src: string; caption: Dict<string> }[] = [
+  const slides: { imageKey: string; src: string; caption: Dict<string> }[] = [
     {
+      imageKey: "kapoeta-carousel-1",
       src: "/images/kapoeta/field/container-contents-mattresses-materials.jpg",
       caption: { en: "Mattresses packed in Sydney, bound for Kapoeta", ar: "مراتب عُبّئت في سيدني، في طريقها إلى كاپويتا" },
     },
     {
+      imageKey: "kapoeta-carousel-2",
       src: "/images/kapoeta/field/cooking-pots-donated-australia.jpg",
       caption: { en: "Donated cookware — every pot shipped from Australia", ar: "أدوات طهي مُهداة — كل قدر شُحن من أستراليا" },
     },
     {
+      imageKey: "kapoeta-carousel-3",
       src: "/images/kapoeta/field/food-supplies-bags-rice-beans.jpg",
       caption: { en: "Rice and beans — months of food for the children", ar: "أرز وفاصوليا — أشهر من الطعام للأطفال" },
     },
     {
+      imageKey: "kapoeta-carousel-4",
       src: "/images/kapoeta/field/shelter-steel-frame-construction-kapoeta.jpg",
       caption: { en: "The steel frame going up on site", ar: "الهيكل الفولاذي يرتفع في الموقع" },
     },
     {
+      imageKey: "kapoeta-carousel-5",
       src: "/images/kapoeta/field/shelter-brickwall-construction-progress.jpg",
       caption: { en: "Brick by brick — walls built by hand", ar: "لبنةً فلبنة — جدران بُنيت باليد" },
     },
     {
+      imageKey: "kapoeta-carousel-6",
       src: "/images/kapoeta/field/shelter-brickwall-steel-frame-kapoeta.jpg",
       caption: { en: "Brick walls meet steel frame", ar: "الجدران الطوبية تلتقي بالهيكل الفولاذي" },
     },
     {
+      imageKey: "kapoeta-carousel-7",
       src: "/images/kapoeta/field/shelter-steel-frame-exterior-kapoeta.jpg",
       caption: { en: "The completed building from outside", ar: "المبنى المكتمل من الخارج" },
     },
     {
+      imageKey: "kapoeta-carousel-8",
       src: "/images/kapoeta/field/bunkbeds-assembled-outdoor-kapoeta.jpg",
       caption: { en: "Bunkbeds assembled and ready to move in", ar: "الأسرّة المزدوجة جاهزة للاستخدام" },
     },
     {
+      imageKey: "kapoeta-carousel-9",
       src: "/images/kapoeta/field/bunkbeds-dormitory-interior-kapoeta-2.jpg",
       caption: { en: "The dormitory inside — a bed for every child", ar: "المهجع من الداخل — سرير لكل طفل" },
     },
     {
+      imageKey: "kapoeta-carousel-10",
       src: "/images/kapoeta/field/community-hall-worship-service-kapoeta.jpg",
       caption: { en: "A gathering space and a home", ar: "مساحة للتجمّع وبيت" },
     },
   ];
 
-  const resolvedSlides = slides.map((slide, i) => ({
-    ...slide,
-    src: imageOverrides?.[`kapoeta-container-${i + 1}`] ?? slide.src,
-    titleOverride: titleOverrides?.[`kapoeta-container-${i + 1}`],
-  }));
-
   const paginate = (dir: number) => {
     setDirection(dir);
-    setCurrent((c) => (c + dir + resolvedSlides.length) % resolvedSlides.length);
+    setCurrent((c) => (c + dir + slides.length) % slides.length);
   };
 
   const variants: Variants = {
@@ -693,15 +702,15 @@ function ContainerCarousel({ imageOverrides, titleOverrides }: { imageOverrides?
           className="absolute inset-0 cursor-grab active:cursor-grabbing"
         >
           <Image
-            src={resolvedSlides[current].src}
-            alt={t(resolvedSlides[current].caption)}
+            src={img(slides[current].imageKey, slides[current].src)}
+            alt={cap(slides[current].imageKey, t(slides[current].caption))}
             fill
             className="object-cover object-center pointer-events-none"
             sizes="(max-width: 768px) 100vw, 50vw"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent pointer-events-none" />
           <p className="absolute bottom-12 left-4 right-12 text-white text-sm font-medium leading-snug pointer-events-none">
-            {resolvedSlides[current].titleOverride ?? t(resolvedSlides[current].caption)}
+            {cap(slides[current].imageKey, t(slides[current].caption))}
           </p>
         </motion.div>
       </AnimatePresence>
@@ -724,7 +733,7 @@ function ContainerCarousel({ imageOverrides, titleOverrides }: { imageOverrides?
 
       {/* Dots */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
-        {resolvedSlides.map((_, i) => (
+        {slides.map((_, i) => (
           <button
             key={i}
             onClick={() => { setDirection(i > current ? 1 : -1); setCurrent(i); }}
@@ -736,7 +745,7 @@ function ContainerCarousel({ imageOverrides, titleOverrides }: { imageOverrides?
 
       {/* Counter */}
       <div className="absolute bottom-4 right-4 z-10 text-white/70 text-xs tabular-nums">
-        {current + 1} / {resolvedSlides.length}
+        {current + 1} / {slides.length}
       </div>
     </div>
   );
@@ -744,9 +753,12 @@ function ContainerCarousel({ imageOverrides, titleOverrides }: { imageOverrides?
 
 /* ─── Gallery ────────────────────────────────────────────────── */
 
-function Gallery({ imageOverrides, titleOverrides }: { imageOverrides?: Record<string, string>; titleOverrides?: Record<string, string> }) {
+function Gallery({ hiddenKeys = [], extraIds = [] }: { hiddenKeys?: string[]; extraIds?: string[] }) {
   const t = useT();
-  // Each image is a distinct moment — ordered as a story arc
+  const { img, cap } = useManagedImages();
+  // Each image is a distinct moment — ordered as a story arc.
+  // Keys are assigned positionally below as `kapoeta-gallery-${i + 1}`,
+  // matching the order in lib/managed-images.ts — keep this array in sync.
   const images: { src: string; alt: Dict<string>; caption: Dict<string> }[] = [
     {
       src: "/images/kapoeta/field/child-eating-bowl-rice-kapoeta.jpg",
@@ -885,12 +897,6 @@ function Gallery({ imageOverrides, titleOverrides }: { imageOverrides?: Record<s
     },
   ];
 
-  const resolvedImages = images.map((img, i) => ({
-    ...img,
-    src: imageOverrides?.[`kapoeta-gallery-${i + 1}`] ?? img.src,
-    titleOverride: titleOverrides?.[`kapoeta-gallery-${i + 1}`],
-  }));
-
   return (
     <section className="py-12 sm:py-20 px-4 bg-[#1e293b] overflow-hidden">
       <motion.div
@@ -911,25 +917,42 @@ function Gallery({ imageOverrides, titleOverrides }: { imageOverrides?: Record<s
         </motion.div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
-          {resolvedImages.map((img) => (
-            <motion.div
-              key={img.src}
-              variants={scaleIn}
-              className="relative overflow-hidden rounded-xl group aspect-[4/3] sm:aspect-[3/2]"
-            >
-              <Image
-                src={img.src}
-                alt={t(img.alt)}
-                fill
-                className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
-                sizes="(max-width: 640px) 50vw, 33vw"
-              />
-              {/* Persistent caption strip at bottom */}
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#1e293b]/85 to-transparent pt-8 pb-3 px-3">
-                <p className="text-white text-xs font-medium">{img.titleOverride ?? t(img.caption)}</p>
-              </div>
-            </motion.div>
-          ))}
+          {(() => {
+            // Built-in photos, with admin overrides, minus any the admin hid.
+            const builtins = images
+              .map((image, i) => {
+                const key = `kapoeta-gallery-${i + 1}`;
+                return { key, src: img(key, image.src), alt: cap(key, t(image.alt)), caption: cap(key, t(image.caption)) };
+              })
+              .filter((it) => !hiddenKeys.includes(it.key));
+            // Admin-added photos (only those that actually have an image).
+            const extras = extraIds
+              .map((id) => {
+                const key = `kapoeta-gallery-extra-${id}`;
+                return { key, src: img(key, ""), alt: cap(key, "Kapoeta Children's Shelter"), caption: cap(key, "") };
+              })
+              .filter((it) => it.src);
+            return [...builtins, ...extras].map((it) => (
+              <motion.div
+                key={it.key}
+                variants={scaleIn}
+                className="relative overflow-hidden rounded-xl group aspect-[4/3] sm:aspect-[3/2]"
+              >
+                <Image
+                  src={it.src}
+                  alt={it.alt}
+                  fill
+                  className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
+                  sizes="(max-width: 640px) 50vw, 33vw"
+                />
+                {it.caption && (
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#1e293b]/85 to-transparent pt-8 pb-3 px-3">
+                    <p className="text-white text-xs font-medium">{it.caption}</p>
+                  </div>
+                )}
+              </motion.div>
+            ));
+          })()}
         </div>
       </motion.div>
     </section>
@@ -1005,8 +1028,8 @@ function DonationsSection({ goals, totals }: Props) {
   const t = useT();
   // Exclude open-ended goals (no priority entry) from the 2026 goals section.
   const sorted = goals
-    .filter((g) => GOAL_META[g.id] !== undefined)
-    .sort((a, b) => (GOAL_META[a.id]?.priority ?? 99) - (GOAL_META[b.id]?.priority ?? 99));
+    .filter((g) => GOAL_META[g.id as GoalId] !== undefined)
+    .sort((a, b) => (GOAL_META[a.id as GoalId]?.priority ?? 99) - (GOAL_META[b.id as GoalId]?.priority ?? 99));
 
   return (
     <section className="py-14 sm:py-24 px-4 bg-[#1e293b] relative overflow-hidden">
@@ -1049,9 +1072,9 @@ function DonationsSection({ goals, totals }: Props) {
           variants={staggerContainer}
         >
           {sorted.map((goal) => {
-            const meta = GOAL_META[goal.id];
+            const meta = GOAL_META[goal.id as GoalId];
             if (!meta) return null;
-            const GoalIcon = GOAL_ICONS[goal.id];
+            const GoalIcon = GOAL_ICONS[goal.id as GoalId];
             const live = totals?.[goal.id];
             return (
               <motion.div
@@ -1138,23 +1161,15 @@ function FinalCTA() {
           </DonateButton>
         </motion.div>
 
-        {/* Kapoeta-specific contacts */}
+        {/* Contact */}
         <motion.div
           variants={fadeUp}
-          className="mt-14 pt-10 border-t border-[#d6d3d1] grid grid-cols-1 sm:grid-cols-3 gap-6 text-left sm:text-center"
+          className="mt-14 pt-10 border-t border-[#d6d3d1] text-center"
         >
-          {[
-            { label: { en: "Email", ar: "البريد الإلكتروني" }, value: "pathways_of_hope@outlook.com", href: "mailto:pathways_of_hope@outlook.com" },
-            { label: { en: "Mamdouh Mansour", ar: "Mamdouh Mansour" }, value: "0402 747 292", href: "tel:+61402747292" },
-            { label: { en: "Philip Hanna", ar: "Philip Hanna" }, value: "0411 401 217", href: "tel:+61411401217" },
-          ].map((c) => (
-            <div key={c.label.en}>
-              <p className="text-xs font-semibold text-[#6366f1] uppercase tracking-widest mb-1">{t(c.label)}</p>
-              <a href={c.href} className="text-[#1e293b] text-sm font-medium hover:text-[#6366f1] transition-colors break-all">
-                {c.value}
-              </a>
-            </div>
-          ))}
+          <p className="text-xs font-semibold text-[#6366f1] uppercase tracking-widest mb-1">{t({ en: "Email", ar: "البريد الإلكتروني" })}</p>
+          <a href="mailto:pathways_of_hope@outlook.com" className="text-[#1e293b] text-sm font-medium hover:text-[#6366f1] transition-colors break-all">
+            pathways_of_hope@outlook.com
+          </a>
         </motion.div>
       </motion.div>
     </section>
@@ -1163,20 +1178,22 @@ function FinalCTA() {
 
 /* ─── Page composition ───────────────────────────────────────── */
 
-export default function KapoetaClient({ totals, goals, imageOverrides, titleOverrides }: Props) {
+export default function KapoetaClient({ totals, goals, images, captions, hiddenGalleryKeys, galleryExtraIds }: Props) {
   return (
-    <div className="bg-[#e7e5e4]">
-      <HeroSection imageOverrides={imageOverrides} />
-      <StoryChapter1 imageOverrides={imageOverrides} />
-      <StatsStrip />
-      <StoryChapter2 imageOverrides={imageOverrides} titleOverrides={titleOverrides} />
-      <StoryChapter3 />
-      <OnTheGround />
-      <Gallery imageOverrides={imageOverrides} titleOverrides={titleOverrides} />
-      <Achievements />
-      <DonationsSection totals={totals} goals={goals} />
-      <TrustStrip />
-      <FinalCTA />
-    </div>
+    <ManagedImagesProvider images={images} captions={captions}>
+      <div className="bg-[#e7e5e4]">
+        <HeroSection />
+        <StoryChapter1 />
+        <StatsStrip />
+        <StoryChapter2 />
+        <StoryChapter3 />
+        <OnTheGround />
+        <Gallery hiddenKeys={hiddenGalleryKeys} extraIds={galleryExtraIds} />
+        <Achievements />
+        <DonationsSection totals={totals} goals={goals} />
+        <TrustStrip />
+        <FinalCTA />
+      </div>
+    </ManagedImagesProvider>
   );
 }

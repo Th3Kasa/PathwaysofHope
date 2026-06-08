@@ -5,6 +5,7 @@ import Link from "next/link";
 import { TrustStrip } from "@/components/trust-strip";
 import { MissionCard } from "@/components/mission-card";
 import { DonateButton } from "@/components/donate-button";
+import { useManagedImages } from "@/components/managed-images";
 import { Handshake, BadgeCheck, Globe, ArrowRight, Search, Building2, Users } from "lucide-react";
 import {
   motion,
@@ -54,10 +55,10 @@ const APPROACH: { icon: typeof Handshake; title: Dict<string>; body: Dict<string
   },
   {
     icon: BadgeCheck,
-    title: { en: "100% reaches the field", ar: "100% تصل إلى الميدان" },
+    title: { en: "100% supports the children", ar: "100% تدعم الأطفال" },
     body: {
-      en: "Every volunteer self-funds their travel and accommodation. Every dollar donated goes directly to the mission. This is a structural fact, not a marketing claim.",
-      ar: "كل متطوّع يموّل سفره وإقامته بنفسه. وكل دولار يُتبرَّع به يذهب مباشرةً إلى المهمّة. هذه حقيقة في بنية عملنا، لا ادّعاء تسويقي.",
+      en: "Every volunteer self-funds their travel and accommodation. 100% of donations support the children — less any unavoidable bank, transfer or currency conversion fees. This is a structural fact, not a marketing claim.",
+      ar: "كل متطوّع يموّل سفره وإقامته بنفسه. 100% من التبرّعات تدعم الأطفال — باستثناء أي رسوم بنكية أو تحويل أو صرف عملة لا مناص منها. هذه حقيقة في بنية عملنا، لا ادّعاء تسويقي.",
     },
   },
   {
@@ -100,38 +101,45 @@ const STEPS: { icon: typeof Search; step: string; title: Dict<string>; body: Dic
   },
 ];
 
-const BASE_PHOTOS: { src: string; alt: string; caption: Dict<string> }[] = [
+const PHOTOS: { imageKey: string; src: string; alt: string; caption: Dict<string> }[] = [
   {
+    imageKey: "home-strip-1",
     src: "/images/kapoeta/field/child-eating-bowl-rice-kapoeta.jpg",
     alt: "A young child eating rice from a bowl — one of the children found on the streets of Kapoeta",
     caption: { en: "The children we found", ar: "الأطفال الذين وجدناهم" },
   },
   {
+    imageKey: "home-strip-2",
     src: "/images/kapoeta/field/shelter-steel-frame-construction-kapoeta.jpg",
     alt: "The Kapoeta shelter steel frame under construction, 2024",
     caption: { en: "The building going up", ar: "البناء يرتفع" },
   },
   {
+    imageKey: "home-strip-3",
     src: "/images/kapoeta/field/children-large-group-activity-kapoeta.jpg",
     alt: "Children gathered together in the shelter compound, Kapoeta",
     caption: { en: "Home", ar: "بيت" },
   },
   {
+    imageKey: "home-strip-4",
     src: "/images/kapoeta/field/community-hall-worship-service-kapoeta.jpg",
     alt: "Rows of white bunk beds inside the completed Kapoeta Children's Shelter dormitory",
     caption: { en: "Their first safe beds", ar: "أوّل أسرّةٍ آمنة لهم" },
   },
   {
+    imageKey: "home-strip-5",
     src: "/images/kapoeta/field/children-school-uniforms-group-kapoeta.jpg",
     alt: "Children in school uniforms enrolled in the Catholic school system, Kapoeta 2025",
     caption: { en: "Going to school", ar: "إلى المدرسة" },
   },
   {
+    imageKey: "home-strip-6",
     src: "/images/kapoeta/field/visitor-woman-teaching-children-kapoeta.jpg",
     alt: "A volunteer from Australia teaching children at the Kapoeta shelter",
     caption: { en: "Teaching together", ar: "نتعلّم معًا" },
   },
   {
+    imageKey: "home-strip-7",
     src: "/images/people/mamdouh-mansour-children-kapoeta.jpg",
     alt: "Elder Mamdouh Mansour from Sydney with the children in Kapoeta",
     caption: { en: "Partners from Australia", ar: "شركاء من أستراليا" },
@@ -173,22 +181,16 @@ function AnimatedCounter({
 
 /* ─── Page ───────────────────────────────────────────────────── */
 
-export function HomeClient({ imageOverrides, titleOverrides }: { imageOverrides?: Record<string, string>; titleOverrides?: Record<string, string> }) {
+export default function HomeClient() {
   const t = useT();
-  const heroSrc = imageOverrides?.["home-hero"] ?? "/images/kapoeta/field/children-group-sunset-kapoeta.jpg";
-  const photos = BASE_PHOTOS.map((p, i) => ({
-    ...p,
-    src: imageOverrides?.[`home-strip-${i + 1}`] ?? p.src,
-    titleOverride: titleOverrides?.[`home-strip-${i + 1}`],
-  }));
-
+  const { img, cap } = useManagedImages();
   return (
     <>
       {/* Hero */}
       <section className="relative min-h-[92dvh] flex items-end" aria-label="Hero">
         <div className="absolute inset-0">
           <Image
-            src={heroSrc}
+            src={img("home-hero", "/images/kapoeta/field/children-group-sunset-kapoeta.jpg")}
             alt="Children at sunset in Kapoeta — safe, fed, and in school through Pathways of Hope"
             fill
             priority
@@ -376,7 +378,7 @@ export function HomeClient({ imageOverrides, titleOverrides }: { imageOverrides?
                 en: "Children given safety, meals, and schooling in one of South Sudan's most remote towns — through the work of a local leader and a global community of believers.",
                 ar: "أطفالٌ نالوا الأمان والطعام والتعليم في واحدةٍ من أبعد بلدات جنوب السودان — بفضل عمل قائدٍ محلي ومجتمعٍ عالمي من المؤمنين.",
               })}
-              imageSrc="/images/kapoeta/field/children-large-group-activity-kapoeta.jpg"
+              imageSrc={img("home-mission-card", "/images/kapoeta/field/children-large-group-activity-kapoeta.jpg")}
               imageAlt="Children gathered together at the Kapoeta Children's Shelter"
               childCount={70}
               status="active"
@@ -398,40 +400,35 @@ export function HomeClient({ imageOverrides, titleOverrides }: { imageOverrides?
         </div>
       </section>
 
-      {/* Photo strip */}
-      {/* 7 photos. They only tile into a clean single row at lg (7 cols), so on
-          smaller screens we show 6 in an even grid (2 then 3 cols) and reveal
-          the 7th only at lg — otherwise the odd one out leaves an empty cell. */}
+      {/* Photo strip — 7 images telling the arc: before → building → home → beds → school */}
       <section className="overflow-hidden bg-[#1e293b]">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 lg:h-72">
-          {photos.map((img, i) => (
+        <div className="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-7 h-56 sm:h-72">
+          {PHOTOS.map((image, i) => (
             <motion.div
-              key={img.alt}
-              className={`relative overflow-hidden group aspect-square lg:aspect-auto ${
-                i === 6 ? "hidden lg:block" : ""
-              }`}
+              key={image.imageKey}
+              className="relative overflow-hidden group"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.6, delay: i * 0.08 }}
             >
               <Image
-                src={img.src}
-                alt={img.alt}
+                src={img(image.imageKey, image.src)}
+                alt={cap(image.imageKey, image.alt)}
                 fill
                 className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
-                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 14vw"
+                sizes="(max-width: 640px) 50vw, 20vw"
               />
               {/* Caption on hover */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#1e293b]/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
-                <p className="text-white text-xs font-medium leading-tight">{img.titleOverride ?? t(img.caption)}</p>
+                <p className="text-white text-xs font-medium leading-tight">{cap(image.imageKey, t(image.caption))}</p>
               </div>
             </motion.div>
           ))}
         </div>
       </section>
 
-      {/* How It Works */}
+      {/* How It Works — warm cream, no more jarring dark break */}
       <section className="py-14 sm:py-24 px-4 bg-[#f5f5f4]">
         <div className="max-w-6xl mx-auto">
           <motion.div

@@ -5,7 +5,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2, Minus, Plus, Lightbulb } from "lucide-react";
 import { cn, formatAUDFull } from "@/lib/utils";
-import type { BreakdownPart, Frequency, Goal } from "@/lib/goals";
+import type { BreakdownPart, Frequency, Goal, GoalId } from "@/lib/goals";
 import {
   FREQUENCIES,
   feeFor,
@@ -31,14 +31,14 @@ function formatMoney(n: number): string {
 export function DonationPanel({ goal, part, imageOverride }: Props) {
   const { lang } = useLang();
   const t = useT();
-  const arGoal = GOAL_AR[goal.id];
-  const goalTitle = lang === "ar" ? arGoal.title : goal.title;
-  const goalDesc = lang === "ar" ? arGoal.description : goal.description;
+  const arGoal = GOAL_AR[goal.id as GoalId];
+  const goalTitle = lang === "ar" ? (arGoal?.title ?? goal.title) : goal.title;
+  const goalDesc = lang === "ar" ? (arGoal?.description ?? goal.description) : goal.description;
   const partTitle = part
-    ? (lang === "ar" ? arGoal.parts?.[part.id]?.title ?? part.title : part.title)
+    ? (lang === "ar" ? arGoal?.parts?.[part.id]?.title ?? part.title : part.title)
     : undefined;
   const partNote = part
-    ? (lang === "ar" ? arGoal.parts?.[part.id]?.note ?? part.note : part.note)
+    ? (lang === "ar" ? arGoal?.parts?.[part.id]?.note ?? part.note : part.note)
     : undefined;
 
   const isSponsor = goal.kind === "leaf-qty";
@@ -121,7 +121,7 @@ export function DonationPanel({ goal, part, imageOverride }: Props) {
     }
   };
 
-  const fact = funFact(goal.id, base, lang);
+  const fact = funFact(goal.id as GoalId, base, lang);
 
   return (
     <motion.div
@@ -299,8 +299,8 @@ export function DonationPanel({ goal, part, imageOverride }: Props) {
         {base > 0 && (
           <div className="rounded-xl bg-[#f5f5f4] border border-[#d6d3d1] px-4 py-3 text-xs text-[#6b7280]">
             {t({
-              en: `A small card processing fee of ${formatMoney(fee)} has been added so 100% of your gift reaches the children.`,
-              ar: `تمت إضافة رسم معالجة بطاقة صغير بقيمة ${formatMoney(fee)} ليصل 100% من تبرّعك إلى الأطفال.`,
+              en: `A small card processing fee of ${formatMoney(fee)} has been added so 100% of your gift supports the children.`,
+              ar: `تمت إضافة رسم معالجة بطاقة صغير بقيمة ${formatMoney(fee)} لتدعم نسبة 100% من تبرّعك الأطفالَ.`,
             })}
             {" "}<span className="font-semibold text-[#1e293b]">{t({ en: "Total charged:", ar: "الإجمالي المحصَّل:" })} {formatMoney(total)}</span>
           </div>

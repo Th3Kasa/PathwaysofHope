@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-import type { Goal } from "@/lib/goals";
+import type { Goal, GoalId } from "@/lib/goals";
 import { formatAUDFull } from "@/lib/utils";
 import { BankTransferPanel } from "@/components/bank-transfer-panel";
 import { BackLink } from "@/components/back-link";
@@ -13,7 +13,7 @@ import { GOAL_AR } from "@/lib/goals-i18n";
 export function PartsClient({ goal, imageOverride }: { goal: Goal; imageOverride?: string }) {
   const { lang } = useLang();
   const t = useT();
-  const arGoal = GOAL_AR[goal.id];
+  const arGoal = GOAL_AR[goal.id as GoalId];
   const title = lang === "ar" ? arGoal.title : goal.title;
   const description = lang === "ar" ? arGoal.description : goal.description;
   const imageAlt = lang === "ar" ? arGoal.imageAlt ?? goal.imageAlt : goal.imageAlt;
