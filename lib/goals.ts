@@ -171,7 +171,7 @@ export const KAPOETA_GOALS: Goal[] = [
       "A$600 covers one child's full year — meals, shelter, schooling and belonging.",
     description:
       "A$600 covers one child's full year: meals, a safe bed, schooling and the dignity of belonging. Of the 70 children in our care, 46 are now in school — 24 are still waiting for sponsorship. Sponsor as many as you wish.",
-    goalAmount: 14400, // 24 children still needing sponsorship × A$600
+    goalAmount: 42000, // 70 children × A$600
     kind: "leaf-qty",
     recurringByNature: true,
     unitLabel: "A$600 / child / year",
