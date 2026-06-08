@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
+    "@neondatabase/serverless": "^1.1.0",
     "@stripe/stripe-js": "^9.4.0",
     "@vercel/blob": "^2.4.0",
     "class-variance-authority": "^0.7.1",
