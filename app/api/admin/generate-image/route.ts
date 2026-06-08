@@ -10,7 +10,7 @@ const MUAPI_BASE = "https://api.muapi.ai/api/v1";
 const MODEL = "flux-2-pro";
 
 async function pollResult(requestId: string, apiKey: string): Promise<string> {
-  const maxAttempts = 30;
+  const maxAttempts = 20; // 20 × 2s = 40s max, leaving headroom within the 60s function limit
   for (let i = 0; i < maxAttempts; i++) {
     await new Promise((r) => setTimeout(r, 2000));
     const res = await fetch(`${MUAPI_BASE}/predictions/${requestId}/result`, {

@@ -548,7 +548,8 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
       setToast({ msg: "Formatted! Review and publish.", kind: "ok" });
     } else {
       const d = await res.json().catch(() => ({}));
-      setToast({ msg: d.error || "Formatting failed", kind: "err" });
+      const detail = d.error || `Server error ${res.status}`;
+      setToast({ msg: detail, kind: "err" });
     }
   };
 
@@ -566,21 +567,29 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
       prompt: basePrompt + titleHint,
       goalId: `newsletter-img-${i + 1}-${editId ?? "new"}`,
     }));
-    try {
-      const results = await Promise.all(
-        prompts.map(({ prompt, goalId }) =>
-          fetch("/api/admin/generate-image", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ goalId, prompt, commit: false }),
-          }).then(r => r.json())
-        )
-      );
-      const urls = results.filter(r => r.ok && r.url).map(r => r.url as string);
-      if (urls.length === 0) { setToast({ msg: "Image generation failed", kind: "err" }); }
-      else { setForm(f => ({ ...f, imageUrls: urls })); setToast({ msg: `${urls.length} images ready — publish to save.`, kind: "ok" }); }
-    } catch {
-      setToast({ msg: "Image generation failed", kind: "err" });
+    const results = await Promise.allSettled(
+      prompts.map(({ prompt, goalId }) =>
+        fetch("/api/admin/generate-image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ goalId, prompt, commit: false }),
+        }).then(async r => {
+          const d = await r.json().catch(() => ({ error: `HTTP ${r.status}` })) as Record<string, unknown>;
+          if (!r.ok) throw new Error(String(d.error ?? `HTTP ${r.status}`));
+          return d;
+        })
+      )
+    );
+    const urls = results
+      .filter((r): r is PromiseFulfilledResult<Record<string, unknown>> => r.status === "fulfilled" && Boolean(r.value.url))
+      .map(r => r.value.url as string);
+    const errors = results.filter(r => r.status === "rejected").map(r => (r as PromiseRejectedResult).reason?.message ?? "unknown");
+    if (urls.length === 0) {
+      setToast({ msg: `Image generation failed — ${errors[0] ?? "all 4 failed"}`, kind: "err" });
+    } else {
+      setForm(f => ({ ...f, imageUrls: urls }));
+      const note = errors.length ? ` (${errors.length} failed)` : "";
+      setToast({ msg: `${urls.length} images ready — publish to save.${note}`, kind: "ok" });
     }
     setGeneratingImages(false);
   };

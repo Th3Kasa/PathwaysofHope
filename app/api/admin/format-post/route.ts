@@ -16,8 +16,14 @@ Format the provided raw title and body into a polished, engaging article.
 - Return ONLY a JSON object with keys "title" and "body" (body uses \\n\\n between paragraphs)
 - Do not add any commentary, just the JSON`;
 
+function extractTitleBody(raw: string): { title: string; body: string } | null {
+  const match = raw.match(/\{[\s\S]*?"title"[\s\S]*?"body"[\s\S]*?\}/);
+  if (!match) return null;
+  try { return JSON.parse(match[0]); } catch { return null; }
+}
+
 async function pollResult(requestId: string, apiKey: string): Promise<{ title: string; body: string }> {
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < 25; i++) {
     await new Promise((r) => setTimeout(r, 2000));
     const res = await fetch(`${MUAPI_BASE}/predictions/${requestId}/result`, {
       headers: { "x-api-key": apiKey },
@@ -26,13 +32,13 @@ async function pollResult(requestId: string, apiKey: string): Promise<{ title: s
     const data = await res.json();
     if (data.status === "succeeded" && data.output) {
       const text = Array.isArray(data.output) ? data.output.join("") : String(data.output);
-      const match = text.match(/\{[\s\S]*"title"[\s\S]*"body"[\s\S]*\}/);
-      if (!match) throw new Error("Could not parse formatted output");
-      return JSON.parse(match[0]);
+      const result = extractTitleBody(text);
+      if (!result) throw new Error("Could not parse formatted output from: " + text.slice(0, 200));
+      return result;
     }
-    if (data.status === "failed") throw new Error("Formatting failed");
+    if (data.status === "failed") throw new Error("MUAPI reported failure");
   }
-  throw new Error("Timed out");
+  throw new Error("Timed out waiting for gpt-codex");
 }
 
 export async function POST(req: NextRequest) {
@@ -52,37 +58,54 @@ export async function POST(req: NextRequest) {
 
   if (!title || !body) return NextResponse.json({ error: "Title and body required" }, { status: 400 });
 
-  const prompt = `${SYSTEM_PROMPT}\n\nTitle: ${title}\n\nBody: ${body}`;
+  const userContent = `Title: ${title}\n\nBody: ${body}`;
 
-  const submitRes = await fetch(`${MUAPI_BASE}/gpt-codex`, {
-    method: "POST",
-    headers: { "x-api-key": apiKey, "Content-Type": "application/json" },
-    body: JSON.stringify({ prompt }),
-  });
+  // Try chat completions format first (standard for GPT-based models),
+  // then fall back to simple prompt format.
+  const requestBodies = [
+    { messages: [{ role: "system", content: SYSTEM_PROMPT }, { role: "user", content: userContent }] },
+    { prompt: `${SYSTEM_PROMPT}\n\n${userContent}` },
+  ];
 
-  if (!submitRes.ok) {
-    const err = await submitRes.text();
-    return NextResponse.json({ error: `MUAPI error: ${err}` }, { status: 502 });
-  }
+  let submitData: Record<string, unknown> | null = null;
+  let lastError = "";
 
-  const submitData = await submitRes.json();
+  for (const reqBody of requestBodies) {
+    const submitRes = await fetch(`${MUAPI_BASE}/gpt-codex`, {
+      method: "POST",
+      headers: { "x-api-key": apiKey, "Content-Type": "application/json" },
+      body: JSON.stringify(reqBody),
+    });
 
-  // Handle synchronous response (some MUAPI models return immediately)
-  if (submitData.output || submitData.text || submitData.content) {
-    const text = submitData.output ?? submitData.text ?? submitData.content ?? "";
-    const raw = Array.isArray(text) ? text.join("") : String(text);
-    const match = raw.match(/\{[\s\S]*"title"[\s\S]*"body"[\s\S]*\}/);
-    if (match) {
-      const result = JSON.parse(match[0]);
+    if (!submitRes.ok) {
+      lastError = `HTTP ${submitRes.status}: ${await submitRes.text()}`;
+      continue;
+    }
+
+    submitData = await submitRes.json() as Record<string, unknown>;
+
+    // Synchronous response
+    const rawSync = submitData.output ?? submitData.text ?? submitData.content ?? submitData.choices;
+    if (rawSync) {
+      // Handle openai-style choices array
+      let text: string;
+      if (Array.isArray(rawSync) && (rawSync[0] as Record<string, unknown>)?.message) {
+        text = String(((rawSync[0] as Record<string, unknown>).message as Record<string, unknown>).content ?? "");
+      } else {
+        text = Array.isArray(rawSync) ? rawSync.join("") : String(rawSync);
+      }
+      const result = extractTitleBody(text);
+      if (result) return NextResponse.json({ ok: true, title: result.title, body: result.body });
+    }
+
+    // Async response
+    if (submitData.request_id) {
+      const result = await pollResult(String(submitData.request_id), apiKey);
       return NextResponse.json({ ok: true, title: result.title, body: result.body });
     }
+
+    lastError = `Unexpected response shape: ${JSON.stringify(submitData).slice(0, 300)}`;
   }
 
-  // Handle async (polling) response
-  if (submitData.request_id) {
-    const result = await pollResult(String(submitData.request_id), apiKey);
-    return NextResponse.json({ ok: true, title: result.title, body: result.body });
-  }
-
-  return NextResponse.json({ error: "Unexpected MUAPI response" }, { status: 502 });
+  return NextResponse.json({ error: `MUAPI gpt-codex failed — ${lastError}` }, { status: 502 });
 }
