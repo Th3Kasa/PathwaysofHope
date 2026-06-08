@@ -514,9 +514,8 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
 
   const openEdit = (post: NewsletterPost) => {
     setForm({
-      titleEn: post.titleEn, titleAr: post.titleAr ?? "",
-      bodyEn: post.bodyEn, bodyAr: post.bodyAr ?? "",
-      imageAlt: post.imageAlt ?? "", author: post.author, publishedAt: post.publishedAt.split("T")[0],
+      titleEn: post.titleEn, titleAr: "", bodyEn: post.bodyEn, bodyAr: "",
+      imageAlt: "", author: post.author, publishedAt: post.publishedAt.split("T")[0],
     });
     setPendingImage(null);
     setExistingImage(post.imageUrl ?? null);
@@ -570,7 +569,7 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
       imageUrl,
       imageAlt: form.imageAlt.trim() || undefined,
       author: form.author.trim() || DEFAULT_AUTHOR,
-      publishedAt: new Date(form.publishedAt).toISOString(),
+      publishedAt: mode === "add" ? new Date().toISOString() : new Date(form.publishedAt).toISOString(),
     };
     const body = mode === "edit" && editId
       ? { updateNewsletterPost: { id: editId, ...payload } }
@@ -628,81 +627,25 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
             {mode === "add" ? "New post" : "Edit post"}
           </h3>
 
-          {/* Titles */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-medium text-[#374151] mb-1">Title (English) *</label>
-              <input required value={form.titleEn} onChange={e => setForm(f => ({ ...f, titleEn: e.target.value }))} className={input} placeholder="e.g. Solar System Installed" />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-[#374151] mb-1">Title (Arabic)</label>
-              <input value={form.titleAr} onChange={e => setForm(f => ({ ...f, titleAr: e.target.value }))} className={input} dir="rtl" placeholder="العنوان بالعربية" />
-            </div>
-          </div>
-
-          {/* Body */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-medium text-[#374151] mb-1">Body (English) *</label>
-              <textarea required rows={7} value={form.bodyEn} onChange={e => setForm(f => ({ ...f, bodyEn: e.target.value }))} className={`${input} resize-y`} placeholder="Write the full update here…" />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-[#374151] mb-1">Body (Arabic)</label>
-              <textarea rows={7} value={form.bodyAr} onChange={e => setForm(f => ({ ...f, bodyAr: e.target.value }))} className={`${input} resize-y`} dir="rtl" placeholder="اكتب التحديث هنا…" />
-            </div>
-          </div>
-
-          {/* Author + Date */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-medium text-[#374151] mb-1">Author</label>
-              <input value={form.author} onChange={e => setForm(f => ({ ...f, author: e.target.value }))} className={input} placeholder="Hanan Morkos" />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-[#374151] mb-1">Date</label>
-              <input type="date" value={form.publishedAt} onChange={e => setForm(f => ({ ...f, publishedAt: e.target.value }))} className={input} />
-            </div>
-          </div>
-
-          {/* Image */}
           <div>
-            <label className="block text-xs font-medium text-[#374151] mb-2">Post image</label>
-            <div className="flex flex-col sm:flex-row gap-4 sm:items-start">
-              <div className="relative w-full sm:w-40 h-28 sm:h-24 rounded-xl overflow-hidden flex-shrink-0 bg-[#f5f5f4] border border-[#d6d3d1] flex items-center justify-center">
-                {previewSrc ? (
-                  <img src={previewSrc} alt="Preview" className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-xs text-[#9ca3af]">No image</span>
-                )}
-                {pendingImage && (
-                  <span className="absolute top-1.5 left-1.5 text-[10px] bg-amber-500 text-white px-1.5 py-0.5 rounded-full font-semibold">Unsaved</span>
-                )}
-              </div>
-              <div className="flex-1 space-y-2">
-                <input value={form.imageAlt} onChange={e => setForm(f => ({ ...f, imageAlt: e.target.value }))} className={input} placeholder="Image caption / alt text (optional)" />
-                <div className="flex flex-wrap gap-2">
-                  <input ref={fileRef} type="file" accept="image/*" hidden onChange={e => e.target.files?.[0] && upload(e.target.files[0])} />
-                  <button type="button" onClick={() => fileRef.current?.click()} disabled={busy} className={btnGhost}>
-                    {uploading ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />} Upload
-                  </button>
-                  <button type="button" onClick={generate} disabled={busy} className={btnGhost}>
-                    {generating ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
-                    {generating ? "Generating…" : "Generate with AI"}
-                  </button>
-                  {previewSrc && (
-                    <button type="button" onClick={() => { setPendingImage(null); setExistingImage(null); }} disabled={busy} className={btnGhost}>
-                      <Trash2 size={14} /> Remove image
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
+            <label className="block text-xs font-medium text-[#374151] mb-1">Title *</label>
+            <input required value={form.titleEn} onChange={e => setForm(f => ({ ...f, titleEn: e.target.value }))} className={input} placeholder="e.g. Solar System Installed" />
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-[#374151] mb-1">Body *</label>
+            <textarea required rows={8} value={form.bodyEn} onChange={e => setForm(f => ({ ...f, bodyEn: e.target.value }))} className={`${input} resize-y`} placeholder="Write the full update here…" />
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-[#374151] mb-1">Author</label>
+            <input value={form.author} onChange={e => setForm(f => ({ ...f, author: e.target.value }))} className={input} placeholder="Hanan Morkos" />
           </div>
 
           {toast && <Toast msg={toast.msg} kind={toast.kind} />}
 
           <div className="flex gap-3">
-            <button type="submit" disabled={busy} className={btnPrimary}>
+            <button type="submit" disabled={saving} className={btnPrimary}>
               {saving ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle2 size={14} />}
               {mode === "edit" ? "Save changes" : "Publish post"}
             </button>
