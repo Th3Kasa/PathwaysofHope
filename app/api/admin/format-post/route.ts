@@ -6,40 +6,52 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 const MUAPI_BASE = "https://api.muapi.ai/api/v1";
-// Dedicated LLM endpoints (prompt + system_prompt). gemini-2-5-flash is the
-// cheapest reliable option; claude-haiku-4-5 is the fallback. Both cost less
-// than gpt-5-nano, which used a flaky generic TextRequest wrapper.
 const TEXT_MODELS = ["gemini-2-5-flash", "claude-haiku-4-5"];
 
-const SYSTEM_PROMPT = `You are the editor of a charity's newspaper. Rewrite the raw title and body into a polished feature article for "Pathways of Hope", a charity helping children at the Kapoeta Children's Shelter in South Sudan.
+const FORMAT_SYSTEM = `You are the editor of a charity's newspaper. Rewrite the raw title and body into a polished feature article for "Pathways of Hope", a charity helping children at the Kapoeta Children's Shelter in South Sudan.
 
-TITLE: Always rewrite it into a compelling, newspaper-style headline — short, vivid, and specific (6–10 words). Do NOT just echo the raw title; improve it.
+TITLE: Rewrite as a compelling newspaper headline — short, vivid, specific (6–10 words). Do NOT echo the raw title.
 
 BODY:
-- Open with a strong one-sentence standfirst/lead that hooks the reader.
-- Then 4–7 well-structured paragraphs (2–4 sentences each), in clear journalistic prose.
-- Keep every fact, name, number and the author's intent intact. Do not invent facts.
-- Warm, human, dignified tone. No clichés, no hype.
+- Open with a strong one-sentence standfirst/lead.
+- Then 4–7 paragraphs (2–4 sentences each) in clear journalistic prose.
+- Keep all facts, names and numbers intact. Do not invent facts.
+- Warm, human, dignified tone. No clichés.
 
-ARABIC: Also provide a faithful, natural Modern Standard Arabic translation of the final headline and body (titleAr, bodyAr) — translate your polished English version, matching its paragraph structure.
+OUTPUT: Return ONLY valid JSON: {"title": "...", "body": "..."} — use \\n\\n between paragraphs in body. No markdown, no commentary, just the JSON object.`;
 
-OUTPUT: Return ONLY a JSON object: {"title": "...", "body": "...", "titleAr": "...", "bodyAr": "..."} where body and bodyAr use \\n\\n between paragraphs. No commentary, no markdown, just the JSON.`;
+const TRANSLATE_SYSTEM = `You are a professional Arabic translator. Translate the given English newspaper title and body into natural Modern Standard Arabic (فصحى).
+
+Rules:
+- Translate faithfully — do not add or remove content.
+- Match the paragraph structure exactly (same number of paragraphs, same \\n\\n separators).
+- Use formal, dignified journalistic Arabic.
+
+OUTPUT: Return ONLY valid JSON: {"titleAr": "...", "bodyAr": "..."} — use \\n\\n between paragraphs in bodyAr. No markdown, no commentary, just the JSON object.`;
 
 interface Formatted { title: string; body: string; titleAr?: string; bodyAr?: string }
 
-function extractTitleBody(raw: string): Formatted | null {
-  const match = raw.match(/\{[\s\S]*"title"[\s\S]*"body"[\s\S]*\}/);
-  if (!match) return null;
+/** Pull the first complete JSON object out of a string. */
+function extractJson(raw: string): Record<string, unknown> | null {
+  // Find the outermost {...} block
+  const start = raw.indexOf("{");
+  if (start === -1) return null;
+  let depth = 0;
+  let end = -1;
+  for (let i = start; i < raw.length; i++) {
+    if (raw[i] === "{") depth++;
+    else if (raw[i] === "}") { depth--; if (depth === 0) { end = i; break; } }
+  }
+  if (end === -1) return null;
+  const jsonStr = raw.slice(start, end + 1);
   try {
-    const o = JSON.parse(match[0]);
-    if (typeof o.title !== "string" || typeof o.body !== "string") return null;
-    return {
-      title: o.title,
-      body: o.body,
-      titleAr: typeof o.titleAr === "string" ? o.titleAr : undefined,
-      bodyAr: typeof o.bodyAr === "string" ? o.bodyAr : undefined,
-    };
-  } catch { return null; }
+    return JSON.parse(jsonStr) as Record<string, unknown>;
+  } catch {
+    // Try fixing unescaped newlines inside string values
+    try {
+      return JSON.parse(jsonStr.replace(/\n/g, "\\n")) as Record<string, unknown>;
+    } catch { return null; }
+  }
 }
 
 /** Pull text out of whatever shape MUAPI returns. */
@@ -47,40 +59,54 @@ function textFromResult(data: Record<string, unknown>): string | null {
   const candidates = [data.outputs, data.output, data.text, data.content, data.result, data.message];
   for (const c of candidates) {
     if (!c) continue;
-    if (Array.isArray(c)) {
-      if (c.length === 0) continue;
-      return c.map((x) => (typeof x === "string" ? x : JSON.stringify(x))).join("");
-    }
+    if (Array.isArray(c)) { if (c.length === 0) continue; return c.map(x => typeof x === "string" ? x : JSON.stringify(x)).join(""); }
     if (typeof c === "string") return c;
     return JSON.stringify(c);
   }
   return null;
 }
 
-async function pollResult(requestId: string, apiKey: string): Promise<Formatted> {
+async function pollText(requestId: string, apiKey: string): Promise<string> {
   let last: Record<string, unknown> = {};
   for (let i = 0; i < 45; i++) {
-    await new Promise((r) => setTimeout(r, i < 5 ? 800 : 1200)); // fast at first, then settle
-    const res = await fetch(`${MUAPI_BASE}/predictions/${requestId}/result`, {
-      headers: { "x-api-key": apiKey },
-    });
+    await new Promise(r => setTimeout(r, i < 5 ? 800 : 1200));
+    const res = await fetch(`${MUAPI_BASE}/predictions/${requestId}/result`, { headers: { "x-api-key": apiKey } });
     if (!res.ok) {
       const errBody = await res.text().catch(() => "");
-      throw new Error(`Poll failed ${res.status} at /predictions/${requestId}/result: ${errBody.slice(0, 200)}`);
+      throw new Error(`Poll failed ${res.status}: ${errBody.slice(0, 200)}`);
     }
     const data = await res.json() as Record<string, unknown>;
     last = data;
     const text = textFromResult(data);
-    if (text) {
-      const result = extractTitleBody(text);
-      // If it returned text but not our JSON shape, use the raw text as the body.
-      return result ?? { title: "", body: text };
-    }
+    if (text) return text;
     const failed = ["failed", "error", "cancelled"].includes(String(data.status).toLowerCase());
     if (failed) throw new Error(`MUAPI failed: ${JSON.stringify(data).slice(0, 300)}`);
   }
-  // Surface the actual last response so the toast shows what the model returned.
-  throw new Error(`Timed out. Last MUAPI response: ${JSON.stringify(last).slice(0, 400)}`);
+  throw new Error(`Timed out. Last: ${JSON.stringify(last).slice(0, 300)}`);
+}
+
+async function callModel(model: string, prompt: string, systemPrompt: string, apiKey: string): Promise<string> {
+  const submitRes = await fetch(`${MUAPI_BASE}/${model}`, {
+    method: "POST",
+    headers: { "x-api-key": apiKey, "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt, system_prompt: systemPrompt }),
+  });
+  if (!submitRes.ok) throw new Error(`submit HTTP ${submitRes.status}: ${(await submitRes.text()).slice(0, 150)}`);
+  const submitData = await submitRes.json() as Record<string, unknown>;
+  const sync = textFromResult(submitData);
+  if (sync) return sync;
+  const reqId = submitData.request_id ?? submitData.id ?? submitData.requestId ?? submitData.prediction_id;
+  if (reqId) return pollText(String(reqId), apiKey);
+  throw new Error(`unexpected response: ${JSON.stringify(submitData).slice(0, 200)}`);
+}
+
+async function tryModels(prompt: string, systemPrompt: string, apiKey: string): Promise<string> {
+  const errors: string[] = [];
+  for (const model of TEXT_MODELS) {
+    try { return await callModel(model, prompt, systemPrompt, apiKey); }
+    catch (e) { errors.push(`${model}: ${(e as Error).message}`); }
+  }
+  throw new Error(errors.join(" | "));
 }
 
 export async function POST(req: NextRequest) {
@@ -89,56 +115,46 @@ export async function POST(req: NextRequest) {
   const apiKey = process.env.MUAPI_API_KEY_POH;
   if (!apiKey) return NextResponse.json({ error: "MUAPI not configured" }, { status: 503 });
 
-  let title: string, body: string;
+  let rawTitle: string, rawBody: string;
   try {
     const b = await req.json();
-    title = String(b.title ?? "").trim();
-    body = String(b.body ?? "").trim();
+    rawTitle = String(b.title ?? "").trim();
+    rawBody = String(b.body ?? "").trim();
   } catch {
     return NextResponse.json({ error: "Bad request" }, { status: 400 });
   }
+  if (!rawTitle || !rawBody) return NextResponse.json({ error: "Title and body required" }, { status: 400 });
 
-  if (!title || !body) return NextResponse.json({ error: "Title and body required" }, { status: 400 });
-
-  // Dedicated LLM endpoints separate instructions (system_prompt) from content (prompt).
-  const userPrompt = `Title: ${title}\n\nBody: ${body}`;
-  const errors: string[] = [];
-
-  for (const model of TEXT_MODELS) {
-    try {
-      const result = await runModel(model, userPrompt, SYSTEM_PROMPT, apiKey);
-      return NextResponse.json({ ok: true, model, ...result });
-    } catch (e) {
-      errors.push(`${model}: ${(e as Error).message}`);
+  // ── Step 1: Format to English ─────────────────────────────────────────────
+  let title: string, body: string;
+  try {
+    const raw = await tryModels(`Title: ${rawTitle}\n\nBody: ${rawBody}`, FORMAT_SYSTEM, apiKey);
+    const parsed = extractJson(raw);
+    if (parsed && typeof parsed.title === "string" && typeof parsed.body === "string") {
+      title = parsed.title;
+      body = parsed.body;
+    } else {
+      // Fallback: raw text as body
+      title = rawTitle;
+      body = raw;
     }
+  } catch (e) {
+    return NextResponse.json({ error: `Text formatting failed: ${(e as Error).message}` }, { status: 502 });
   }
 
-  return NextResponse.json({ error: `MUAPI text failed — ${errors.join(" | ")}` }, { status: 502 });
-}
-
-async function runModel(model: string, prompt: string, systemPrompt: string, apiKey: string): Promise<Formatted> {
-  const submitRes = await fetch(`${MUAPI_BASE}/${model}`, {
-    method: "POST",
-    headers: { "x-api-key": apiKey, "Content-Type": "application/json" },
-    body: JSON.stringify({ prompt, system_prompt: systemPrompt }),
-  });
-
-  if (!submitRes.ok) {
-    throw new Error(`submit HTTP ${submitRes.status}: ${(await submitRes.text()).slice(0, 150)}`);
+  // ── Step 2: Translate to Arabic (non-fatal if it fails) ───────────────────
+  let titleAr: string | undefined;
+  let bodyAr: string | undefined;
+  try {
+    const raw = await tryModels(`Title: ${title}\n\nBody: ${body}`, TRANSLATE_SYSTEM, apiKey);
+    const parsed = extractJson(raw);
+    if (parsed && typeof parsed.titleAr === "string" && typeof parsed.bodyAr === "string") {
+      titleAr = parsed.titleAr;
+      bodyAr = parsed.bodyAr;
+    }
+  } catch {
+    // Arabic translation is best-effort — don't fail the whole request
   }
 
-  const submitData = await submitRes.json() as Record<string, unknown>;
-
-  // Some models return text synchronously
-  const sync = textFromResult(submitData);
-  if (sync) {
-    const result = extractTitleBody(sync);
-    return result ?? { title: "", body: sync };
-  }
-
-  // Otherwise poll for the async result
-  const reqId = submitData.request_id ?? submitData.id ?? submitData.requestId ?? submitData.prediction_id;
-  if (reqId) return pollResult(String(reqId), apiKey);
-
-  throw new Error(`unexpected response: ${JSON.stringify(submitData).slice(0, 200)}`);
+  return NextResponse.json({ ok: true, title, body, titleAr, bodyAr });
 }
