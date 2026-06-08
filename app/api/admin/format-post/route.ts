@@ -6,6 +6,7 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 const MUAPI_BASE = "https://api.muapi.ai/api/v1";
+const TEXT_MODEL = "gpt-5-nano";
 
 const SYSTEM_PROMPT = `You are a professional editor for a charity newsletter.
 Format the provided raw title and body into a polished, engaging article.
@@ -56,7 +57,7 @@ async function pollResult(requestId: string, apiKey: string): Promise<{ title: s
     const failed = ["failed", "error", "cancelled"].includes(String(data.status).toLowerCase());
     if (failed) throw new Error(`MUAPI failed: ${JSON.stringify(data).slice(0, 300)}`);
   }
-  // Surface the actual last response so the toast shows what gpt-codex returned.
+  // Surface the actual last response so the toast shows what the model returned.
   throw new Error(`Timed out. Last MUAPI response: ${JSON.stringify(last).slice(0, 400)}`);
 }
 
@@ -90,7 +91,7 @@ export async function POST(req: NextRequest) {
   let lastError = "";
 
   for (const reqBody of requestBodies) {
-    const submitRes = await fetch(`${MUAPI_BASE}/gpt-codex`, {
+    const submitRes = await fetch(`${MUAPI_BASE}/${TEXT_MODEL}`, {
       method: "POST",
       headers: { "x-api-key": apiKey, "Content-Type": "application/json" },
       body: JSON.stringify(reqBody),
@@ -125,5 +126,5 @@ export async function POST(req: NextRequest) {
     lastError = `Unexpected response shape: ${JSON.stringify(submitData).slice(0, 300)}`;
   }
 
-  return NextResponse.json({ error: `MUAPI gpt-codex failed — ${lastError}` }, { status: 502 });
+  return NextResponse.json({ error: `MUAPI ${TEXT_MODEL} failed — ${lastError}` }, { status: 502 });
 }
