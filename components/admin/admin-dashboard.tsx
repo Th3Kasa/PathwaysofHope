@@ -643,9 +643,10 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
     }
     setSaving(true); setToast(null);
 
-    // For new posts: auto-generate a MUAPI image before saving
+    // Use the first AI-generated image as the card thumbnail. Only auto-generate
+    // a single fallback image if none exist (i.e. the user skipped "Format with AI").
     let autoImageUrl: string | undefined;
-    if (mode === "add") {
+    if (mode === "add" && form.imageUrls.length === 0 && !pendingImage && !existingImage) {
       try {
         setToast({ msg: "Generating article image…", kind: "ok" });
         const tempId = `newsletter-draft-${Date.now()}`;
@@ -662,7 +663,7 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
       } catch { /* image generation failure is non-fatal */ }
     }
 
-    const imageUrl = autoImageUrl ?? form.imageUrls[0] ?? pendingImage ?? existingImage ?? undefined;
+    const imageUrl = form.imageUrls[0] ?? autoImageUrl ?? pendingImage ?? existingImage ?? undefined;
     const payload: Record<string, unknown> = {
       titleEn: form.titleEn.trim(),
       bodyEn: form.bodyEn.trim(),

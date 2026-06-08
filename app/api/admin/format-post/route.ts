@@ -11,14 +11,17 @@ const MUAPI_BASE = "https://api.muapi.ai/api/v1";
 // than gpt-5-nano, which used a flaky generic TextRequest wrapper.
 const TEXT_MODELS = ["gemini-2-5-flash", "claude-haiku-4-5"];
 
-const SYSTEM_PROMPT = `You are a professional editor for a charity newsletter.
-Format the provided raw title and body into a polished, engaging article.
-- Keep the author's voice and facts intact
-- Break the body into clear paragraphs (2-4 sentences each)
-- Add natural paragraph breaks where the topic shifts
-- Make it warm, human and compelling — this is a charity helping children in South Sudan
-- Return ONLY a JSON object with keys "title" and "body" (body uses \\n\\n between paragraphs)
-- Do not add any commentary, just the JSON`;
+const SYSTEM_PROMPT = `You are the editor of a charity's newspaper. Rewrite the raw title and body into a polished feature article for "Pathways of Hope", a charity helping children at the Kapoeta Children's Shelter in South Sudan.
+
+TITLE: Always rewrite it into a compelling, newspaper-style headline — short, vivid, and specific (6–10 words). Do NOT just echo the raw title; improve it.
+
+BODY:
+- Open with a strong one-sentence standfirst/lead that hooks the reader.
+- Then 4–7 well-structured paragraphs (2–4 sentences each), in clear journalistic prose.
+- Keep every fact, name, number and the author's intent intact. Do not invent facts.
+- Warm, human, dignified tone. No clichés, no hype.
+
+OUTPUT: Return ONLY a JSON object: {"title": "...", "body": "..."} where body uses \\n\\n between paragraphs. No commentary, no markdown, just the JSON.`;
 
 function extractTitleBody(raw: string): { title: string; body: string } | null {
   const match = raw.match(/\{[\s\S]*?"title"[\s\S]*?"body"[\s\S]*?\}/);

@@ -13,100 +13,112 @@ function splitIntoParagraphs(text: string): string[] {
 export function NewsletterPostClient({ post }: { post: NewsletterPost }) {
   const t = useT();
   const title = post.titleEn;
-  const body = post.bodyEn;
-  const paragraphs = splitIntoParagraphs(body);
+  const paragraphs = splitIntoParagraphs(post.bodyEn);
   const images = post.imageUrls?.length ? post.imageUrls : post.imageUrl ? [post.imageUrl] : [];
 
-  // Split paragraphs into three sections around images
-  const third = Math.max(1, Math.floor(paragraphs.length / 3));
-  const section1 = paragraphs.slice(0, third);
-  const section2 = paragraphs.slice(third, third * 2);
-  const section3 = paragraphs.slice(third * 2);
+  // Editorial structure: first paragraph = standfirst lead; rest = body.
+  const lead = paragraphs[0] ?? "";
+  const rest = paragraphs.slice(1);
+
+  // Split the remaining body into three runs, placing images between them.
+  const third = Math.max(1, Math.ceil(rest.length / 3));
+  const run1 = rest.slice(0, third);
+  const run2 = rest.slice(third, third * 2);
+  const run3 = rest.slice(third * 2);
+
+  const dateStr = new Date(post.publishedAt).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" });
+
+  const para = (p: string, i: number, dropCap = false) => (
+    <p
+      key={i}
+      className={`text-[#2a2a28] leading-[1.75] text-[1.075rem] sm:text-lg mb-5 ${dropCap ? "first-letter:float-left first-letter:mr-3 first-letter:text-6xl first-letter:leading-[0.8] first-letter:font-semibold first-letter:text-[#1e293b] first-letter:[font-family:var(--font-serif)]" : ""}`}
+    >
+      {p}
+    </p>
+  );
 
   return (
     <div className="bg-[#f5f5f4] min-h-screen">
-      {/* Hero */}
-      {images[0] && (
-        <div className="relative w-full h-64 sm:h-96 overflow-hidden">
-          <Image
-            src={images[0]}
-            alt={post.imageAlt || title}
-            fill
-            className="object-cover"
-            priority
-            unoptimized
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10 max-w-4xl mx-auto">
-            <h1
-              className="text-3xl sm:text-5xl font-light text-white leading-tight"
-              style={{ fontFamily: "var(--font-serif)" }}
-            >
-              {title}
-            </h1>
-          </div>
-        </div>
-      )}
-
-      <div className="max-w-3xl mx-auto px-4 py-10">
-        {/* If no hero image, show title here */}
-        {!images[0] && (
+      <article className="max-w-3xl mx-auto px-4 sm:px-6 pt-24 sm:pt-28 pb-16">
+        {/* Masthead kicker */}
+        <div className="text-center">
+          <p className="text-[#6366f1] text-xs uppercase tracking-[0.25em] font-semibold mb-4">
+            {t({ en: "Pathways of Hope · Field Update", ar: "دروب الأمل · من الميدان" })}
+          </p>
           <h1
-            className="text-3xl sm:text-5xl font-light text-[#1e293b] leading-tight mb-6"
+            className="text-[2rem] sm:text-[3.25rem] font-semibold text-[#161513] leading-[1.08] tracking-tight"
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {title}
           </h1>
-        )}
-
-        {/* Meta */}
-        <div className="flex items-center gap-5 text-sm text-[#6b7280] mb-8 pb-6 border-b border-[#d6d3d1]">
-          <span className="flex items-center gap-1.5"><User size={14} />{post.author}</span>
-          <span className="flex items-center gap-1.5">
-            <Calendar size={14} />
-            {new Date(post.publishedAt).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" })}
-          </span>
         </div>
 
-        {/* Section 1 */}
-        {section1.map((p, i) => (
-          <p key={i} className="text-[#374151] leading-relaxed text-lg mb-5">{p}</p>
-        ))}
+        {/* Byline rule */}
+        <div className="flex items-center justify-center gap-5 text-sm text-[#6b7280] mt-6 pb-6 mb-8 border-y border-[#d6d3d1] py-3">
+          <span className="flex items-center gap-1.5"><User size={14} />{post.author}</span>
+          <span className="w-px h-3.5 bg-[#d6d3d1]" />
+          <span className="flex items-center gap-1.5"><Calendar size={14} />{dateStr}</span>
+        </div>
+
+        {/* Hero image with caption */}
+        {images[0] && (
+          <figure className="mb-9">
+            <div className="relative w-full aspect-[16/9] rounded-lg overflow-hidden shadow-sm">
+              <Image src={images[0]} alt={post.imageAlt || title} fill className="object-cover" priority unoptimized />
+            </div>
+            <figcaption className="text-xs text-[#9ca3af] mt-2 italic text-center">
+              {t({ en: "Kapoeta Children's Shelter, South Sudan", ar: "ملجأ كاپويتا للأطفال، جنوب السودان" })}
+            </figcaption>
+          </figure>
+        )}
+
+        {/* Standfirst lead */}
+        {lead && (
+          <p className="text-xl sm:text-2xl text-[#1e293b] leading-snug font-light mb-8" style={{ fontFamily: "var(--font-serif)" }}>
+            {lead}
+          </p>
+        )}
+
+        {/* Run 1 (drop cap on first paragraph) */}
+        {run1.map((p, i) => para(p, i, i === 0))}
 
         {/* Images 2 + 3 side by side */}
         {(images[1] || images[2]) && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 my-8">
-            {images[1] && (
-              <div className="relative aspect-video rounded-xl overflow-hidden">
-                <Image src={images[1]} alt="" fill className="object-cover" unoptimized />
-              </div>
-            )}
-            {images[2] && (
-              <div className="relative aspect-video rounded-xl overflow-hidden">
-                <Image src={images[2]} alt="" fill className="object-cover" unoptimized />
-              </div>
-            )}
-          </div>
+          <figure className="my-9">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {images[1] && (
+                <div className="relative aspect-[4/3] rounded-lg overflow-hidden shadow-sm">
+                  <Image src={images[1]} alt="" fill className="object-cover" unoptimized />
+                </div>
+              )}
+              {images[2] && (
+                <div className="relative aspect-[4/3] rounded-lg overflow-hidden shadow-sm">
+                  <Image src={images[2]} alt="" fill className="object-cover" unoptimized />
+                </div>
+              )}
+            </div>
+          </figure>
         )}
 
-        {/* Section 2 */}
-        {section2.map((p, i) => (
-          <p key={i} className="text-[#374151] leading-relaxed text-lg mb-5">{p}</p>
-        ))}
+        {/* Run 2 */}
+        {run2.map((p, i) => para(p, i))}
 
         {/* Image 4 full width */}
         {images[3] && (
-          <div className="relative w-full aspect-video rounded-xl overflow-hidden my-8">
-            <Image src={images[3]} alt="" fill className="object-cover" unoptimized />
-          </div>
+          <figure className="my-9">
+            <div className="relative w-full aspect-[16/9] rounded-lg overflow-hidden shadow-sm">
+              <Image src={images[3]} alt="" fill className="object-cover" unoptimized />
+            </div>
+          </figure>
         )}
 
-        {/* Section 3 */}
-        {section3.map((p, i) => (
-          <p key={i} className="text-[#374151] leading-relaxed text-lg mb-5">{p}</p>
-        ))}
+        {/* Run 3 */}
+        {run3.map((p, i) => para(p, i))}
 
-        <div className="mt-10 pt-6 border-t border-[#d6d3d1]">
+        {/* End mark */}
+        <div className="text-center text-[#c9952a] text-lg mt-8 mb-2">❦</div>
+
+        <div className="mt-6 pt-6 border-t border-[#d6d3d1]">
           <Link
             href="/newsletter"
             className="inline-flex items-center gap-1.5 text-sm text-[#6b7280] hover:text-[#6366f1] transition-colors"
@@ -115,7 +127,7 @@ export function NewsletterPostClient({ post }: { post: NewsletterPost }) {
             {t({ en: "Back to Updates", ar: "العودة للأخبار" })}
           </Link>
         </div>
-      </div>
+      </article>
     </div>
   );
 }
