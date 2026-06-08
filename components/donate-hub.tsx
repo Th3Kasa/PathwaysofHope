@@ -105,7 +105,14 @@ export function DonateHub({ totals, goals }: Props) {
                   />
                 </div>
                 <div className="flex items-center justify-between mt-2">
-                  <span className="text-xs font-semibold" style={{ color: "#C9952A" }}>{pct}% {t({ en: "funded", ar: "مموَّل" })}</span>
+                  <div>
+                    <span className="text-xs font-semibold" style={{ color: "#C9952A" }}>{pct}% {t({ en: "funded", ar: "مموَّل" })}</span>
+                    {pct < 100 && (
+                      <span className="text-xs text-[#6b7280] ml-2">
+                        · {formatAUDFull(Math.max(goal.goalAmount - raised, 0))} {t({ en: "to go", ar: "متبقٍّ" })}
+                      </span>
+                    )}
+                  </div>
                   {supporters > 0 && (
                     <span className="text-xs text-[#6b7280]">{supporters.toLocaleString()} {t({ en: "supporters", ar: "داعمًا" })}</span>
                   )}

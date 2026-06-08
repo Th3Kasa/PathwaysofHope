@@ -18,11 +18,18 @@ async function pollResult(requestId: string, apiKey: string): Promise<string> {
     });
     if (!res.ok) throw new Error(`Poll failed: ${res.status}`);
     const data = await res.json();
-    if (data.status === "succeeded" && data.output) {
+    const ok = ["succeeded", "completed", "success", "done", "finished"].includes(data.status);
+    if (ok && data.output) {
       const outputUrl = Array.isArray(data.output) ? data.output[0] : data.output;
       return String(outputUrl);
     }
-    if (data.status === "failed") throw new Error("Image generation failed");
+    // Some models omit status when done — treat non-empty output as success
+    if (!data.status && data.output) {
+      const outputUrl = Array.isArray(data.output) ? data.output[0] : data.output;
+      return String(outputUrl);
+    }
+    const failed = ["failed", "error", "cancelled"].includes(data.status);
+    if (failed) throw new Error(`Image generation failed (status: ${data.status})`);
   }
   throw new Error("Timed out waiting for image");
 }
