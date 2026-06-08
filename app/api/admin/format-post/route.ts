@@ -21,12 +21,25 @@ BODY:
 - Keep every fact, name, number and the author's intent intact. Do not invent facts.
 - Warm, human, dignified tone. No clichés, no hype.
 
-OUTPUT: Return ONLY a JSON object: {"title": "...", "body": "..."} where body uses \\n\\n between paragraphs. No commentary, no markdown, just the JSON.`;
+ARABIC: Also provide a faithful, natural Modern Standard Arabic translation of the final headline and body (titleAr, bodyAr) — translate your polished English version, matching its paragraph structure.
 
-function extractTitleBody(raw: string): { title: string; body: string } | null {
-  const match = raw.match(/\{[\s\S]*?"title"[\s\S]*?"body"[\s\S]*?\}/);
+OUTPUT: Return ONLY a JSON object: {"title": "...", "body": "...", "titleAr": "...", "bodyAr": "..."} where body and bodyAr use \\n\\n between paragraphs. No commentary, no markdown, just the JSON.`;
+
+interface Formatted { title: string; body: string; titleAr?: string; bodyAr?: string }
+
+function extractTitleBody(raw: string): Formatted | null {
+  const match = raw.match(/\{[\s\S]*"title"[\s\S]*"body"[\s\S]*\}/);
   if (!match) return null;
-  try { return JSON.parse(match[0]); } catch { return null; }
+  try {
+    const o = JSON.parse(match[0]);
+    if (typeof o.title !== "string" || typeof o.body !== "string") return null;
+    return {
+      title: o.title,
+      body: o.body,
+      titleAr: typeof o.titleAr === "string" ? o.titleAr : undefined,
+      bodyAr: typeof o.bodyAr === "string" ? o.bodyAr : undefined,
+    };
+  } catch { return null; }
 }
 
 /** Pull text out of whatever shape MUAPI returns. */
@@ -44,7 +57,7 @@ function textFromResult(data: Record<string, unknown>): string | null {
   return null;
 }
 
-async function pollResult(requestId: string, apiKey: string): Promise<{ title: string; body: string }> {
+async function pollResult(requestId: string, apiKey: string): Promise<Formatted> {
   let last: Record<string, unknown> = {};
   for (let i = 0; i < 45; i++) {
     await new Promise((r) => setTimeout(r, i < 5 ? 800 : 1200)); // fast at first, then settle
@@ -103,7 +116,7 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ error: `MUAPI text failed — ${errors.join(" | ")}` }, { status: 502 });
 }
 
-async function runModel(model: string, prompt: string, systemPrompt: string, apiKey: string): Promise<{ title: string; body: string }> {
+async function runModel(model: string, prompt: string, systemPrompt: string, apiKey: string): Promise<Formatted> {
   const submitRes = await fetch(`${MUAPI_BASE}/${model}`, {
     method: "POST",
     headers: { "x-api-key": apiKey, "Content-Type": "application/json" },

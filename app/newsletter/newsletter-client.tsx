@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion, type Variants } from "framer-motion";
-import { useT } from "@/lib/i18n";
+import { useT, useLang } from "@/lib/i18n";
 import type { NewsletterPost } from "@/lib/admin/store";
 import { Calendar, User } from "lucide-react";
 
@@ -20,9 +20,7 @@ const PLACEHOLDER = "/images/kapoeta/field/children-large-group-activity-kapoeta
 
 export function NewsletterClient({ posts }: { posts: NewsletterPost[] }) {
   const t = useT();
-  const lang = typeof document !== "undefined"
-    ? (document.documentElement.lang as "en" | "ar") || "en"
-    : "en";
+  const { lang } = useLang();
 
   const title = (p: NewsletterPost) => lang === "ar" && p.titleAr ? p.titleAr : p.titleEn;
   const body  = (p: NewsletterPost) => lang === "ar" && p.bodyAr  ? p.bodyAr  : p.bodyEn;
@@ -111,7 +109,7 @@ export function NewsletterClient({ posts }: { posts: NewsletterPost[] }) {
                         </span>
                         <span className="flex items-center gap-1.5">
                           <Calendar size={12} />
-                          {new Date(post.publishedAt).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" })}
+                          {new Date(post.publishedAt).toLocaleDateString(lang === "ar" ? "ar-EG" : "en-AU", { day: "numeric", month: "long", year: "numeric" })}
                         </span>
                       </div>
                     </div>

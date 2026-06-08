@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useT } from "@/lib/i18n";
+import { useT, useLang } from "@/lib/i18n";
 import type { NewsletterPost } from "@/lib/admin/store";
 import { Calendar, User, ArrowLeft } from "lucide-react";
 
@@ -12,8 +12,11 @@ function splitIntoParagraphs(text: string): string[] {
 
 export function NewsletterPostClient({ post }: { post: NewsletterPost }) {
   const t = useT();
-  const title = post.titleEn;
-  const paragraphs = splitIntoParagraphs(post.bodyEn);
+  const { lang } = useLang();
+  // Show the Arabic version when the site is in Arabic and a translation exists.
+  const isAr = lang === "ar" && Boolean(post.bodyAr?.trim());
+  const title = isAr ? (post.titleAr || post.titleEn) : post.titleEn;
+  const paragraphs = splitIntoParagraphs(isAr ? post.bodyAr! : post.bodyEn);
   const images = post.imageUrls?.length ? post.imageUrls : post.imageUrl ? [post.imageUrl] : [];
 
   // Editorial structure: first paragraph = standfirst lead; rest = body.
@@ -26,13 +29,10 @@ export function NewsletterPostClient({ post }: { post: NewsletterPost }) {
   const run2 = rest.slice(third, third * 2);
   const run3 = rest.slice(third * 2);
 
-  const dateStr = new Date(post.publishedAt).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" });
+  const dateStr = new Date(post.publishedAt).toLocaleDateString(isAr ? "ar-EG" : "en-AU", { day: "numeric", month: "long", year: "numeric" });
 
-  const para = (p: string, i: number, dropCap = false) => (
-    <p
-      key={i}
-      className={`text-[#2a2a28] leading-[1.75] text-[1.075rem] sm:text-lg mb-5 ${dropCap ? "first-letter:float-left first-letter:mr-3 first-letter:text-6xl first-letter:leading-[0.8] first-letter:font-semibold first-letter:text-[#1e293b] first-letter:[font-family:var(--font-serif)]" : ""}`}
-    >
+  const para = (p: string, i: number) => (
+    <p key={i} className="text-[#2a2a28] leading-[1.85] text-[1.075rem] sm:text-lg mb-5">
       {p}
     </p>
   );
@@ -79,8 +79,8 @@ export function NewsletterPostClient({ post }: { post: NewsletterPost }) {
           </p>
         )}
 
-        {/* Run 1 (drop cap on first paragraph) */}
-        {run1.map((p, i) => para(p, i, i === 0))}
+        {/* Run 1 */}
+        {run1.map((p, i) => para(p, i))}
 
         {/* Images 2 + 3 side by side */}
         {(images[1] || images[2]) && (

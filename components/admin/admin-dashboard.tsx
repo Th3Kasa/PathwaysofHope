@@ -517,7 +517,7 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
 
   const openEdit = (post: NewsletterPost) => {
     setForm({
-      titleEn: post.titleEn, titleAr: "", bodyEn: post.bodyEn, bodyAr: "",
+      titleEn: post.titleEn, titleAr: post.titleAr ?? "", bodyEn: post.bodyEn, bodyAr: post.bodyAr ?? "",
       imageAlt: "", author: post.author, publishedAt: post.publishedAt.split("T")[0],
       imageUrls: post.imageUrls ?? [],
     });
@@ -577,7 +577,13 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
     if (formatRes.status === "fulfilled" && formatRes.value.ok) {
       const d = await formatRes.value.json().catch(() => ({})) as Record<string, unknown>;
       if (d.body) {
-        setForm(f => ({ ...f, titleEn: d.title ? String(d.title) : f.titleEn, bodyEn: String(d.body) }));
+        setForm(f => ({
+          ...f,
+          titleEn: d.title ? String(d.title) : f.titleEn,
+          bodyEn: String(d.body),
+          titleAr: d.titleAr ? String(d.titleAr) : f.titleAr,
+          bodyAr: d.bodyAr ? String(d.bodyAr) : f.bodyAr,
+        }));
         textOk = true;
       } else {
         textError = "Model returned no text";
@@ -667,6 +673,8 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
     const payload: Record<string, unknown> = {
       titleEn: form.titleEn.trim(),
       bodyEn: form.bodyEn.trim(),
+      titleAr: form.titleAr.trim() || undefined,
+      bodyAr: form.bodyAr.trim() || undefined,
       imageUrl,
       imageUrls: form.imageUrls,
       author: form.author.trim() || DEFAULT_AUTHOR,
