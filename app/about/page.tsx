@@ -208,12 +208,12 @@ export default function AboutPage() {
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {t({
-              en: "“Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver.”",
-              ar: "«كُلُّ وَاحِدٍ كَمَا يَنْوِي بِقَلْبِهِ، لَيْسَ عَنْ حُزْنٍ أَوِ اضْطِرَارٍ، لِأَنَّ الْمُعْطِيَ الْمَسْرُورَ يُحِبُّهُ اللهُ.»",
+              en: “”We make a living by what we get, but we make a life by what we give.””,
+              ar: “«نحن نكسب رزقنا بما نأخذه، لكننا نصنع حياتنا بما نعطيه.»”,
             })}
           </blockquote>
-          <cite className="block mt-5 text-[#d6d3d1] text-sm not-italic tracking-wide">
-            {t({ en: "— 2 Corinthians 9:7", ar: "— كورنثوس الثانية 9:7" })}
+          <cite className=”block mt-5 text-[#d6d3d1] text-sm not-italic tracking-wide”>
+            {t({ en: “— Winston Churchill”, ar: “— ونستون تشرشل” })}
           </cite>
         </motion.div>
       </section>
