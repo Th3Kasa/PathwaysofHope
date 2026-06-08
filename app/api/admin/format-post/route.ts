@@ -30,17 +30,16 @@ async function pollResult(requestId: string, apiKey: string): Promise<{ title: s
     });
     if (!res.ok) throw new Error(`Poll failed: ${res.status}`);
     const data = await res.json();
-    const ok = ["succeeded", "completed", "success", "done", "finished"].includes(data.status);
-    if ((ok || (!data.status && data.output)) && data.output) {
+    // If output is present, use it — don't rely on status string which varies by provider
+    if (data.output) {
       const text = Array.isArray(data.output) ? data.output.join("") : String(data.output);
       const result = extractTitleBody(text);
       if (!result) throw new Error("Could not parse formatted output from: " + text.slice(0, 200));
       return result;
     }
-    const failed = ["failed", "error", "cancelled"].includes(data.status);
+    const failed = ["failed", "error", "cancelled"].includes(String(data.status).toLowerCase());
     if (failed) throw new Error(`MUAPI reported failure (status: ${data.status})`);
-    // Log current status to help debug unknown status values
-    console.log(`[format-post] poll ${i}: status=${data.status}, hasOutput=${Boolean(data.output)}`);
+    console.log(`[format-post] poll ${i}: status=${JSON.stringify(data.status)}, keys=${Object.keys(data).join(",")}}`);
   }
   throw new Error("Timed out waiting for gpt-codex");
 }
