@@ -24,10 +24,13 @@ const TRANSLATE_SYSTEM = `You are a professional Arabic translator. Translate th
 
 Rules:
 - Translate faithfully — do not add or remove content.
-- Match the paragraph structure exactly (same number of paragraphs, same \\n\\n separators).
+- Keep the same paragraph structure (same number of paragraphs).
 - Use formal, dignified journalistic Arabic.
 
-OUTPUT: Return ONLY valid JSON: {"titleAr": "...", "bodyAr": "..."} — use \\n\\n between paragraphs in bodyAr. No markdown, no commentary, just the JSON object.`;
+OUTPUT FORMAT — return EXACTLY this structure and nothing else (no JSON, no markdown, no commentary):
+TITLE: <the Arabic headline on one line>
+BODY:
+<the Arabic body — keep a blank line between each paragraph>`;
 
 interface Formatted { title: string; body: string; titleAr?: string; bodyAr?: string }
 
@@ -52,6 +55,19 @@ function extractJson(raw: string): Record<string, unknown> | null {
       return JSON.parse(jsonStr.replace(/\n/g, "\\n")) as Record<string, unknown>;
     } catch { return null; }
   }
+}
+
+/** Parse a "TITLE: ...\nBODY:\n..." plain-text response. */
+function parseTitleBody(raw: string): { title: string; body: string } | null {
+  const text = raw.replace(/^```\w*\n?/, "").replace(/```\s*$/, "").trim();
+  const titleMatch = text.match(/TITLE\s*:\s*(.+)/i);
+  const bodyMatch = text.match(/BODY\s*:/i);
+  if (bodyMatch) {
+    const body = text.slice(bodyMatch.index! + bodyMatch[0].length).trim();
+    if (body) return { title: (titleMatch?.[1] ?? "").trim(), body };
+  }
+  // No usable BODY marker — if there's substantial text, treat it all as the body.
+  return text.length > 20 ? { title: "", body: text } : null;
 }
 
 /** Pull text out of whatever shape MUAPI returns. */
@@ -143,18 +159,25 @@ export async function POST(req: NextRequest) {
   }
 
   // ── Step 2: Translate to Arabic (non-fatal if it fails) ───────────────────
+  // Uses a plain-text TITLE:/BODY: format instead of JSON — long multi-paragraph
+  // Arabic text breaks JSON escaping, so a delimiter is far more reliable.
   let titleAr: string | undefined;
   let bodyAr: string | undefined;
+  let arDebug = "not attempted";
   try {
     const raw = await tryModels(`Title: ${title}\n\nBody: ${body}`, TRANSLATE_SYSTEM, apiKey);
-    const parsed = extractJson(raw);
-    if (parsed && typeof parsed.titleAr === "string" && typeof parsed.bodyAr === "string") {
-      titleAr = parsed.titleAr;
-      bodyAr = parsed.bodyAr;
+    const parsed = parseTitleBody(raw);
+    if (parsed) {
+      titleAr = parsed.title;
+      bodyAr = parsed.body;
+      arDebug = "ok";
+    } else {
+      arDebug = `unparseable: ${raw.slice(0, 120)}`;
     }
-  } catch {
-    // Arabic translation is best-effort — don't fail the whole request
+  } catch (e) {
+    arDebug = `error: ${(e as Error).message}`;
   }
+  console.log(`[format-post] arabic: ${arDebug} | titleAr len=${titleAr?.length ?? 0} bodyAr len=${bodyAr?.length ?? 0}`);
 
   return NextResponse.json({ ok: true, title, body, titleAr, bodyAr });
 }
