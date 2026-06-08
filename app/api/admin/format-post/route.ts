@@ -6,7 +6,8 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 const MUAPI_BASE = "https://api.muapi.ai/api/v1";
-const TEXT_MODEL = "gpt-5-nano";
+// Try nano first (cheapest); fall back to mini if MUAPI fails the job.
+const TEXT_MODELS = ["gpt-5-nano", "gpt-5-mini"];
 
 const SYSTEM_PROMPT = `You are a professional editor for a charity newsletter.
 Format the provided raw title and body into a polished, engaging article.
@@ -81,39 +82,46 @@ export async function POST(req: NextRequest) {
 
   if (!title || !body) return NextResponse.json({ error: "Title and body required" }, { status: 400 });
 
-  // gpt-5-nano's schema (TextRequest) takes a single `prompt` string.
+  // TextRequest schema takes a single `prompt` string.
   const prompt = `${SYSTEM_PROMPT}\n\nTitle: ${title}\n\nBody: ${body}`;
+  const errors: string[] = [];
 
-  const submitRes = await fetch(`${MUAPI_BASE}/${TEXT_MODEL}`, {
+  for (const model of TEXT_MODELS) {
+    try {
+      const result = await runModel(model, prompt, apiKey);
+      return NextResponse.json({ ok: true, model, ...result });
+    } catch (e) {
+      errors.push(`${model}: ${(e as Error).message}`);
+    }
+  }
+
+  return NextResponse.json({ error: `MUAPI text failed — ${errors.join(" | ")}` }, { status: 502 });
+}
+
+async function runModel(model: string, prompt: string, apiKey: string): Promise<{ title: string; body: string }> {
+  const submitRes = await fetch(`${MUAPI_BASE}/${model}`, {
     method: "POST",
     headers: { "x-api-key": apiKey, "Content-Type": "application/json" },
     body: JSON.stringify({ prompt }),
   });
 
   if (!submitRes.ok) {
-    return NextResponse.json({ error: `MUAPI ${TEXT_MODEL} submit failed — HTTP ${submitRes.status}: ${(await submitRes.text()).slice(0, 200)}` }, { status: 502 });
+    throw new Error(`submit HTTP ${submitRes.status}: ${(await submitRes.text()).slice(0, 150)}`);
   }
 
   const submitData = await submitRes.json() as Record<string, unknown>;
-  console.log(`[format-post] submit response: ${JSON.stringify(submitData).slice(0, 500)}`);
+  console.log(`[format-post] ${model} submit: ${JSON.stringify(submitData).slice(0, 300)}`);
 
   // Some models return text synchronously
   const sync = textFromResult(submitData);
   if (sync) {
     const result = extractTitleBody(sync);
-    return NextResponse.json({ ok: true, ...(result ?? { title: "", body: sync }) });
+    return result ?? { title: "", body: sync };
   }
 
   // Otherwise poll for the async result
   const reqId = submitData.request_id ?? submitData.id ?? submitData.requestId ?? submitData.prediction_id;
-  if (reqId) {
-    try {
-      const result = await pollResult(String(reqId), apiKey);
-      return NextResponse.json({ ok: true, title: result.title, body: result.body });
-    } catch (e) {
-      return NextResponse.json({ error: `MUAPI ${TEXT_MODEL} — ${(e as Error).message}` }, { status: 502 });
-    }
-  }
+  if (reqId) return pollResult(String(reqId), apiKey);
 
-  return NextResponse.json({ error: `MUAPI ${TEXT_MODEL} — unexpected response: ${JSON.stringify(submitData).slice(0, 300)}` }, { status: 502 });
+  throw new Error(`unexpected response: ${JSON.stringify(submitData).slice(0, 200)}`);
 }
