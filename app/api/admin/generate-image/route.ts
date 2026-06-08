@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAuthed } from "@/lib/admin/auth";
-import { getConfig, saveConfig, uploadFile } from "@/lib/admin/store";
+import { uploadFile, dbSetImage } from "@/lib/admin/store";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-// MUAPI image generation can take up to 60 seconds
 export const maxDuration = 60;
 
 const MUAPI_BASE = "https://api.muapi.ai/api/v1";
@@ -39,14 +38,13 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     goalId = String(body.goalId ?? "");
     prompt = String(body.prompt ?? "");
-    commit = body.commit !== false; // default true
+    commit = body.commit !== false;
   } catch {
     return NextResponse.json({ error: "Bad request" }, { status: 400 });
   }
 
   if (!goalId || !prompt) return NextResponse.json({ error: "Invalid goal or prompt" }, { status: 400 });
 
-  // Submit generation job
   const submitRes = await fetch(`${MUAPI_BASE}/${MODEL}`, {
     method: "POST",
     headers: { "x-api-key": apiKey, "Content-Type": "application/json" },
@@ -59,23 +57,14 @@ export async function POST(req: NextRequest) {
   const { request_id } = await submitRes.json();
   if (!request_id) return NextResponse.json({ error: "No request_id from MUAPI" }, { status: 502 });
 
-  // Poll for result
   const imageUrl = await pollResult(String(request_id), apiKey);
-
-  // Download the generated image
   const imgRes = await fetch(imageUrl);
   if (!imgRes.ok) throw new Error("Failed to download generated image");
   const imgBuffer = Buffer.from(await imgRes.arrayBuffer());
   const contentType = imgRes.headers.get("content-type") || "image/jpeg";
 
-  // Save the generated image to Blob. Only publish to the live config when
-  // `commit` is true; otherwise it's staged for the admin to Save manually.
   const blobUrl = await uploadFile(`sections/${goalId}-ai.jpg`, imgBuffer, contentType);
-  if (commit) {
-    const config = await getConfig();
-    config.images[goalId] = blobUrl;
-    await saveConfig(config);
-  }
+  if (commit) await dbSetImage(goalId, blobUrl);
 
   return NextResponse.json({ ok: true, url: blobUrl, committed: commit });
 }
