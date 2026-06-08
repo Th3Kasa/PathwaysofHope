@@ -45,7 +45,10 @@ async function pollResult(requestId: string, apiKey: string): Promise<{ title: s
     const res = await fetch(`${MUAPI_BASE}/predictions/${requestId}/result`, {
       headers: { "x-api-key": apiKey },
     });
-    if (!res.ok) throw new Error(`Poll failed: ${res.status}`);
+    if (!res.ok) {
+      const errBody = await res.text().catch(() => "");
+      throw new Error(`Poll failed ${res.status} at /predictions/${requestId}/result: ${errBody.slice(0, 200)}`);
+    }
     const data = await res.json() as Record<string, unknown>;
     last = data;
     const text = textFromResult(data);
@@ -103,6 +106,7 @@ export async function POST(req: NextRequest) {
     }
 
     submitData = await submitRes.json() as Record<string, unknown>;
+    console.log(`[format-post] submit response: ${JSON.stringify(submitData).slice(0, 500)}`);
 
     // Synchronous response (openai-style choices, or direct text/outputs)
     const choices = submitData.choices;
