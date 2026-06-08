@@ -81,60 +81,39 @@ export async function POST(req: NextRequest) {
 
   if (!title || !body) return NextResponse.json({ error: "Title and body required" }, { status: 400 });
 
-  const userContent = `Title: ${title}\n\nBody: ${body}`;
+  // gpt-5-nano's schema (TextRequest) takes a single `prompt` string.
+  const prompt = `${SYSTEM_PROMPT}\n\nTitle: ${title}\n\nBody: ${body}`;
 
-  // Try chat completions format first (standard for GPT-based models),
-  // then fall back to simple prompt format.
-  const requestBodies = [
-    { messages: [{ role: "system", content: SYSTEM_PROMPT }, { role: "user", content: userContent }] },
-    { prompt: `${SYSTEM_PROMPT}\n\n${userContent}` },
-  ];
+  const submitRes = await fetch(`${MUAPI_BASE}/${TEXT_MODEL}`, {
+    method: "POST",
+    headers: { "x-api-key": apiKey, "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt }),
+  });
 
-  let submitData: Record<string, unknown> | null = null;
-  let lastError = "";
-
-  for (const reqBody of requestBodies) {
-    const submitRes = await fetch(`${MUAPI_BASE}/${TEXT_MODEL}`, {
-      method: "POST",
-      headers: { "x-api-key": apiKey, "Content-Type": "application/json" },
-      body: JSON.stringify(reqBody),
-    });
-
-    if (!submitRes.ok) {
-      lastError = `HTTP ${submitRes.status}: ${await submitRes.text()}`;
-      continue;
-    }
-
-    submitData = await submitRes.json() as Record<string, unknown>;
-    console.log(`[format-post] submit response: ${JSON.stringify(submitData).slice(0, 500)}`);
-
-    // Synchronous response (openai-style choices, or direct text/outputs)
-    const choices = submitData.choices;
-    if (Array.isArray(choices) && (choices[0] as Record<string, unknown>)?.message) {
-      const text = String(((choices[0] as Record<string, unknown>).message as Record<string, unknown>).content ?? "");
-      const result = extractTitleBody(text);
-      if (result || text) return NextResponse.json({ ok: true, ...(result ?? { title: "", body: text }) });
-    }
-    const sync = textFromResult(submitData);
-    if (sync) {
-      const result = extractTitleBody(sync);
-      return NextResponse.json({ ok: true, ...(result ?? { title: "", body: sync }) });
-    }
-
-    // Async response
-    const reqId = submitData.request_id ?? submitData.id ?? submitData.requestId ?? submitData.prediction_id;
-    if (reqId) {
-      try {
-        const result = await pollResult(String(reqId), apiKey);
-        return NextResponse.json({ ok: true, title: result.title, body: result.body });
-      } catch (e) {
-        lastError = `${(e as Error).message} | submit was: ${JSON.stringify(submitData).slice(0, 250)}`;
-        continue;
-      }
-    }
-
-    lastError = `Unexpected response shape: ${JSON.stringify(submitData).slice(0, 300)}`;
+  if (!submitRes.ok) {
+    return NextResponse.json({ error: `MUAPI ${TEXT_MODEL} submit failed — HTTP ${submitRes.status}: ${(await submitRes.text()).slice(0, 200)}` }, { status: 502 });
   }
 
-  return NextResponse.json({ error: `MUAPI ${TEXT_MODEL} failed — ${lastError}` }, { status: 502 });
+  const submitData = await submitRes.json() as Record<string, unknown>;
+  console.log(`[format-post] submit response: ${JSON.stringify(submitData).slice(0, 500)}`);
+
+  // Some models return text synchronously
+  const sync = textFromResult(submitData);
+  if (sync) {
+    const result = extractTitleBody(sync);
+    return NextResponse.json({ ok: true, ...(result ?? { title: "", body: sync }) });
+  }
+
+  // Otherwise poll for the async result
+  const reqId = submitData.request_id ?? submitData.id ?? submitData.requestId ?? submitData.prediction_id;
+  if (reqId) {
+    try {
+      const result = await pollResult(String(reqId), apiKey);
+      return NextResponse.json({ ok: true, title: result.title, body: result.body });
+    } catch (e) {
+      return NextResponse.json({ error: `MUAPI ${TEXT_MODEL} — ${(e as Error).message}` }, { status: 502 });
+    }
+  }
+
+  return NextResponse.json({ error: `MUAPI ${TEXT_MODEL} — unexpected response: ${JSON.stringify(submitData).slice(0, 300)}` }, { status: 502 });
 }
