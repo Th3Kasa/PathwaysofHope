@@ -112,7 +112,6 @@ async function runModel(model: string, prompt: string, systemPrompt: string, api
   }
 
   const submitData = await submitRes.json() as Record<string, unknown>;
-  console.log(`[format-post] ${model} submit: ${JSON.stringify(submitData).slice(0, 300)}`);
 
   // Some models return text synchronously
   const sync = textFromResult(submitData);
