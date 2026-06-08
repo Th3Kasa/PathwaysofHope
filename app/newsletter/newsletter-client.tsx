@@ -26,7 +26,8 @@ export function NewsletterClient({ posts }: { posts: NewsletterPost[] }) {
 
   const title = (p: NewsletterPost) => lang === "ar" && p.titleAr ? p.titleAr : p.titleEn;
   const body  = (p: NewsletterPost) => lang === "ar" && p.bodyAr  ? p.bodyAr  : p.bodyEn;
-  const excerpt = (text: string) => text.length > 180 ? text.slice(0, 177) + "…" : text;
+  const stripMd = (text: string) => text.replace(/\*\*|__|~~|`|#{1,6}\s|>\s|---+|\[([^\]]*)\]\([^)]*\)/g, "$1").trim();
+  const excerpt = (text: string) => { const s = stripMd(text); return s.length > 180 ? s.slice(0, 177) + "…" : s; };
 
   return (
     <div className="bg-[#e7e5e4] min-h-screen">

@@ -557,17 +557,34 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.titleEn.trim() || !form.bodyEn.trim()) {
-      setToast({ msg: "Title and body (English) are required.", kind: "err" }); return;
+      setToast({ msg: "Title and body are required.", kind: "err" }); return;
     }
     setSaving(true); setToast(null);
-    const imageUrl = pendingImage ?? existingImage ?? undefined;
+
+    // For new posts: auto-generate a MUAPI image before saving
+    let autoImageUrl: string | undefined;
+    if (mode === "add") {
+      try {
+        setToast({ msg: "Generating article image…", kind: "ok" });
+        const tempId = `newsletter-draft-${Date.now()}`;
+        const aiPrompt = `Photorealistic documentary photo for a charity mission article: "${form.titleEn.trim()}" — Kapoeta, South Sudan, children, community, warm light, hope and dignity`;
+        const genRes = await fetch("/api/admin/generate-image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ goalId: tempId, prompt: aiPrompt, commit: false }),
+        });
+        if (genRes.ok) {
+          const gd = await genRes.json();
+          autoImageUrl = gd.url;
+        }
+      } catch { /* image generation failure is non-fatal */ }
+    }
+
+    const imageUrl = autoImageUrl ?? pendingImage ?? existingImage ?? undefined;
     const payload: Record<string, unknown> = {
       titleEn: form.titleEn.trim(),
-      titleAr: form.titleAr.trim() || undefined,
       bodyEn: form.bodyEn.trim(),
-      bodyAr: form.bodyAr.trim() || undefined,
       imageUrl,
-      imageAlt: form.imageAlt.trim() || undefined,
       author: form.author.trim() || DEFAULT_AUTHOR,
       publishedAt: mode === "add" ? new Date().toISOString() : new Date(form.publishedAt).toISOString(),
     };

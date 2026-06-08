@@ -2,13 +2,9 @@
 // Usage: npx tsx scripts/migrate-blob-to-neon.ts
 // Safe to run multiple times — uses ON CONFLICT DO NOTHING.
 
-import { config } from "dotenv";
-config({ path: ".env.local" });
-
 import { list } from "@vercel/blob";
 import { neon } from "@neondatabase/serverless";
 
-const sql = neon(process.env.DATABASE_URL!);
 const CONFIG_PATH = "admin/config.json";
 
 interface BlobConfig {
@@ -38,6 +34,9 @@ async function readBlob(): Promise<BlobConfig> {
 }
 
 async function run() {
+  if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL not set — run: npx vercel env pull .env.local --environment=production");
+  const sql = neon(process.env.DATABASE_URL);
+
   console.log("Reading from Vercel Blob...");
   const cfg = await readBlob();
 
