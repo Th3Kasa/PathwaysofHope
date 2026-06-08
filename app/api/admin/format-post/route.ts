@@ -6,8 +6,10 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 const MUAPI_BASE = "https://api.muapi.ai/api/v1";
-// Try nano first (cheapest); fall back to mini if MUAPI fails the job.
-const TEXT_MODELS = ["gpt-5-nano", "gpt-5-mini"];
+// Dedicated LLM endpoints (prompt + system_prompt). gemini-2-5-flash is the
+// cheapest reliable option; claude-haiku-4-5 is the fallback. Both cost less
+// than gpt-5-nano, which used a flaky generic TextRequest wrapper.
+const TEXT_MODELS = ["gemini-2-5-flash", "claude-haiku-4-5"];
 
 const SYSTEM_PROMPT = `You are a professional editor for a charity newsletter.
 Format the provided raw title and body into a polished, engaging article.
@@ -82,13 +84,13 @@ export async function POST(req: NextRequest) {
 
   if (!title || !body) return NextResponse.json({ error: "Title and body required" }, { status: 400 });
 
-  // TextRequest schema takes a single `prompt` string.
-  const prompt = `${SYSTEM_PROMPT}\n\nTitle: ${title}\n\nBody: ${body}`;
+  // Dedicated LLM endpoints separate instructions (system_prompt) from content (prompt).
+  const userPrompt = `Title: ${title}\n\nBody: ${body}`;
   const errors: string[] = [];
 
   for (const model of TEXT_MODELS) {
     try {
-      const result = await runModel(model, prompt, apiKey);
+      const result = await runModel(model, userPrompt, SYSTEM_PROMPT, apiKey);
       return NextResponse.json({ ok: true, model, ...result });
     } catch (e) {
       errors.push(`${model}: ${(e as Error).message}`);
@@ -98,11 +100,11 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ error: `MUAPI text failed — ${errors.join(" | ")}` }, { status: 502 });
 }
 
-async function runModel(model: string, prompt: string, apiKey: string): Promise<{ title: string; body: string }> {
+async function runModel(model: string, prompt: string, systemPrompt: string, apiKey: string): Promise<{ title: string; body: string }> {
   const submitRes = await fetch(`${MUAPI_BASE}/${model}`, {
     method: "POST",
     headers: { "x-api-key": apiKey, "Content-Type": "application/json" },
-    body: JSON.stringify({ prompt }),
+    body: JSON.stringify({ prompt, system_prompt: systemPrompt }),
   });
 
   if (!submitRes.ok) {
