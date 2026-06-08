@@ -501,11 +501,10 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
   const [generating, setGenerating] = useState(false);
   const [saving, setSaving] = useState(false);
   const [formatting, setFormatting] = useState(false);
-  const [generatingImages, setGeneratingImages] = useState(false);
   const [toast, setToast] = useState<{ msg: string; kind: "ok" | "err" } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const busy = uploading || generating || saving || formatting || generatingImages;
+  const busy = uploading || generating || saving || formatting;
 
   const openAdd = () => {
     setForm(emptyPostForm());
@@ -531,28 +530,6 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
 
   const cancel = () => { setMode("list"); setToast(null); };
 
-  const formatPost = async () => {
-    if (!form.titleEn.trim() || !form.bodyEn.trim()) {
-      setToast({ msg: "Add a title and body first.", kind: "err" }); return;
-    }
-    setFormatting(true); setToast(null);
-    const res = await fetch("/api/admin/format-post", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: form.titleEn, body: form.bodyEn }),
-    });
-    setFormatting(false);
-    if (res.ok) {
-      const d = await res.json();
-      setForm(f => ({ ...f, titleEn: d.title, bodyEn: d.body }));
-      setToast({ msg: "Formatted! Review and publish.", kind: "ok" });
-    } else {
-      const d = await res.json().catch(() => ({}));
-      const detail = d.error || `Server error ${res.status}`;
-      setToast({ msg: detail, kind: "err" });
-    }
-  };
-
   const IMAGE_PROMPTS = [
     "Photorealistic wide-angle documentary photo — children at the Kapoeta shelter in South Sudan, warm golden hour light, hopeful atmosphere",
     "Photorealistic close-up — smiling South Sudanese child at a shelter, warm natural light, dignity and joy",
@@ -560,38 +537,68 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
     "Photorealistic wide shot — sunset over a shelter in South Sudan, hope and peace, golden light",
   ];
 
-  const generateImages = async () => {
-    setGeneratingImages(true); setToast(null);
+  const formatAndGenerate = async () => {
+    if (!form.titleEn.trim() || !form.bodyEn.trim()) {
+      setToast({ msg: "Add a title and body first.", kind: "err" }); return;
+    }
+    setFormatting(true); setToast({ msg: "Formatting text and generating images…", kind: "ok" });
+
     const titleHint = form.titleEn.trim() ? ` — related to: ${form.titleEn}` : "";
-    const prompts = IMAGE_PROMPTS.map((basePrompt, i) => ({
-      prompt: basePrompt + titleHint,
-      goalId: `newsletter-img-${i + 1}-${editId ?? "new"}`,
-    }));
-    const results = await Promise.allSettled(
-      prompts.map(({ prompt, goalId }) =>
-        fetch("/api/admin/generate-image", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ goalId, prompt, commit: false }),
-        }).then(async r => {
-          const d = await r.json().catch(() => ({ error: `HTTP ${r.status}` })) as Record<string, unknown>;
-          if (!r.ok) throw new Error(String(d.error ?? `HTTP ${r.status}`));
-          return d;
-        })
-      )
+    const imagePromises = IMAGE_PROMPTS.map((basePrompt, i) =>
+      fetch("/api/admin/generate-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          goalId: `newsletter-img-${i + 1}-${editId ?? "new"}`,
+          prompt: basePrompt + titleHint,
+          commit: false,
+        }),
+      }).then(async r => {
+        const d = await r.json().catch(() => ({ error: `HTTP ${r.status}` })) as Record<string, unknown>;
+        if (!r.ok) throw new Error(String(d.error ?? `HTTP ${r.status}`));
+        return d;
+      })
     );
-    const urls = results
+
+    const [formatRes, ...imageResults] = await Promise.allSettled([
+      fetch("/api/admin/format-post", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: form.titleEn, body: form.bodyEn }),
+      }),
+      ...imagePromises,
+    ]);
+
+    setFormatting(false);
+
+    // Apply formatted text
+    if (formatRes.status === "fulfilled" && formatRes.value.ok) {
+      const d = await formatRes.value.json().catch(() => ({})) as Record<string, unknown>;
+      if (d.title && d.body) setForm(f => ({ ...f, titleEn: String(d.title), bodyEn: String(d.body) }));
+    } else if (formatRes.status === "rejected") {
+      setToast({ msg: `Formatting failed — ${(formatRes as PromiseRejectedResult).reason?.message ?? "unknown"}`, kind: "err" });
+    } else if (formatRes.status === "fulfilled" && !formatRes.value.ok) {
+      const d = await formatRes.value.json().catch(() => ({})) as Record<string, unknown>;
+      setToast({ msg: String(d.error ?? `Format error ${formatRes.value.status}`), kind: "err" });
+    }
+
+    // Apply images (partial success is fine)
+    const urls = (imageResults as PromiseSettledResult<Record<string, unknown>>[])
       .filter((r): r is PromiseFulfilledResult<Record<string, unknown>> => r.status === "fulfilled" && Boolean(r.value.url))
       .map(r => r.value.url as string);
-    const errors = results.filter(r => r.status === "rejected").map(r => (r as PromiseRejectedResult).reason?.message ?? "unknown");
-    if (urls.length === 0) {
-      setToast({ msg: `Image generation failed — ${errors[0] ?? "all 4 failed"}`, kind: "err" });
-    } else {
-      setForm(f => ({ ...f, imageUrls: urls }));
-      const note = errors.length ? ` (${errors.length} failed)` : "";
-      setToast({ msg: `${urls.length} images ready — publish to save.${note}`, kind: "ok" });
+    const imgErrors = imageResults.filter(r => r.status === "rejected").length;
+
+    if (urls.length > 0) setForm(f => ({ ...f, imageUrls: urls }));
+
+    const textOk = formatRes.status === "fulfilled" && formatRes.value.ok;
+    if (textOk && urls.length > 0) {
+      const note = imgErrors ? ` (${imgErrors} image${imgErrors > 1 ? "s" : ""} failed)` : "";
+      setToast({ msg: `Ready — review and publish.${note}`, kind: "ok" });
+    } else if (textOk) {
+      setToast({ msg: "Text formatted. Images failed — you can still publish.", kind: "err" });
+    } else if (urls.length > 0) {
+      setToast({ msg: `${urls.length} images ready. Text formatting failed — check above.`, kind: "err" });
     }
-    setGeneratingImages(false);
   };
 
   const upload = async (file: File) => {
@@ -724,13 +731,9 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <button type="button" onClick={formatPost} disabled={formatting || saving || generatingImages} className={btnGhost}>
+            <button type="button" onClick={formatAndGenerate} disabled={busy} className={btnGhost}>
               {formatting ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
-              {formatting ? "Formatting…" : "Format with AI"}
-            </button>
-            <button type="button" onClick={generateImages} disabled={generatingImages || saving || formatting} className={btnGhost}>
-              {generatingImages ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
-              {generatingImages ? "Generating images…" : "Generate 4 images"}
+              {formatting ? "Working…" : "Format with AI"}
             </button>
           </div>
 
@@ -755,7 +758,7 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
           {toast && <Toast msg={toast.msg} kind={toast.kind} />}
 
           <div className="flex gap-3">
-            <button type="submit" disabled={saving || formatting || generatingImages} className={btnPrimary}>
+            <button type="submit" disabled={busy} className={btnPrimary}>
               {saving ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle2 size={14} />}
               {mode === "edit" ? "Save changes" : "Publish post"}
             </button>

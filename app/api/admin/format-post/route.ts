@@ -23,8 +23,8 @@ function extractTitleBody(raw: string): { title: string; body: string } | null {
 }
 
 async function pollResult(requestId: string, apiKey: string): Promise<{ title: string; body: string }> {
-  for (let i = 0; i < 25; i++) {
-    await new Promise((r) => setTimeout(r, 2000));
+  for (let i = 0; i < 45; i++) {
+    await new Promise((r) => setTimeout(r, i < 5 ? 800 : 1200)); // fast at first, then settle
     const res = await fetch(`${MUAPI_BASE}/predictions/${requestId}/result`, {
       headers: { "x-api-key": apiKey },
     });
