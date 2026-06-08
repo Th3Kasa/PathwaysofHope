@@ -1,6 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAuthed } from "@/lib/admin/auth";
-import { getConfig, saveConfig, type ExtraGoal, type ManualDonation, type NewsletterPost } from "@/lib/admin/store";
+import {
+  getConfig,
+  type ExtraGoal, type ManualDonation, type NewsletterPost,
+  dbSetImage, dbSetCaption, dbResetImage,
+  dbAddReport, dbRemoveReport,
+  dbToggleGoalVisibility,
+  dbAddExtraGoal, dbRemoveExtraGoal,
+  dbAddManualDonation, dbRemoveManualDonation,
+  dbToggleGalleryItem, dbAddGalleryExtra, dbRemoveGalleryExtra,
+  dbAddNewsletterPost, dbUpdateNewsletterPost, dbRemoveNewsletterPost,
+} from "@/lib/admin/store";
 import { randomBytes } from "node:crypto";
 import { KAPOETA_GOALS } from "@/lib/goals";
 
@@ -23,12 +33,12 @@ export async function GET() {
     reports: config.reports,
     goals,
     blobReady: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
-    disabledGoalIds: config.disabledGoalIds ?? [],
-    extraGoals: config.extraGoals ?? [],
-    manualDonations: config.manualDonations ?? [],
-    hiddenGalleryKeys: config.hiddenGalleryKeys ?? [],
-    galleryExtraIds: config.galleryExtraIds ?? [],
-    newsletterPosts: config.newsletterPosts ?? [],
+    disabledGoalIds: config.disabledGoalIds,
+    extraGoals: config.extraGoals,
+    manualDonations: config.manualDonations,
+    hiddenGalleryKeys: config.hiddenGalleryKeys,
+    galleryExtraIds: config.galleryExtraIds,
+    newsletterPosts: config.newsletterPosts,
   });
 }
 
@@ -54,107 +64,71 @@ export async function PATCH(req: NextRequest) {
   };
   try { body = await req.json(); } catch { return NextResponse.json({ error: "Bad request" }, { status: 400 }); }
 
-  const config = await getConfig();
-  if (!config.manualDonations) config.manualDonations = [];
-  if (!config.hiddenGalleryKeys) config.hiddenGalleryKeys = [];
-  if (!config.galleryExtraIds) config.galleryExtraIds = [];
-  if (!config.newsletterPosts) config.newsletterPosts = [];
-
   if (body.removeReportId) {
-    config.reports = config.reports.filter((r) => r.id !== body.removeReportId);
+    await dbRemoveReport(body.removeReportId);
   }
   if (body.resetImageKey) {
-    delete config.images[body.resetImageKey];
+    await dbResetImage(body.resetImageKey);
   }
   if (body.saveCaption) {
     const { key, value } = body.saveCaption;
-    if (value.trim()) { config.captions[key] = value.trim(); }
-    else { delete config.captions[key]; }
+    await dbSetCaption(key, value);
   }
   if (body.setImage) {
     const { key, url } = body.setImage;
-    if (key && /^[a-z0-9-]+$/.test(key) && typeof url === "string" && url.startsWith("https://")) {
-      config.images[key] = url;
-    } else {
+    if (!key || !/^[a-z0-9-]+$/.test(key) || typeof url !== "string" || !url.startsWith("https://")) {
       return NextResponse.json({ error: "Invalid image" }, { status: 400 });
     }
+    await dbSetImage(key, url);
   }
   if (body.toggleGoalVisibility) {
-    const { id } = body.toggleGoalVisibility;
-    const disabled = config.disabledGoalIds ?? [];
-    if (disabled.includes(id)) {
-      config.disabledGoalIds = disabled.filter((d) => d !== id);
-    } else {
-      config.disabledGoalIds = [...disabled, id];
-    }
+    await dbToggleGoalVisibility(body.toggleGoalVisibility.id);
   }
   if (body.addExtraGoal) {
-    config.extraGoals = [...(config.extraGoals ?? []), body.addExtraGoal];
+    await dbAddExtraGoal(body.addExtraGoal);
   }
   if (body.removeExtraGoal) {
-    const { id } = body.removeExtraGoal;
-    config.extraGoals = (config.extraGoals ?? []).filter((g) => g.id !== id);
-    delete config.images[id];
-    delete config.captions[id];
-    // Drop any manual donations tied to a deleted goal.
-    config.manualDonations = config.manualDonations.filter((d) => d.goalId !== id);
+    await dbRemoveExtraGoal(body.removeExtraGoal.id);
   }
   if (body.addManualDonation) {
     const { goalId, amount, note } = body.addManualDonation;
     if (!goalId || typeof amount !== "number" || !Number.isFinite(amount) || amount <= 0 || amount > 10_000_000) {
       return NextResponse.json({ error: "Invalid donation amount" }, { status: 400 });
     }
-    const entry: ManualDonation = {
+    await dbAddManualDonation({
       id: randomBytes(6).toString("hex"),
       goalId,
       amount: Math.round(amount * 100) / 100,
       note: note?.trim() || undefined,
       addedAt: new Date().toISOString(),
-    };
-    config.manualDonations = [...config.manualDonations, entry];
+    });
   }
   if (body.removeManualDonation) {
-    const { id } = body.removeManualDonation;
-    config.manualDonations = config.manualDonations.filter((d) => d.id !== id);
+    await dbRemoveManualDonation(body.removeManualDonation.id);
   }
   if (body.toggleGalleryItem) {
-    const { key } = body.toggleGalleryItem;
-    if (config.hiddenGalleryKeys.includes(key)) {
-      config.hiddenGalleryKeys = config.hiddenGalleryKeys.filter((k) => k !== key);
-    } else {
-      config.hiddenGalleryKeys = [...config.hiddenGalleryKeys, key];
-    }
+    await dbToggleGalleryItem(body.toggleGalleryItem.key);
   }
   if (body.addGalleryExtra) {
     const { id } = body.addGalleryExtra;
-    if (id && /^[a-z0-9]+$/.test(id) && !config.galleryExtraIds.includes(id)) {
-      config.galleryExtraIds = [...config.galleryExtraIds, id];
-    }
+    if (id && /^[a-z0-9]+$/.test(id)) await dbAddGalleryExtra(id);
   }
   if (body.removeGalleryExtra) {
-    const { id } = body.removeGalleryExtra;
-    config.galleryExtraIds = config.galleryExtraIds.filter((x) => x !== id);
-    delete config.images[`kapoeta-gallery-extra-${id}`];
-    delete config.captions[`kapoeta-gallery-extra-${id}`];
+    await dbRemoveGalleryExtra(body.removeGalleryExtra.id);
   }
   if (body.addNewsletterPost) {
-    const post: NewsletterPost = {
+    await dbAddNewsletterPost({
       id: randomBytes(6).toString("hex"),
       ...body.addNewsletterPost,
-    };
-    config.newsletterPosts = [post, ...config.newsletterPosts];
+    });
   }
   if (body.updateNewsletterPost) {
     const { id, ...fields } = body.updateNewsletterPost;
-    config.newsletterPosts = config.newsletterPosts.map((p) =>
-      p.id === id ? { ...p, ...fields } : p
-    );
+    await dbUpdateNewsletterPost(id, fields);
   }
   if (body.removeNewsletterPost) {
-    const { id } = body.removeNewsletterPost;
-    config.newsletterPosts = config.newsletterPosts.filter((p) => p.id !== id);
+    await dbRemoveNewsletterPost(body.removeNewsletterPost.id);
   }
 
-  await saveConfig(config);
   return NextResponse.json({ ok: true });
 }
