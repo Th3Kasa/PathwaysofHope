@@ -22,26 +22,42 @@ function extractTitleBody(raw: string): { title: string; body: string } | null {
   try { return JSON.parse(match[0]); } catch { return null; }
 }
 
+/** Pull text out of whatever shape MUAPI returns. */
+function textFromResult(data: Record<string, unknown>): string | null {
+  const candidates = [data.outputs, data.output, data.text, data.content, data.result, data.message];
+  for (const c of candidates) {
+    if (!c) continue;
+    if (Array.isArray(c)) {
+      if (c.length === 0) continue;
+      return c.map((x) => (typeof x === "string" ? x : JSON.stringify(x))).join("");
+    }
+    if (typeof c === "string") return c;
+    return JSON.stringify(c);
+  }
+  return null;
+}
+
 async function pollResult(requestId: string, apiKey: string): Promise<{ title: string; body: string }> {
+  let last: Record<string, unknown> = {};
   for (let i = 0; i < 45; i++) {
     await new Promise((r) => setTimeout(r, i < 5 ? 800 : 1200)); // fast at first, then settle
     const res = await fetch(`${MUAPI_BASE}/predictions/${requestId}/result`, {
       headers: { "x-api-key": apiKey },
     });
     if (!res.ok) throw new Error(`Poll failed: ${res.status}`);
-    const data = await res.json();
-    // If output is present, use it — don't rely on status string which varies by provider
-    if (data.output) {
-      const text = Array.isArray(data.output) ? data.output.join("") : String(data.output);
+    const data = await res.json() as Record<string, unknown>;
+    last = data;
+    const text = textFromResult(data);
+    if (text) {
       const result = extractTitleBody(text);
-      if (!result) throw new Error("Could not parse formatted output from: " + text.slice(0, 200));
-      return result;
+      // If it returned text but not our JSON shape, use the raw text as the body.
+      return result ?? { title: "", body: text };
     }
     const failed = ["failed", "error", "cancelled"].includes(String(data.status).toLowerCase());
-    if (failed) throw new Error(`MUAPI reported failure (status: ${data.status})`);
-    console.log(`[format-post] poll ${i}: status=${JSON.stringify(data.status)}, keys=${Object.keys(data).join(",")}}`);
+    if (failed) throw new Error(`MUAPI failed: ${JSON.stringify(data).slice(0, 300)}`);
   }
-  throw new Error("Timed out waiting for gpt-codex");
+  // Surface the actual last response so the toast shows what gpt-codex returned.
+  throw new Error(`Timed out. Last MUAPI response: ${JSON.stringify(last).slice(0, 400)}`);
 }
 
 export async function POST(req: NextRequest) {
@@ -87,18 +103,17 @@ export async function POST(req: NextRequest) {
 
     submitData = await submitRes.json() as Record<string, unknown>;
 
-    // Synchronous response
-    const rawSync = submitData.output ?? submitData.text ?? submitData.content ?? submitData.choices;
-    if (rawSync) {
-      // Handle openai-style choices array
-      let text: string;
-      if (Array.isArray(rawSync) && (rawSync[0] as Record<string, unknown>)?.message) {
-        text = String(((rawSync[0] as Record<string, unknown>).message as Record<string, unknown>).content ?? "");
-      } else {
-        text = Array.isArray(rawSync) ? rawSync.join("") : String(rawSync);
-      }
+    // Synchronous response (openai-style choices, or direct text/outputs)
+    const choices = submitData.choices;
+    if (Array.isArray(choices) && (choices[0] as Record<string, unknown>)?.message) {
+      const text = String(((choices[0] as Record<string, unknown>).message as Record<string, unknown>).content ?? "");
       const result = extractTitleBody(text);
-      if (result) return NextResponse.json({ ok: true, title: result.title, body: result.body });
+      if (result || text) return NextResponse.json({ ok: true, ...(result ?? { title: "", body: text }) });
+    }
+    const sync = textFromResult(submitData);
+    if (sync) {
+      const result = extractTitleBody(sync);
+      return NextResponse.json({ ok: true, ...(result ?? { title: "", body: sync }) });
     }
 
     // Async response

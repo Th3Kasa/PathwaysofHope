@@ -18,9 +18,10 @@ async function pollResult(requestId: string, apiKey: string): Promise<string> {
     });
     if (!res.ok) throw new Error(`Poll failed: ${res.status}`);
     const data = await res.json();
-    // If output is present, use it — don't rely on status string which varies by provider
-    if (data.output) {
-      const outputUrl = Array.isArray(data.output) ? data.output[0] : data.output;
+    // MUAPI returns results in `outputs` (array). Fall back to `output` for safety.
+    const out = data.outputs ?? data.output;
+    if (out && (!Array.isArray(out) || out.length > 0)) {
+      const outputUrl = Array.isArray(out) ? out[0] : out;
       return String(outputUrl);
     }
     const failed = ["failed", "error", "cancelled"].includes(String(data.status).toLowerCase());

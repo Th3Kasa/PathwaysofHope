@@ -574,7 +574,7 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
     // Apply formatted text
     if (formatRes.status === "fulfilled" && formatRes.value.ok) {
       const d = await formatRes.value.json().catch(() => ({})) as Record<string, unknown>;
-      if (d.title && d.body) setForm(f => ({ ...f, titleEn: String(d.title), bodyEn: String(d.body) }));
+      if (d.body) setForm(f => ({ ...f, titleEn: d.title ? String(d.title) : f.titleEn, bodyEn: String(d.body) }));
     } else if (formatRes.status === "rejected") {
       setToast({ msg: `Formatting failed — ${(formatRes as PromiseRejectedResult).reason?.message ?? "unknown"}`, kind: "err" });
     } else if (formatRes.status === "fulfilled" && !formatRes.value.ok) {
