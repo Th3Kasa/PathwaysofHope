@@ -541,10 +541,13 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
     if (!form.titleEn.trim() || !form.bodyEn.trim()) {
       setToast({ msg: "Add a title and body first.", kind: "err" }); return;
     }
-    setFormatting(true); setToast({ msg: "Formatting text and generating images…", kind: "ok" });
+    setFormatting(true); setToast({ msg: "Formatting text…", kind: "ok" });
+
+    // TEMP: image generation paused while we debug text formatting.
+    const IMAGES_ENABLED = false;
 
     const titleHint = form.titleEn.trim() ? ` — related to: ${form.titleEn}` : "";
-    const imagePromises = IMAGE_PROMPTS.map((basePrompt, i) =>
+    const imagePromises = !IMAGES_ENABLED ? [] : IMAGE_PROMPTS.map((basePrompt, i) =>
       fetch("/api/admin/generate-image", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
