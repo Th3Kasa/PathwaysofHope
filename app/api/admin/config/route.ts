@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAuthed } from "@/lib/admin/auth";
-import { getConfig, saveConfig, type ExtraGoal, type ManualDonation } from "@/lib/admin/store";
+import { getConfig, saveConfig, type ExtraGoal, type ManualDonation, type NewsletterPost } from "@/lib/admin/store";
 import { randomBytes } from "node:crypto";
 import { KAPOETA_GOALS } from "@/lib/goals";
 
@@ -28,6 +28,7 @@ export async function GET() {
     manualDonations: config.manualDonations ?? [],
     hiddenGalleryKeys: config.hiddenGalleryKeys ?? [],
     galleryExtraIds: config.galleryExtraIds ?? [],
+    newsletterPosts: config.newsletterPosts ?? [],
   });
 }
 
@@ -47,6 +48,9 @@ export async function PATCH(req: NextRequest) {
     toggleGalleryItem?: { key: string };
     addGalleryExtra?: { id: string };
     removeGalleryExtra?: { id: string };
+    addNewsletterPost?: Omit<NewsletterPost, "id">;
+    updateNewsletterPost?: { id: string } & Partial<Omit<NewsletterPost, "id">>;
+    removeNewsletterPost?: { id: string };
   };
   try { body = await req.json(); } catch { return NextResponse.json({ error: "Bad request" }, { status: 400 }); }
 
@@ -54,6 +58,7 @@ export async function PATCH(req: NextRequest) {
   if (!config.manualDonations) config.manualDonations = [];
   if (!config.hiddenGalleryKeys) config.hiddenGalleryKeys = [];
   if (!config.galleryExtraIds) config.galleryExtraIds = [];
+  if (!config.newsletterPosts) config.newsletterPosts = [];
 
   if (body.removeReportId) {
     config.reports = config.reports.filter((r) => r.id !== body.removeReportId);
@@ -131,6 +136,23 @@ export async function PATCH(req: NextRequest) {
     config.galleryExtraIds = config.galleryExtraIds.filter((x) => x !== id);
     delete config.images[`kapoeta-gallery-extra-${id}`];
     delete config.captions[`kapoeta-gallery-extra-${id}`];
+  }
+  if (body.addNewsletterPost) {
+    const post: NewsletterPost = {
+      id: randomBytes(6).toString("hex"),
+      ...body.addNewsletterPost,
+    };
+    config.newsletterPosts = [post, ...config.newsletterPosts];
+  }
+  if (body.updateNewsletterPost) {
+    const { id, ...fields } = body.updateNewsletterPost;
+    config.newsletterPosts = config.newsletterPosts.map((p) =>
+      p.id === id ? { ...p, ...fields } : p
+    );
+  }
+  if (body.removeNewsletterPost) {
+    const { id } = body.removeNewsletterPost;
+    config.newsletterPosts = config.newsletterPosts.filter((p) => p.id !== id);
   }
 
   await saveConfig(config);

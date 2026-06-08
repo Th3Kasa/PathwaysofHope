@@ -14,7 +14,7 @@ const NAV_LINKS = [
   { id: "home",         href: "/",            label: { en: "Home",         ar: "الرئيسية"  } },
   { id: "missions",     href: "/missions",     label: { en: "Missions",     ar: "مهامنا"    } },
   { id: "about",        href: "/about",        label: { en: "About",        ar: "من نحن"    } },
-  { id: "governance",   href: "/governance",   label: { en: "Governance",   ar: "الحوكمة"  } },
+  { id: "updates",      href: "/newsletter",   label: { en: "Updates",      ar: "أخبار"     } },
   { id: "transparency", href: "/financials",   label: { en: "Transparency", ar: "الشفافية" } },
 ];
 

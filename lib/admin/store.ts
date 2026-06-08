@@ -42,6 +42,18 @@ export interface ManualDonation {
   addedAt: string;  // ISO date
 }
 
+export interface NewsletterPost {
+  id: string;
+  titleEn: string;
+  titleAr?: string;
+  bodyEn: string;
+  bodyAr?: string;
+  imageUrl?: string;
+  imageAlt?: string;
+  author: string;
+  publishedAt: string; // ISO date
+}
+
 export interface AdminConfig {
   /** Per-section image URL overrides, keyed by goal ID or page section key. */
   images: Record<string, string>;
@@ -55,15 +67,16 @@ export interface AdminConfig {
   manualDonations: ManualDonation[];
   /** Built-in Kapoeta gallery image keys the admin has hidden from the site. */
   hiddenGalleryKeys: string[];
-  /** IDs of extra photos the admin added to the Kapoeta gallery. The image and
-   *  caption live under config.images/captions keyed by `kapoeta-gallery-extra-<id>`. */
+  /** IDs of extra photos the admin added to the Kapoeta gallery. */
   galleryExtraIds: string[];
+  /** Newsletter / project update posts shown on /newsletter. */
+  newsletterPosts: NewsletterPost[];
 }
 
 export function defaultConfig(): AdminConfig {
   return {
     images: {}, captions: {}, reports: [], disabledGoalIds: [], extraGoals: [],
-    manualDonations: [], hiddenGalleryKeys: [], galleryExtraIds: [],
+    manualDonations: [], hiddenGalleryKeys: [], galleryExtraIds: [], newsletterPosts: [],
   };
 }
 
@@ -107,6 +120,7 @@ function sanitizeConfig(parsed: Partial<AdminConfig>): AdminConfig {
     manualDonations: parsed.manualDonations ?? base.manualDonations,
     hiddenGalleryKeys: parsed.hiddenGalleryKeys ?? base.hiddenGalleryKeys,
     galleryExtraIds: parsed.galleryExtraIds ?? base.galleryExtraIds,
+    newsletterPosts: parsed.newsletterPosts ?? base.newsletterPosts,
   };
 }
 

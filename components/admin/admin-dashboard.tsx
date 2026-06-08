@@ -5,7 +5,7 @@ import Image from "next/image";
 import {
   Lock, LogOut, Loader2, Upload, Trash2, FileText,
   Sparkles, CheckCircle2, TriangleAlert, RefreshCw,
-  Plus, Eye, EyeOff, Landmark, ChevronDown,
+  Plus, Eye, EyeOff, Landmark, ChevronDown, Newspaper, Pencil,
 } from "lucide-react";
 import { MANAGED_IMAGES, MANAGED_IMAGE_GROUPS, defaultAiPrompt, galleryExtraKey, KAPOETA_GALLERY_GROUP } from "@/lib/managed-images";
 
@@ -35,6 +35,18 @@ interface ManualDonation {
   addedAt: string;
 }
 
+interface NewsletterPost {
+  id: string;
+  titleEn: string;
+  titleAr?: string;
+  bodyEn: string;
+  bodyAr?: string;
+  imageUrl?: string;
+  imageAlt?: string;
+  author: string;
+  publishedAt: string;
+}
+
 interface Config {
   images: Record<string, string>;
   captions: Record<string, string>;
@@ -46,6 +58,7 @@ interface Config {
   manualDonations: ManualDonation[];
   hiddenGalleryKeys: string[];
   galleryExtraIds: string[];
+  newsletterPosts: NewsletterPost[];
 }
 
 const fmtAUD = (n: number) =>
@@ -169,6 +182,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
               </div>
             )}
             <GoalsManagementSection config={config} reload={load} />
+            <NewsletterSection config={config} reload={load} />
             <PhotosSection config={config} reload={load} />
             <SitePhotosSection config={config} reload={load} />
             <ReportsSection config={config} reload={load} />
@@ -456,6 +470,280 @@ function GoalRow({ goal, hidden, manualDonations, onToggle, onRemoveExtra, reloa
         </div>
       )}
     </div>
+  );
+}
+
+// ─── Newsletter ───────────────────────────────────────────────────────────────
+
+const TODAY = new Date().toISOString().split("T")[0];
+const DEFAULT_AUTHOR = "Hanan Morkos";
+
+const NEWSLETTER_AI_PROMPT =
+  "Photorealistic wide-angle documentary photo related to a charity mission in Kapoeta, South Sudan — children, shelter, community, warm golden light, hope and dignity";
+
+function emptyPostForm() {
+  return {
+    titleEn: "", titleAr: "", bodyEn: "", bodyAr: "",
+    imageAlt: "", author: DEFAULT_AUTHOR, publishedAt: TODAY,
+  };
+}
+
+function NewsletterSection({ config, reload }: { config: Config; reload: () => void }) {
+  const posts = config.newsletterPosts ?? [];
+  const [mode, setMode] = useState<"list" | "add" | "edit">("list");
+  const [editId, setEditId] = useState<string | null>(null);
+  const [form, setForm] = useState(emptyPostForm());
+  const [pendingImage, setPendingImage] = useState<string | null>(null);
+  const [existingImage, setExistingImage] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [generating, setGenerating] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [toast, setToast] = useState<{ msg: string; kind: "ok" | "err" } | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const busy = uploading || generating || saving;
+
+  const openAdd = () => {
+    setForm(emptyPostForm());
+    setPendingImage(null);
+    setExistingImage(null);
+    setEditId(null);
+    setToast(null);
+    setMode("add");
+  };
+
+  const openEdit = (post: NewsletterPost) => {
+    setForm({
+      titleEn: post.titleEn, titleAr: post.titleAr ?? "",
+      bodyEn: post.bodyEn, bodyAr: post.bodyAr ?? "",
+      imageAlt: post.imageAlt ?? "", author: post.author, publishedAt: post.publishedAt.split("T")[0],
+    });
+    setPendingImage(null);
+    setExistingImage(post.imageUrl ?? null);
+    setEditId(post.id);
+    setToast(null);
+    setMode("edit");
+  };
+
+  const cancel = () => { setMode("list"); setToast(null); };
+
+  const upload = async (file: File) => {
+    setUploading(true); setToast(null);
+    const fd = new FormData();
+    fd.append("kind", "image");
+    fd.append("key", `newsletter-${editId ?? "new"}`);
+    fd.append("file", file);
+    fd.append("commit", "false");
+    const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+    setUploading(false);
+    if (res.ok) { const d = await res.json(); setPendingImage(d.url); setToast({ msg: "Photo ready — save to publish.", kind: "ok" }); }
+    else { const d = await res.json().catch(() => ({})); setToast({ msg: d.error || "Upload failed", kind: "err" }); }
+  };
+
+  const generate = async () => {
+    setGenerating(true); setToast(null);
+    const prompt = form.titleEn
+      ? `${NEWSLETTER_AI_PROMPT} — scene related to: ${form.titleEn}`
+      : NEWSLETTER_AI_PROMPT;
+    const res = await fetch("/api/admin/generate-image", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ goalId: `newsletter-${editId ?? "new"}`, prompt, commit: false }),
+    });
+    setGenerating(false);
+    if (res.ok) { const d = await res.json(); setPendingImage(d.url); setToast({ msg: "AI image ready — save to publish.", kind: "ok" }); }
+    else { const d = await res.json().catch(() => ({})); setToast({ msg: d.error || "Generation failed", kind: "err" }); }
+  };
+
+  const save = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.titleEn.trim() || !form.bodyEn.trim()) {
+      setToast({ msg: "Title and body (English) are required.", kind: "err" }); return;
+    }
+    setSaving(true); setToast(null);
+    const imageUrl = pendingImage ?? existingImage ?? undefined;
+    const payload: Record<string, unknown> = {
+      titleEn: form.titleEn.trim(),
+      titleAr: form.titleAr.trim() || undefined,
+      bodyEn: form.bodyEn.trim(),
+      bodyAr: form.bodyAr.trim() || undefined,
+      imageUrl,
+      imageAlt: form.imageAlt.trim() || undefined,
+      author: form.author.trim() || DEFAULT_AUTHOR,
+      publishedAt: new Date(form.publishedAt).toISOString(),
+    };
+    const body = mode === "edit" && editId
+      ? { updateNewsletterPost: { id: editId, ...payload } }
+      : { addNewsletterPost: payload };
+    const res = await fetch("/api/admin/config", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    setSaving(false);
+    if (res.ok) {
+      setToast({ msg: mode === "edit" ? "Update saved." : "Post published.", kind: "ok" });
+      reload();
+      setMode("list");
+    } else {
+      const d = await res.json().catch(() => ({}));
+      setToast({ msg: d.error || "Save failed", kind: "err" });
+    }
+  };
+
+  const remove = async (id: string) => {
+    if (!confirm("Delete this post? This cannot be undone.")) return;
+    const res = await fetch("/api/admin/config", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ removeNewsletterPost: { id } }),
+    });
+    if (res.ok) { setToast({ msg: "Post deleted.", kind: "ok" }); reload(); }
+    else setToast({ msg: "Failed to delete post", kind: "err" });
+  };
+
+  const previewSrc = pendingImage ?? existingImage;
+
+  return (
+    <section className={card}>
+      <div className="flex items-start justify-between gap-3 mb-1">
+        <div>
+          <h2 className="text-lg font-semibold text-[#1e293b] flex items-center gap-2">
+            <Newspaper size={18} className="text-[#6366f1]" />
+            Newsletter / Updates
+          </h2>
+          <p className="text-sm text-[#6b7280] mt-1">
+            Publish project updates with images. Each post appears on the public <a href="/newsletter" target="_blank" className="text-[#6366f1] hover:underline">/newsletter</a> page.
+          </p>
+        </div>
+        {mode === "list" && (
+          <button onClick={openAdd} className={`${btnPrimary} flex-shrink-0`}>
+            <Plus size={14} /> New post
+          </button>
+        )}
+      </div>
+
+      {toast && mode === "list" && <div className="mt-4"><Toast msg={toast.msg} kind={toast.kind} /></div>}
+
+      {/* ── Form (add / edit) ── */}
+      {(mode === "add" || mode === "edit") && (
+        <form onSubmit={save} className="mt-6 space-y-5 border border-[#d6d3d1] rounded-2xl p-5">
+          <h3 className="text-sm font-semibold text-[#1e293b]">
+            {mode === "add" ? "New post" : "Edit post"}
+          </h3>
+
+          {/* Titles */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-[#374151] mb-1">Title (English) *</label>
+              <input required value={form.titleEn} onChange={e => setForm(f => ({ ...f, titleEn: e.target.value }))} className={input} placeholder="e.g. Solar System Installed" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-[#374151] mb-1">Title (Arabic)</label>
+              <input value={form.titleAr} onChange={e => setForm(f => ({ ...f, titleAr: e.target.value }))} className={input} dir="rtl" placeholder="العنوان بالعربية" />
+            </div>
+          </div>
+
+          {/* Body */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-[#374151] mb-1">Body (English) *</label>
+              <textarea required rows={7} value={form.bodyEn} onChange={e => setForm(f => ({ ...f, bodyEn: e.target.value }))} className={`${input} resize-y`} placeholder="Write the full update here…" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-[#374151] mb-1">Body (Arabic)</label>
+              <textarea rows={7} value={form.bodyAr} onChange={e => setForm(f => ({ ...f, bodyAr: e.target.value }))} className={`${input} resize-y`} dir="rtl" placeholder="اكتب التحديث هنا…" />
+            </div>
+          </div>
+
+          {/* Author + Date */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-[#374151] mb-1">Author</label>
+              <input value={form.author} onChange={e => setForm(f => ({ ...f, author: e.target.value }))} className={input} placeholder="Hanan Morkos" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-[#374151] mb-1">Date</label>
+              <input type="date" value={form.publishedAt} onChange={e => setForm(f => ({ ...f, publishedAt: e.target.value }))} className={input} />
+            </div>
+          </div>
+
+          {/* Image */}
+          <div>
+            <label className="block text-xs font-medium text-[#374151] mb-2">Post image</label>
+            <div className="flex flex-col sm:flex-row gap-4 sm:items-start">
+              <div className="relative w-full sm:w-40 h-28 sm:h-24 rounded-xl overflow-hidden flex-shrink-0 bg-[#f5f5f4] border border-[#d6d3d1] flex items-center justify-center">
+                {previewSrc ? (
+                  <img src={previewSrc} alt="Preview" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-xs text-[#9ca3af]">No image</span>
+                )}
+                {pendingImage && (
+                  <span className="absolute top-1.5 left-1.5 text-[10px] bg-amber-500 text-white px-1.5 py-0.5 rounded-full font-semibold">Unsaved</span>
+                )}
+              </div>
+              <div className="flex-1 space-y-2">
+                <input value={form.imageAlt} onChange={e => setForm(f => ({ ...f, imageAlt: e.target.value }))} className={input} placeholder="Image caption / alt text (optional)" />
+                <div className="flex flex-wrap gap-2">
+                  <input ref={fileRef} type="file" accept="image/*" hidden onChange={e => e.target.files?.[0] && upload(e.target.files[0])} />
+                  <button type="button" onClick={() => fileRef.current?.click()} disabled={busy} className={btnGhost}>
+                    {uploading ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />} Upload
+                  </button>
+                  <button type="button" onClick={generate} disabled={busy} className={btnGhost}>
+                    {generating ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
+                    {generating ? "Generating…" : "Generate with AI"}
+                  </button>
+                  {previewSrc && (
+                    <button type="button" onClick={() => { setPendingImage(null); setExistingImage(null); }} disabled={busy} className={btnGhost}>
+                      <Trash2 size={14} /> Remove image
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {toast && <Toast msg={toast.msg} kind={toast.kind} />}
+
+          <div className="flex gap-3">
+            <button type="submit" disabled={busy} className={btnPrimary}>
+              {saving ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle2 size={14} />}
+              {mode === "edit" ? "Save changes" : "Publish post"}
+            </button>
+            <button type="button" onClick={cancel} className={btnGhost}>Cancel</button>
+          </div>
+        </form>
+      )}
+
+      {/* ── Post list ── */}
+      {mode === "list" && (
+        <div className="mt-6 space-y-3">
+          {posts.length === 0 && (
+            <p className="text-sm text-[#6b7280] italic">No posts yet. Click "New post" to publish your first update.</p>
+          )}
+          {posts.map((post) => (
+            <div key={post.id} className="flex items-start gap-3 rounded-xl border border-[#d6d3d1] p-4">
+              {post.imageUrl && (
+                <div className="relative w-16 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-[#f5f5f4]">
+                  <img src={post.imageUrl} alt="" className="w-full h-full object-cover" />
+                </div>
+              )}
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-[#1e293b] truncate">{post.titleEn}</p>
+                <p className="text-xs text-[#9ca3af] mt-0.5">
+                  {post.author} · {new Date(post.publishedAt).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })}
+                </p>
+                <p className="text-xs text-[#6b7280] mt-1 line-clamp-2">{post.bodyEn.slice(0, 120)}{post.bodyEn.length > 120 ? "…" : ""}</p>
+              </div>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <button onClick={() => openEdit(post)} className={`${btnGhost} py-1.5 px-3 text-xs`} title="Edit post">
+                  <Pencil size={13} /> Edit
+                </button>
+                <button onClick={() => remove(post.id)} className="text-[#6b7280] hover:text-red-600 transition-colors p-1.5" title="Delete post">
+                  <Trash2 size={15} />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
   );
 }
 
