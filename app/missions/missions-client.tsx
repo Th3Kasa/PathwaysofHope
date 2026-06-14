@@ -42,8 +42,8 @@ export default function MissionsClient() {
               country={t({ en: "South Sudan", ar: "جنوب السودان" })}
               title={t({ en: "Kapoeta Children's Shelter", ar: "ملجأ كاپويتا للأطفال" })}
               summary={t({
-                en: "Brother Hakim Peter shelters 70 children in Kapoeta — providing food, safety, and schooling to children who had none. Supported by communities across Australia, the US, the UK, and Egypt.",
-                ar: "يأوي الأخ حكيم بيتر 70 طفلاً في كاپويتا — موفّرًا الطعام والأمان والتعليم لأطفال لم يكن لديهم شيء من ذلك. وتدعمه مجتمعات في أستراليا والولايات المتحدة وبريطانيا ومصر.",
+                en: "Hakim Peter shelters 70 children in Kapoeta — providing food, safety, and schooling to children who had none. Supported by communities across Australia, the US, the UK, and Egypt.",
+                ar: "يأوي حكيم بيتر 70 طفلاً في كاپويتا — موفّرًا الطعام والأمان والتعليم لأطفال لم يكن لديهم شيء من ذلك. وتدعمه مجتمعات في أستراليا والولايات المتحدة وبريطانيا ومصر.",
               })}
               imageSrc="/images/kapoeta/field/children-large-group-activity-kapoeta.jpg"
               imageAlt={t({
@@ -61,8 +61,8 @@ export default function MissionsClient() {
               </p>
               <p className="text-sm text-[#6b7280]">
                 {t({
-                  en: "We are prayerfully discerning where God calls us next. Stay connected.",
-                  ar: "نتبيّن بالصلاة إلى أين يدعونا الله بعد ذلك. ابقَ على تواصل معنا.",
+                  en: "We are carefully discerning where we are needed next. Stay connected.",
+                  ar: "نتبيّن بعناية أين نحتاج أن نكون بعد ذلك. ابقَ على تواصل معنا.",
                 })}
               </p>
             </div>

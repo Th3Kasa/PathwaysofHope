@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     template: "%s · Pathways of Hope",
   },
   description:
-    "A faith-driven Australian charity partnering with local leaders to bring safety, education and a sustainable future to children in Kapoeta, South Sudan. 100% of donations reach the children.",
+    "A compassion-driven Australian charity partnering with local leaders to bring safety, education and a sustainable future to children in Kapoeta, South Sudan. 100% of donations reach the children.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://pathwaysofhope.org.au"),
   openGraph: {
     type: "website",

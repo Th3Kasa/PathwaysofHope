@@ -37,7 +37,7 @@ export default function ThankYouPage() {
         </h1>
 
         <p className="text-[#374151] text-lg leading-relaxed mb-4">
-          A receipt has been sent to your email. Your donation goes directly to Brother Hakim Peter and the children in his care — not to administration, not to travel, not to anything except the children themselves.
+          A receipt has been sent to your email. Your donation goes directly to Hakim Peter and the children in his care — not to administration, not to travel, not to anything except the children themselves.
         </p>
 
         <p className="text-[#6b7280] leading-relaxed mb-10">

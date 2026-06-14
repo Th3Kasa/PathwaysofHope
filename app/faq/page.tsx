@@ -282,7 +282,7 @@ const GROUPS: { heading: Dict<string>; items: QA[] }[] = [
           en: (
             <>
               Pathways of Hope is an Australian charity governed by a volunteer Board, working in
-              partnership with Brother Hakim Peter — a native of Kapoeta who founded the shelter and leads
+              partnership with Hakim Peter — a native of Kapoeta who founded the shelter and leads
               the work on the ground. You can read more on our{" "}
               <Link href="/about" className="text-[#6366f1] font-medium hover:underline">
                 About
@@ -296,7 +296,7 @@ const GROUPS: { heading: Dict<string>; items: QA[] }[] = [
           ),
           ar: (
             <>
-              دروب الأمل جمعية خيرية أسترالية يديرها مجلس من المتطوّعين، بالشراكة مع الأخ حكيم بيتر — وهو
+              دروب الأمل جمعية خيرية أسترالية يديرها مجلس من المتطوّعين، بالشراكة مع حكيم بيتر — وهو
               من أبناء كاپويتا، أسّس الملجأ ويقود العمل في الميدان. ويمكنك قراءة المزيد على صفحتَي{" "}
               <Link href="/about" className="text-[#6366f1] font-medium hover:underline">
                 من نحن

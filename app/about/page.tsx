@@ -56,10 +56,10 @@ const COMMITMENTS: { title: Dict<string>; body: Dict<string> }[] = [
     },
   },
   {
-    title: { en: "Multi-church, multi-national accountability", ar: "مساءلة متعددة الكنائس والجنسيات" },
+    title: { en: "Multi-community, multi-national accountability", ar: "مساءلة متعددة المجتمعات والجنسيات" },
     body: {
-      en: "We are not a one-church project. Our accountability network spans churches and communities across Australia, the United Kingdom, and beyond.",
-      ar: "لسنا مشروعًا لكنيسة واحدة. فشبكة مساءلتنا تمتدّ عبر كنائس ومجتمعات في أستراليا وبريطانيا وما وراءها.",
+      en: "We are not a single-community project. Our accountability network spans communities across Australia, the United Kingdom, and beyond.",
+      ar: "لسنا مشروعًا لمجتمع واحد. فشبكة مساءلتنا تمتدّ عبر مجتمعات في أستراليا وبريطانيا وما وراءها.",
     },
   },
 ];
@@ -188,12 +188,12 @@ export default function AboutPage() {
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {t({
-              en: "“Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver.”",
-              ar: "«كُلُّ وَاحِدٍ كَمَا يَنْوِي بِقَلْبِهِ، لَيْسَ عَنْ حُزْنٍ أَوِ اضْطِرَارٍ، لِأَنَّ الْمُعْطِيَ الْمَسْرُورَ يُحِبُّهُ اللهُ.»",
+              en: "Give from the heart. Generosity, freely chosen, changes everything.",
+              ar: "«أعطِ من القلب. فالعطاء النابع عن اختيار حرّ يغيّر كل شيء.»",
             })}
           </blockquote>
           <cite className="block mt-5 text-[#d6d3d1] text-sm not-italic tracking-wide">
-            {t({ en: "— 2 Corinthians 9:7", ar: "— كورنثوس الثانية 9:7" })}
+            {t({ en: "— Pathways of Hope", ar: "— دروب الأمل" })}
           </cite>
         </motion.div>
       </section>
