@@ -17,6 +17,29 @@ const BOARD: { name: string; roles: Dict<string>[]; bio: Dict<string> }[] = [
       ar: "بصفته رئيسًا لمجلس إدارة دروب الأمل، يحمل وليد التزامًا عميقًا بالحوكمة الشفافة والعمل الخيري النابع من المجتمع، حرصًا على أن تظلّ رسالة المنظمة مسؤولة أمام من تخدمهم.",
     },
   },
+  {
+    name: "Sylvia Mansour",
+    roles: [
+      { en: "Director", ar: "عضو مجلس إدارة" },
+      { en: "Legal Advisor", ar: "مستشارة قانونية" },
+      { en: "Public Officer", ar: "مسؤولة عامة" },
+    ],
+    bio: {
+      en: "Sylvia holds responsibility for the organisation's legal and public obligations and governance records. Her diligence ensures Pathways of Hope meets all regulatory requirements as a registered Australian charity.",
+      ar: "تتولّى سيلفيا مسؤولية الالتزامات القانونية والعامة للمنظمة وسجلّات الحوكمة. ودقّتها تكفل وفاء دروب الأمل بجميع المتطلبات التنظيمية بوصفها جمعية خيرية أسترالية مسجّلة.",
+    },
+  },
+  {
+    name: "Hanan Morkos",
+    roles: [
+      { en: "Director", ar: "عضو مجلس إدارة" },
+      { en: "Coordinator", ar: "منسّقة" },
+    ],
+    bio: {
+      en: "As Coordinator, Hanan is committed to building sustainable charitable structures that honour both donors and recipients. Her focus is on long-term impact over short-term visibility.",
+      ar: "بصفتها منسّقة، تلتزم حنان ببناء هياكل خيرية مستدامة تُكرّم المتبرّعين والمستفيدين على حدّ سواء. وينصبّ تركيزها على الأثر طويل الأمد بدلًا من البروز قصير المدى.",
+    },
+  },
 ];
 
 const COMMITMENTS: { title: Dict<string>; body: Dict<string> }[] = [
@@ -226,7 +249,7 @@ export default function AboutPage() {
           </motion.div>
 
           <motion.div
-            className="grid grid-cols-1 gap-10 max-w-md"
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}

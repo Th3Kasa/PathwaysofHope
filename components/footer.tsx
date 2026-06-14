@@ -10,6 +10,7 @@ const NAV_LINKS: { href: string; label: Dict<string> }[] = [
   { href: "/missions/kapoeta", label: { en: "Kapoeta Shelter", ar: "ملجأ كاپويتا" } },
   { href: "/impact", label: { en: "Impact", ar: "الأثر" } },
   { href: "/about", label: { en: "About Us", ar: "من نحن" } },
+  { href: "/updates", label: { en: "Updates", ar: "المستجدّات" } },
   { href: "/governance", label: { en: "Governance", ar: "الحوكمة" } },
   { href: "/financials", label: { en: "Transparency", ar: "الشفافية" } },
   { href: "/faq", label: { en: "FAQ", ar: "الأسئلة الشائعة" } },
