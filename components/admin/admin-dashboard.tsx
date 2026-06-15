@@ -106,9 +106,13 @@ function CollapsibleCard({ title, subtitle, count, defaultOpen = false, children
 
 // ─── Login ────────────────────────────────────────────────────────────────────
 
+// The admin signs in with a password only — the account email is fixed and
+// hidden, so Better Auth still hashes the password and manages the session.
+// Must match the server's ALLOWED_ADMIN_EMAIL.
+const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL || "pathways_of_hope@outlook.com";
+
 function Login({ onSuccess }: { onSuccess: () => void }) {
   const [mode, setMode] = useState<"signin" | "setup">("signin");
-  const [email, setEmail] = useState("");
   const [pw, setPw] = useState("");
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -118,11 +122,11 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
     setLoading(true); setErr(null);
     try {
       if (mode === "setup") {
-        const { error } = await signUp.email({ email: email.trim(), password: pw, name: "Administrator" });
-        if (error) throw new Error(error.message || "Could not create the account.");
+        const { error } = await signUp.email({ email: ADMIN_EMAIL, password: pw, name: "Administrator" });
+        if (error) throw new Error(error.message || "Could not set the password.");
       } else {
-        const { error } = await signIn.email({ email: email.trim(), password: pw });
-        if (error) throw new Error(error.message || "Incorrect email or password.");
+        const { error } = await signIn.email({ email: ADMIN_EMAIL, password: pw });
+        if (error) throw new Error(error.message || "Incorrect password.");
       }
       onSuccess();
     } catch (e2) {
@@ -143,24 +147,23 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
         </div>
         <form onSubmit={submit} className={`${card} space-y-4`}>
           <div>
-            <label className="block text-sm font-medium text-[#374151] mb-1.5">Email</label>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className={input} autoComplete="username" autoFocus required />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-[#374151] mb-1.5">Password</label>
-            <input type="password" value={pw} onChange={(e) => setPw(e.target.value)} className={input} autoComplete={mode === "setup" ? "new-password" : "current-password"} required />
+            <label className="block text-sm font-medium text-[#374151] mb-1.5">
+              {mode === "setup" ? "Set admin password" : "Password"}
+            </label>
+            <input type="password" value={pw} onChange={(e) => setPw(e.target.value)} className={input} autoComplete={mode === "setup" ? "new-password" : "current-password"} autoFocus required minLength={mode === "setup" ? 10 : undefined} />
+            {mode === "setup" && <p className="text-xs text-[#9ca3af] mt-1.5">At least 10 characters. You&rsquo;ll use this password to sign in from now on.</p>}
           </div>
           {err && <Toast msg={err} kind="err" />}
           <button type="submit" disabled={loading} className={`${btnPrimary} w-full`}>
             {loading ? <Loader2 size={16} className="animate-spin" /> : <Lock size={16} />}
-            {mode === "setup" ? "Create admin account" : "Sign in"}
+            {mode === "setup" ? "Set password & enter" : "Sign in"}
           </button>
           <button
             type="button"
             onClick={() => { setMode((m) => (m === "signin" ? "setup" : "signin")); setErr(null); }}
             className="w-full text-center text-xs text-[#6b7280] hover:text-[#6366f1] transition-colors"
           >
-            {mode === "signin" ? "First time? Set up the admin account" : "Have an account? Sign in"}
+            {mode === "signin" ? "First time? Set the admin password" : "Already set up? Sign in"}
           </button>
         </form>
       </div>
