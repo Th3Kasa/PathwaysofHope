@@ -18,10 +18,28 @@ const ALLOWED_ADMIN_EMAIL = (
   process.env.ALLOWED_ADMIN_EMAIL || "pathways_of_hope@outlook.com"
 ).toLowerCase();
 
+// Resolve the site URL from explicit config first, then Vercel's own env vars.
+// If none are set we leave it undefined so Better Auth infers it from the
+// request — never fall back to localhost, which would reject production calls.
+const vercelProd = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+const vercelUrl = process.env.VERCEL_URL;
+const SITE_URL =
+  process.env.BETTER_AUTH_URL ||
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (vercelProd ? `https://${vercelProd}` : undefined) ||
+  (vercelUrl ? `https://${vercelUrl}` : undefined);
+
+const trustedOrigins = [
+  process.env.NEXT_PUBLIC_SITE_URL,
+  vercelProd ? `https://${vercelProd}` : undefined,
+  vercelUrl ? `https://${vercelUrl}` : undefined,
+].filter((u): u is string => Boolean(u));
+
 export const auth = betterAuth({
   database: new Pool({ connectionString: process.env.DATABASE_URL }),
   secret: process.env.BETTER_AUTH_SECRET,
-  baseURL: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+  baseURL: SITE_URL,
+  trustedOrigins,
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 10,
