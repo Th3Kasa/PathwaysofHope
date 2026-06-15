@@ -55,19 +55,38 @@ export async function POST(req: NextRequest) {
   });
   if (!submitRes.ok) {
     const err = await submitRes.text();
-    return NextResponse.json({ error: `MUAPI submit failed: ${err}` }, { status: 502 });
+    return NextResponse.json({ error: `MUAPI submit failed (${submitRes.status}): ${err.slice(0, 200)}` }, { status: 502 });
   }
-  const { request_id } = await submitRes.json();
-  if (!request_id) return NextResponse.json({ error: "No request_id from MUAPI" }, { status: 502 });
 
-  const imageUrl = await pollResult(String(request_id), apiKey);
-  const imgRes = await fetch(imageUrl);
-  if (!imgRes.ok) throw new Error("Failed to download generated image");
-  const imgBuffer = Buffer.from(await imgRes.arrayBuffer());
-  const contentType = imgRes.headers.get("content-type") || "image/jpeg";
+  try {
+    const submitData = await submitRes.json();
+    // Some models return the image directly on submit; otherwise we poll by id.
+    // Match the robust shape-handling used by lib/translate.ts so a different
+    // response key (id / requestId / prediction_id) doesn't break generation.
+    const directOut = submitData.outputs ?? submitData.output;
+    const directUrl = Array.isArray(directOut) ? directOut[0] : typeof directOut === "string" ? directOut : null;
+    const requestId =
+      submitData.request_id ?? submitData.id ?? submitData.requestId ?? submitData.prediction_id;
 
-  const blobUrl = await uploadFile(`sections/${goalId}-ai.jpg`, imgBuffer, contentType);
-  if (commit) await dbSetImage(goalId, blobUrl);
+    if (!directUrl && !requestId) {
+      return NextResponse.json(
+        { error: `Unexpected MUAPI response: ${JSON.stringify(submitData).slice(0, 200)}` },
+        { status: 502 }
+      );
+    }
 
-  return NextResponse.json({ ok: true, url: blobUrl, committed: commit });
+    const imageUrl = directUrl ? String(directUrl) : await pollResult(String(requestId), apiKey);
+    const imgRes = await fetch(imageUrl);
+    if (!imgRes.ok) throw new Error(`Failed to download generated image (${imgRes.status})`);
+    const imgBuffer = Buffer.from(await imgRes.arrayBuffer());
+    const contentType = imgRes.headers.get("content-type") || "image/jpeg";
+
+    const blobUrl = await uploadFile(`sections/${goalId}-ai.jpg`, imgBuffer, contentType);
+    if (commit) await dbSetImage(goalId, blobUrl);
+
+    return NextResponse.json({ ok: true, url: blobUrl, committed: commit });
+  } catch (e) {
+    // Always return a clean JSON error (timeout, download, or Blob upload).
+    return NextResponse.json({ error: `Image generation failed: ${(e as Error).message}` }, { status: 502 });
+  }
 }

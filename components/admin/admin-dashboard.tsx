@@ -571,103 +571,117 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
     }
     setFormatting(true); setToast({ msg: "Formatting text and generating images…", kind: "ok" });
 
-    const titleHint = form.titleEn.trim() ? ` — related to: ${form.titleEn}` : "";
-    const imagePromises = IMAGE_PROMPTS.map((basePrompt, i) =>
-      fetch("/api/admin/generate-image", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          goalId: `newsletter-img-${i + 1}-${editId ?? "new"}`,
-          prompt: basePrompt + titleHint,
-          commit: false,
+    try {
+      const titleHint = form.titleEn.trim() ? ` — related to: ${form.titleEn}` : "";
+      const imagePromises = IMAGE_PROMPTS.map((basePrompt, i) =>
+        fetch("/api/admin/generate-image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            goalId: `newsletter-img-${i + 1}-${editId ?? "new"}`,
+            prompt: basePrompt + titleHint,
+            commit: false,
+          }),
+        }).then(async r => {
+          const d = await r.json().catch(() => ({ error: `HTTP ${r.status}` })) as Record<string, unknown>;
+          if (!r.ok) throw new Error(String(d.error ?? `HTTP ${r.status}`));
+          return d;
+        })
+      );
+
+      const [formatRes, ...imageResults] = await Promise.allSettled([
+        fetch("/api/admin/format-post", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title: form.titleEn, body: form.bodyEn }),
         }),
-      }).then(async r => {
-        const d = await r.json().catch(() => ({ error: `HTTP ${r.status}` })) as Record<string, unknown>;
-        if (!r.ok) throw new Error(String(d.error ?? `HTTP ${r.status}`));
-        return d;
-      })
-    );
+        ...imagePromises,
+      ]);
 
-    const [formatRes, ...imageResults] = await Promise.allSettled([
-      fetch("/api/admin/format-post", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: form.titleEn, body: form.bodyEn }),
-      }),
-      ...imagePromises,
-    ]);
-
-    setFormatting(false);
-
-    // Apply formatted text — capture the exact failure reason
-    let textOk = false;
-    let textError = "";
-    if (formatRes.status === "fulfilled" && formatRes.value.ok) {
-      const d = await formatRes.value.json().catch(() => ({})) as Record<string, unknown>;
-      if (d.body) {
-        setForm(f => ({
-          ...f,
-          titleEn: d.title ? String(d.title) : f.titleEn,
-          bodyEn: String(d.body),
-          titleAr: d.titleAr ? String(d.titleAr) : f.titleAr,
-          bodyAr: d.bodyAr ? String(d.bodyAr) : f.bodyAr,
-        }));
-        textOk = true;
-      } else {
-        textError = "Model returned no text";
+      // Apply formatted text — capture the exact failure reason
+      let textOk = false;
+      let textError = "";
+      if (formatRes.status === "fulfilled" && formatRes.value.ok) {
+        const d = await formatRes.value.json().catch(() => ({})) as Record<string, unknown>;
+        if (d.body) {
+          setForm(f => ({
+            ...f,
+            titleEn: d.title ? String(d.title) : f.titleEn,
+            bodyEn: String(d.body),
+            titleAr: d.titleAr ? String(d.titleAr) : f.titleAr,
+            bodyAr: d.bodyAr ? String(d.bodyAr) : f.bodyAr,
+          }));
+          textOk = true;
+        } else {
+          textError = "Model returned no text";
+        }
+      } else if (formatRes.status === "rejected") {
+        textError = (formatRes as PromiseRejectedResult).reason?.message ?? "network error";
+      } else if (formatRes.status === "fulfilled" && !formatRes.value.ok) {
+        const d = await formatRes.value.json().catch(() => ({})) as Record<string, unknown>;
+        textError = String(d.error ?? `Format error ${formatRes.value.status}`);
       }
-    } else if (formatRes.status === "rejected") {
-      textError = (formatRes as PromiseRejectedResult).reason?.message ?? "network error";
-    } else if (formatRes.status === "fulfilled" && !formatRes.value.ok) {
-      const d = await formatRes.value.json().catch(() => ({})) as Record<string, unknown>;
-      textError = String(d.error ?? `Format error ${formatRes.value.status}`);
-    }
 
-    // Apply images (partial success is fine)
-    const urls = (imageResults as PromiseSettledResult<Record<string, unknown>>[])
-      .filter((r): r is PromiseFulfilledResult<Record<string, unknown>> => r.status === "fulfilled" && Boolean(r.value.url))
-      .map(r => r.value.url as string);
-    const imgErrors = imageResults.filter(r => r.status === "rejected").length;
+      // Apply images (partial success is fine)
+      const urls = (imageResults as PromiseSettledResult<Record<string, unknown>>[])
+        .filter((r): r is PromiseFulfilledResult<Record<string, unknown>> => r.status === "fulfilled" && Boolean(r.value.url))
+        .map(r => r.value.url as string);
+      const imgErrors = imageResults.filter(r => r.status === "rejected").length;
 
-    if (urls.length > 0) setForm(f => ({ ...f, imageUrls: urls }));
+      if (urls.length > 0) setForm(f => ({ ...f, imageUrls: urls }));
 
-    const imgNote = imgErrors ? ` (${imgErrors} image${imgErrors > 1 ? "s" : ""} failed)` : "";
-    if (textOk && urls.length > 0) {
-      setToast({ msg: `Ready — review and publish.${imgNote}`, kind: "ok" });
-    } else if (textOk) {
-      setToast({ msg: "Text formatted. Images failed — you can still publish.", kind: "err" });
-    } else {
-      // Text failed — always show the real error so we can diagnose
-      setToast({ msg: `Text formatting failed: ${textError}`, kind: "err" });
+      const imgNote = imgErrors ? ` (${imgErrors} image${imgErrors > 1 ? "s" : ""} failed)` : "";
+      if (textOk && urls.length > 0) {
+        setToast({ msg: `Ready — review and publish.${imgNote}`, kind: "ok" });
+      } else if (textOk) {
+        setToast({ msg: "Text formatted. Images failed — you can still publish.", kind: "err" });
+      } else {
+        // Text failed — always show the real error so we can diagnose
+        setToast({ msg: `Text formatting failed: ${textError}`, kind: "err" });
+      }
+    } catch (e) {
+      setToast({ msg: `Something went wrong: ${(e as Error).message}`, kind: "err" });
+    } finally {
+      setFormatting(false);
     }
   };
 
   const upload = async (file: File) => {
     setUploading(true); setToast(null);
-    const fd = new FormData();
-    fd.append("kind", "image");
-    fd.append("key", `newsletter-${editId ?? "new"}`);
-    fd.append("file", file);
-    fd.append("commit", "false");
-    const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
-    setUploading(false);
-    if (res.ok) { const d = await res.json(); setPendingImage(d.url); setToast({ msg: "Photo ready — save to publish.", kind: "ok" }); }
-    else { const d = await res.json().catch(() => ({})); setToast({ msg: d.error || "Upload failed", kind: "err" }); }
+    try {
+      const fd = new FormData();
+      fd.append("kind", "image");
+      fd.append("key", `newsletter-${editId ?? "new"}`);
+      fd.append("file", file);
+      fd.append("commit", "false");
+      const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+      if (res.ok) { const d = await res.json(); setPendingImage(d.url); setToast({ msg: "Photo ready — save to publish.", kind: "ok" }); }
+      else { const d = await res.json().catch(() => ({})); setToast({ msg: d.error || "Upload failed", kind: "err" }); }
+    } catch (e) {
+      setToast({ msg: `Upload failed: ${(e as Error).message}`, kind: "err" });
+    } finally {
+      setUploading(false);
+    }
   };
 
   const generate = async () => {
     setGenerating(true); setToast(null);
-    const prompt = form.titleEn
-      ? `${NEWSLETTER_AI_PROMPT} — scene related to: ${form.titleEn}`
-      : NEWSLETTER_AI_PROMPT;
-    const res = await fetch("/api/admin/generate-image", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ goalId: `newsletter-${editId ?? "new"}`, prompt, commit: false }),
-    });
-    setGenerating(false);
-    if (res.ok) { const d = await res.json(); setPendingImage(d.url); setToast({ msg: "AI image ready — save to publish.", kind: "ok" }); }
-    else { const d = await res.json().catch(() => ({})); setToast({ msg: d.error || "Generation failed", kind: "err" }); }
+    try {
+      const prompt = form.titleEn
+        ? `${NEWSLETTER_AI_PROMPT} — scene related to: ${form.titleEn}`
+        : NEWSLETTER_AI_PROMPT;
+      const res = await fetch("/api/admin/generate-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ goalId: `newsletter-${editId ?? "new"}`, prompt, commit: false }),
+      });
+      if (res.ok) { const d = await res.json(); setPendingImage(d.url); setToast({ msg: "AI image ready — save to publish.", kind: "ok" }); }
+      else { const d = await res.json().catch(() => ({})); setToast({ msg: d.error || "Generation failed", kind: "err" }); }
+    } catch (e) {
+      setToast({ msg: `Generation failed: ${(e as Error).message}`, kind: "err" });
+    } finally {
+      setGenerating(false);
+    }
   };
 
   const save = async (e: React.FormEvent) => {
@@ -736,20 +750,29 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
 
   const previewSrc = pendingImage ?? existingImage;
 
+  // Warm "pamphlet" accents so this section visibly matches the printed-style
+  // page it produces (terracotta + gold), distinct from the indigo admin chrome.
+  const warmBtn = "inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold transition-colors disabled:opacity-50";
+  const warmPrimary = `${warmBtn} bg-[#b45309] text-white hover:bg-[#92400e]`;
+  const warmGhost = `${warmBtn} border border-[#e4c9a0] text-[#92400e] hover:bg-[#fdf3e6]`;
+
   return (
-    <section className={card}>
+    <section className="bg-gradient-to-b from-[#fdf8f0] to-white rounded-2xl border border-[#ecdcc2] shadow-sm p-6 sm:p-8">
       <div className="flex items-start justify-between gap-3 mb-1">
-        <div>
-          <h2 className="text-lg font-semibold text-[#1e293b] flex items-center gap-2">
-            <Newspaper size={18} className="text-[#6366f1]" />
-            Newsletter / Updates
-          </h2>
-          <p className="text-sm text-[#6b7280] mt-1">
-            Publish project updates with images. Each post appears on the public <a href="/newsletter" target="_blank" className="text-[#6366f1] hover:underline">/newsletter</a> page.
-          </p>
+        <div className="flex items-start gap-3">
+          <span className="w-10 h-10 rounded-xl bg-[#b45309]/10 flex items-center justify-center flex-shrink-0">
+            <Newspaper size={18} className="text-[#b45309]" />
+          </span>
+          <div>
+            <h2 className="text-lg font-semibold text-[#1f1a14]">Newsletter / Updates</h2>
+            <p className="text-sm text-[#7a6f63] mt-1">
+              Each post publishes as a <span className="font-medium text-[#92400e]">pamphlet-style article</span> at{" "}
+              <a href="/newsletter" target="_blank" className="text-[#b45309] hover:underline">/newsletter</a> and auto-translates to Arabic.
+            </p>
+          </div>
         </div>
         {mode === "list" && (
-          <button onClick={openAdd} className={`${btnPrimary} flex-shrink-0`}>
+          <button onClick={openAdd} className={`${warmPrimary} flex-shrink-0`}>
             <Plus size={14} /> New post
           </button>
         )}
@@ -759,34 +782,52 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
 
       {/* ── Form (add / edit) ── */}
       {(mode === "add" || mode === "edit") && (
-        <form onSubmit={save} className="mt-6 space-y-5 border border-[#d6d3d1] rounded-2xl p-5">
-          <h3 className="text-sm font-semibold text-[#1e293b]">
+        <form onSubmit={save} className="mt-6 space-y-5 border-l-2 border-[#C9952A] bg-[#fdfaf4] rounded-r-2xl p-5">
+          <h3 className="text-sm font-semibold text-[#1f1a14]">
             {mode === "add" ? "New post" : "Edit post"}
           </h3>
 
           <div>
-            <label className="block text-xs font-medium text-[#374151] mb-1">Title *</label>
+            <label className="block text-xs font-medium text-[#5c5347] mb-1">Title *</label>
             <input required value={form.titleEn} onChange={e => setForm(f => ({ ...f, titleEn: e.target.value }))} className={input} placeholder="e.g. Solar System Installed" />
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-[#374151] mb-1">Body *</label>
-            <textarea required rows={8} value={form.bodyEn} onChange={e => setForm(f => ({ ...f, bodyEn: e.target.value }))} className={`${input} resize-y`} placeholder="Write the full update here…" />
+            <label className="block text-xs font-medium text-[#5c5347] mb-1">Body *</label>
+            <textarea required rows={8} value={form.bodyEn} onChange={e => setForm(f => ({ ...f, bodyEn: e.target.value }))} className={`${input} resize-y`} placeholder="Write the full update here — plain language is fine, the AI polishes it." />
           </div>
 
+          {/* AI + manual image actions */}
           <div className="flex flex-wrap gap-2">
-            <button type="button" onClick={formatAndGenerate} disabled={busy} className={btnGhost}>
+            <button type="button" onClick={formatAndGenerate} disabled={busy} className={warmPrimary}>
               {formatting ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
-              {formatting ? "Working…" : "Format with AI"}
+              {formatting ? "Working…" : "Format & illustrate with AI"}
+            </button>
+            <input ref={fileRef} type="file" accept="image/*" hidden onChange={e => e.target.files?.[0] && upload(e.target.files[0])} />
+            <button type="button" onClick={() => fileRef.current?.click()} disabled={busy} className={warmGhost}>
+              {uploading ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />} Upload photo
+            </button>
+            <button type="button" onClick={generate} disabled={busy} className={warmGhost}>
+              {generating ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />} Generate one image
             </button>
           </div>
 
+          {/* Single uploaded / generated image preview */}
+          {previewSrc && (
+            <div>
+              <p className="text-xs font-medium text-[#5c5347] mb-2">Selected image</p>
+              <div className="relative w-40 aspect-video rounded-lg overflow-hidden bg-[#f5f5f4] border border-[#ecdcc2]">
+                <img src={previewSrc} alt="Selected" className="w-full h-full object-cover" />
+              </div>
+            </div>
+          )}
+
           {form.imageUrls.length > 0 && (
             <div>
-              <p className="text-xs font-medium text-[#374151] mb-2">Generated images</p>
+              <p className="text-xs font-medium text-[#5c5347] mb-2">Article images</p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {form.imageUrls.map((url, i) => (
-                  <div key={i} className="relative aspect-video rounded-lg overflow-hidden bg-[#f5f5f4] border border-[#d6d3d1]">
+                  <div key={i} className="relative aspect-video rounded-lg overflow-hidden bg-[#f5f5f4] border border-[#ecdcc2]">
                     <img src={url} alt={`Image ${i + 1}`} className="w-full h-full object-cover" />
                   </div>
                 ))}
@@ -794,19 +835,27 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
             </div>
           )}
 
-          <div>
-            <label className="block text-xs font-medium text-[#374151] mb-1">Author</label>
-            <input value={form.author} onChange={e => setForm(f => ({ ...f, author: e.target.value }))} className={input} placeholder="Hanan Morkos" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-medium text-[#5c5347] mb-1">Author</label>
+              <input value={form.author} onChange={e => setForm(f => ({ ...f, author: e.target.value }))} className={input} placeholder="Hanan Morkos" />
+            </div>
+            {mode === "edit" && (
+              <div>
+                <label className="block text-xs font-medium text-[#5c5347] mb-1">Published date</label>
+                <input type="date" value={form.publishedAt} onChange={e => setForm(f => ({ ...f, publishedAt: e.target.value }))} className={input} />
+              </div>
+            )}
           </div>
 
           {toast && <Toast msg={toast.msg} kind={toast.kind} />}
 
           <div className="flex gap-3">
-            <button type="submit" disabled={busy} className={btnPrimary}>
+            <button type="submit" disabled={busy} className={warmPrimary}>
               {saving ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle2 size={14} />}
               {mode === "edit" ? "Save changes" : "Publish post"}
             </button>
-            <button type="button" onClick={cancel} className={btnGhost}>Cancel</button>
+            <button type="button" onClick={cancel} className={warmGhost}>Cancel</button>
           </div>
         </form>
       )}
@@ -815,27 +864,31 @@ function NewsletterSection({ config, reload }: { config: Config; reload: () => v
       {mode === "list" && (
         <div className="mt-6 space-y-3">
           {posts.length === 0 && (
-            <p className="text-sm text-[#6b7280] italic">No posts yet. Click "New post" to publish your first update.</p>
+            <p className="text-sm text-[#7a6f63] italic">No posts yet. Click &ldquo;New post&rdquo; to publish your first update.</p>
           )}
           {posts.map((post) => (
-            <div key={post.id} className="flex items-start gap-3 rounded-xl border border-[#d6d3d1] p-4">
+            <div key={post.id} className="flex items-start gap-3 rounded-xl border border-[#ecdcc2] bg-white p-4">
               {post.imageUrl && (
                 <div className="relative w-16 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-[#f5f5f4]">
                   <img src={post.imageUrl} alt="" className="w-full h-full object-cover" />
                 </div>
               )}
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-[#1e293b] truncate">{post.titleEn}</p>
+                <p className="text-sm font-semibold text-[#1f1a14] truncate">{post.titleEn}</p>
                 <p className="text-xs text-[#9ca3af] mt-0.5">
                   {post.author} · {new Date(post.publishedAt).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })}
+                  {post.bodyAr?.trim() && <span className="ml-2 text-[#C9952A] font-medium">· AR ✓</span>}
                 </p>
-                <p className="text-xs text-[#6b7280] mt-1 line-clamp-2">{post.bodyEn.slice(0, 120)}{post.bodyEn.length > 120 ? "…" : ""}</p>
+                <p className="text-xs text-[#7a6f63] mt-1 line-clamp-2">{post.bodyEn.slice(0, 120)}{post.bodyEn.length > 120 ? "…" : ""}</p>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
-                <button onClick={() => openEdit(post)} className={`${btnGhost} py-1.5 px-3 text-xs`} title="Edit post">
+                <a href={`/newsletter/${post.id}`} target="_blank" rel="noopener noreferrer" className={`${warmGhost} py-1.5 px-3 text-xs`} title="Preview the published page">
+                  <Eye size={13} /> Preview
+                </a>
+                <button onClick={() => openEdit(post)} className={`${warmGhost} py-1.5 px-3 text-xs`} title="Edit post">
                   <Pencil size={13} /> Edit
                 </button>
-                <button onClick={() => remove(post.id)} className="text-[#6b7280] hover:text-red-600 transition-colors p-1.5" title="Delete post">
+                <button onClick={() => remove(post.id)} className="text-[#7a6f63] hover:text-red-600 transition-colors p-1.5" title="Delete post">
                   <Trash2 size={15} />
                 </button>
               </div>
