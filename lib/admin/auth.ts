@@ -1,11 +1,12 @@
-import { cookies } from "next/headers";
+import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
 
-const SESSION_COOKIE = "poh_admin";
-const SESSION_MAX_AGE = 60 * 60 * 8; // 8 hours
-
+/** True when the request carries a valid Better Auth admin session. */
 export async function isAuthed(): Promise<boolean> {
-  const store = await cookies();
-  return store.get(SESSION_COOKIE)?.value === "1";
+  try {
+    const session = await auth.api.getSession({ headers: await headers() });
+    return Boolean(session?.user);
+  } catch {
+    return false;
+  }
 }
-
-export { SESSION_COOKIE, SESSION_MAX_AGE };
