@@ -121,12 +121,14 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
     e.preventDefault();
     setLoading(true); setErr(null);
     try {
+      const detail = (err: { message?: string; code?: string; status?: number; statusText?: string } | null) =>
+        err?.message || err?.statusText || (err?.code ? `Error: ${err.code}` : `Error ${err?.status ?? "unknown"}`);
       if (mode === "setup") {
         const { error } = await signUp.email({ email: ADMIN_EMAIL, password: pw, name: "Administrator" });
-        if (error) throw new Error(error.message || "Could not set the password.");
+        if (error) throw new Error(`Couldn't set the password — ${detail(error)}`);
       } else {
         const { error } = await signIn.email({ email: ADMIN_EMAIL, password: pw });
-        if (error) throw new Error(error.message || "Incorrect password.");
+        if (error) throw new Error(`Sign-in failed — ${detail(error)}`);
       }
       onSuccess();
     } catch (e2) {
