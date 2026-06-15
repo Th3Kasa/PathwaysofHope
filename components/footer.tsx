@@ -59,8 +59,8 @@ export function Footer() {
             </div>
             <p className="text-sm leading-relaxed text-[#9A8578] mb-4">
               {t({
-                en: "A faith-driven charity partnering with local leaders to bring safety, dignity, and a future to children in South Sudan.",
-                ar: "جمعية خيرية يحرّكها الإيمان، تشارك القادة المحليين لتوفير الأمان والكرامة ومستقبلٍ لأطفال جنوب السودان.",
+                en: "A compassion-driven charity partnering with local leaders to bring safety, dignity, and a future to children in South Sudan.",
+                ar: "جمعية خيرية يحرّكها التعاطف، تشارك القادة المحليين لتوفير الأمان والكرامة ومستقبلٍ لأطفال جنوب السودان.",
               })}
             </p>
             <p className="text-xs text-[#6B5A52]">Pathways of Hope Ltd · ABN 40 686 574 630</p>

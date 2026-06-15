@@ -54,24 +54,24 @@ const TIMELINE: { period: Dict<string>; title: Dict<string>; body: Dict<string> 
     period: { en: "Before 2024", ar: "قبل 2024" },
     title: { en: "The Land & First Foundations", ar: "الأرض والأسس الأولى" },
     body: {
-      en: "Triple L Orphanage and Vulnerable Children Organization, the local entity in Kapoeta, was granted a 20,000 m² parcel (100 m × 200 m) by local authorities. The site was fenced — funded by a supporting family in the United States — a water well was drilled with support from Toongabbie Church and its members, and toilets and a small initial structure were built.",
-      ar: "مُنحت منظمة Triple L للأيتام والأطفال المستضعفين، وهي الجهة المحلية في كاپويتا، قطعة أرض مساحتها 20,000 م² (100 م × 200 م) من السلطات المحلية. سُيّجت الأرض — بتمويل من عائلة داعمة في الولايات المتحدة — وحُفر بئر للمياه بدعم من كنيسة تونغابي وأعضائها، وبُنيت دورات مياه ومبنى أوّليّ صغير.",
+      en: "Triple L Orphanage and Vulnerable Children Organization, the local entity in Kapoeta, was granted a 20,000 m² parcel (100 m × 200 m) by local authorities. The site was fenced — funded by a supporting family in the United States — a water well was drilled with support from the Toongabbie community and its members, and toilets and a small initial structure were built.",
+      ar: "مُنحت منظمة Triple L للأيتام والأطفال المستضعفين، وهي الجهة المحلية في كاپويتا، قطعة أرض مساحتها 20,000 م² (100 م × 200 م) من السلطات المحلية. سُيّجت الأرض — بتمويل من عائلة داعمة في الولايات المتحدة — وحُفر بئر للمياه بدعم من مجتمع تونغابي وأعضائه، وبُنيت دورات مياه ومبنى أوّليّ صغير.",
     },
   },
   {
     period: { en: "May–June 2024", ar: "مايو–يونيو 2024" },
     title: { en: "The Sydney Fundraiser", ar: "حملة التبرّعات في سيدني" },
     body: {
-      en: "Brother Hakim's calling drew the attention of believers in Australian churches. On 8 June 2024, Toongabbie Church hosted a fundraising event in Sydney. Within weeks, approximately AU$85,000 was raised — enough to commission a 40-foot shipping container.",
-      ar: "لفتت دعوة الأخ حكيم انتباه المؤمنين في الكنائس الأسترالية. وفي 8 يونيو 2024، استضافت كنيسة تونغابي فعالية لجمع التبرّعات في سيدني. وخلال أسابيع، جُمع نحو AU$85,000 — ما يكفي لتجهيز حاوية شحن طولها 40 قدمًا.",
+      en: "Hakim's mission drew the attention of supporters in Australia. On 8 June 2024, the Toongabbie community hosted a fundraising event in Sydney. Within weeks, approximately AU$85,000 was raised — enough to commission a 40-foot shipping container.",
+      ar: "لفتت رسالة حكيم انتباه الداعمين في أستراليا. وفي 8 يونيو 2024، استضاف مجتمع تونغابي فعالية لجمع التبرّعات في سيدني. وخلال أسابيع، جُمع نحو AU$85,000 — ما يكفي لتجهيز حاوية شحن طولها 40 قدمًا.",
     },
   },
   {
     period: { en: "September–October 2024", ar: "سبتمبر–أكتوبر 2024" },
     title: { en: "Container Dispatched from Sydney", ar: "إرسال الحاوية من سيدني" },
     body: {
-      en: "The container was packed in Sydney by volunteers including Elders Mamdouh Mansour, Philip Hanna, Ezzat Morkos, Adel Mansour and many others — and shipped via Mombasa, Kenya, then by road through Nadapal to Kapoeta South.",
-      ar: "عبّأ المتطوّعون الحاوية في سيدني، ومنهم الشيخان Mamdouh Mansour وPhilip Hanna، والمهندس Michael Elmasri، وEmil Girgis وكثيرون غيرهم — ثم شُحنت عبر مومباسا في كينيا، ومنها برًّا عبر نادابال إلى كاپويتا الجنوبية.",
+      en: "The container was packed in Sydney by volunteers including Mamdouh Mansour, Philip Hanna, Ezzat Morkos, Adel Mansour and many others — and shipped via Mombasa, Kenya, then by road through Nadapal to Kapoeta South.",
+      ar: "عبّأ المتطوّعون الحاوية في سيدني، ومنهم Mamdouh Mansour وPhilip Hanna وEzzat Morkos وAdel Mansour وكثيرون غيرهم — ثم شُحنت عبر مومباسا في كينيا، ومنها برًّا عبر نادابال إلى كاپويتا الجنوبية.",
     },
   },
   {
@@ -94,8 +94,8 @@ const TIMELINE: { period: Dict<string>; title: Dict<string>; body: Dict<string> 
     period: { en: "Today", ar: "اليوم" },
     title: { en: "70 Children in Our Care", ar: "70 طفلاً في رعايتنا" },
     body: {
-      en: "The shelter now cares for 70 children. The youngest are taught at the centre during the week, and 46 children are enrolled in the local Catholic school system for the 2026 academic year — uniforms, fees and registration paid through the shelter. That number keeps growing.",
-      ar: "يرعى الملجأ الآن 70 طفلاً. يتعلّم أصغرهم في المركز خلال الأسبوع، و46 طفلاً مسجّلون في نظام المدرسة الكاثوليكية المحلية للعام الدراسي 2026 — وتُدفع تكاليف الزيّ المدرسي والرسوم والتسجيل عبر الملجأ. وهذا العدد في ازدياد مستمر.",
+      en: "The shelter now cares for 70 children. The youngest are taught at the centre during the week, and 46 children are enrolled in the local school system for the 2026 academic year — uniforms, fees and registration paid through the shelter. That number keeps growing.",
+      ar: "يرعى الملجأ الآن 70 طفلاً. يتعلّم أصغرهم في المركز خلال الأسبوع، و46 طفلاً مسجّلون في نظام المدرسة المحلية للعام الدراسي 2026 — وتُدفع تكاليف الزيّ المدرسي والرسوم والتسجيل عبر الملجأ. وهذا العدد في ازدياد مستمر.",
     },
   },
 ];
@@ -142,8 +142,8 @@ const GOAL_META: Partial<Record<GoalId, { priority: number; why: Dict<string> }>
   "ongoing-operations": {
     priority: 5,
     why: {
-      en: "Stipends for the matron and evangelist, school fees and uniforms, food, medical care — the day-to-day costs of a children's shelter, beyond any single project.",
-      ar: "رواتب للمشرفة والمبشّر، ورسوم مدرسية وأزياء، وطعام، ورعاية طبية — النفقات اليومية لملجأ أطفال، فيما يتجاوز أيّ مشروع بعينه.",
+      en: "Stipends for the matron and community facilitator, school fees and uniforms, food, medical care — the day-to-day costs of a children's shelter, beyond any single project.",
+      ar: "رواتب للمشرفة ومسهّل المجتمع، ورسوم مدرسية وأزياء، وطعام، ورعاية طبية — النفقات اليومية لملجأ أطفال، فيما يتجاوز أيّ مشروع بعينه.",
     },
   },
 };
@@ -218,8 +218,8 @@ function HeroSection() {
 
           <motion.p variants={fadeUp} className="text-[#C4AE9A] text-base sm:text-2xl max-w-xl leading-relaxed font-light">
             {t({
-              en: "A children's home in South Sudan — built by a community of believers across four continents.",
-              ar: "بيت للأطفال في جنوب السودان — بناه مجتمع من المؤمنين عبر أربع قارّات.",
+              en: "A children's home in South Sudan — built by a community of supporters across four continents.",
+              ar: "بيت للأطفال في جنوب السودان — بناه مجتمع من الداعمين عبر أربع قارّات.",
             })}
           </motion.p>
         </motion.div>
@@ -251,8 +251,8 @@ function StoryChapter1() {
             <Image
               src={img("kapoeta-story-calling", "/images/kapoeta/field/children-outdoor-activity-kapoeta.jpg")}
               alt={t({
-                en: "Children gathered at the Kapoeta shelter — the community Brother Hakim built from nothing",
-                ar: "أطفال مجتمعون في ملجأ كاپويتا — المجتمع الذي بناه الأخ حكيم من لا شيء",
+                en: "Children gathered at the Kapoeta shelter — the community Hakim built from nothing",
+                ar: "أطفال مجتمعون في ملجأ كاپويتا — المجتمع الذي بناه حكيم من لا شيء",
               })}
               fill
               className="object-cover object-center"
@@ -272,7 +272,7 @@ function StoryChapter1() {
             variants={fadeUp}
             className="text-[#6366f1] text-sm uppercase tracking-widest mb-3 font-medium"
           >
-            {t({ en: "Chapter 1 — The Calling", ar: "الفصل 1 — الدعوة" })}
+            {t({ en: "Chapter 1 — A Clear Purpose", ar: "الفصل 1 — هدف واضح" })}
           </motion.p>
           <motion.h2
             variants={fadeUp}
@@ -284,8 +284,8 @@ function StoryChapter1() {
           <motion.div variants={fadeUp} className="space-y-5 text-[#374151] text-lg leading-relaxed">
             <p>
               {t({
-                en: "Brother Hakim is a native of Kapoeta who, like so many in his generation, had migrated to the United States in search of a different life. In response to a clear calling, he returned in 2020 — leaving the United States and his family behind — to the streets where he had grown up.",
-                ar: "الأخ حكيم من أبناء كاپويتا، وقد هاجر، مثل كثيرين من جيله، إلى الولايات المتحدة بحثًا عن حياة مختلفة. واستجابةً لدعوة واضحة، عاد عام 2020 — تاركًا الولايات المتحدة وعائلته — إلى الشوارع التي نشأ فيها.",
+                en: "Hakim is a native of Kapoeta who, like so many in his generation, had migrated to the United States in search of a different life. Driven by a clear sense of purpose, he returned in 2020 — leaving the United States and his family behind — to the streets where he had grown up.",
+                ar: "حكيم من أبناء كاپويتا، وقد هاجر، مثل كثيرين من جيله، إلى الولايات المتحدة بحثًا عن حياة مختلفة. مدفوعًا بإحساس واضح بالهدف، عاد عام 2020 — تاركًا الولايات المتحدة وعائلته — إلى الشوارع التي نشأ فيها.",
               })}
             </p>
             <p>
@@ -396,8 +396,8 @@ function StoryChapter2() {
           </motion.h2>
           <motion.p variants={fadeUp} className="text-[#374151] text-lg leading-relaxed">
             {t({
-              en: "From May 2024, believers in Australia raised approximately AU$85,000 in a few weeks. The funds were used to purchase, fill, and ship a 40-foot container from Sydney to Mombasa, Kenya — and onward by road through Nadapal to Kapoeta South. Engineer Michael Elmasri designed the on-site building. Elders Mamdouh Mansour and Philip Hanna, along with many other Sydney volunteers, organised the loading and logistics.",
-              ar: "منذ مايو 2024، جمع المؤمنون في أستراليا نحو AU$85,000 في غضون أسابيع قليلة. واستُخدمت الأموال لشراء حاوية طولها 40 قدمًا وتعبئتها وشحنها من سيدني إلى مومباسا في كينيا — ومنها برًّا عبر نادابال إلى كاپويتا الجنوبية. صمّم المهندس Michael Elmasri مبنى الموقع. ونظّم الشيخان Mamdouh Mansour وPhilip Hanna، إلى جانب كثير من متطوّعي سيدني، عملية التحميل واللوجستيات.",
+              en: "From May 2024, supporters in Australia raised approximately AU$85,000 in a few weeks. The funds were used to purchase, fill, and ship a 40-foot container from Sydney to Mombasa, Kenya — and onward by road through Nadapal to Kapoeta South. Engineer Michael Elmasri designed the on-site building. Mamdouh Mansour and Philip Hanna, along with many other Sydney volunteers, organised the loading and logistics.",
+              ar: "منذ مايو 2024، جمع الداعمون في أستراليا نحو AU$85,000 في غضون أسابيع قليلة. واستُخدمت الأموال لشراء حاوية طولها 40 قدمًا وتعبئتها وشحنها من سيدني إلى مومباسا في كينيا — ومنها برًّا عبر نادابال إلى كاپويتا الجنوبية. صمّم المهندس Michael Elmasri مبنى الموقع. ونظّم Mamdouh Mansour وPhilip Hanna، إلى جانب كثير من متطوّعي سيدني، عملية التحميل واللوجستيات.",
             })}
           </motion.p>
         </motion.div>
@@ -512,19 +512,19 @@ function OnTheGround() {
       },
     },
     {
-      title: { en: "Evangelist Simon", ar: "المبشّر Simon" },
-      role: { en: "Spiritual Ministry", ar: "الخدمة الروحية" },
+      title: { en: "Simon", ar: "Simon" },
+      role: { en: "Community Facilitation", ar: "تسهيل المجتمع" },
       body: {
-        en: "Leads spiritual formation at the centre and Sunday gatherings, with all of the surrounding community welcome.",
-        ar: "يقود التكوين الروحي في المركز ولقاءات الأحد، وأبواب المركز مفتوحة لكل أهل المنطقة المحيطة.",
+        en: "Leads gatherings at the centre and regular community meetings, with all of the surrounding community welcome.",
+        ar: "يقود اللقاءات في المركز والاجتماعات المجتمعية المنتظمة، وأبواب المركز مفتوحة لكل أهل المنطقة المحيطة.",
       },
     },
     {
-      title: { en: "Catholic School Partnership", ar: "شراكة المدرسة الكاثوليكية" },
+      title: { en: "School Partnership", ar: "شراكة المدرسة المحلية" },
       role: { en: "Education", ar: "التعليم" },
       body: {
-        en: "46 children are enrolled in the local Catholic school system for the 2026 academic year. Uniforms, fees and registration are funded through the shelter.",
-        ar: "46 طفلاً مسجّلون في نظام المدرسة الكاثوليكية المحلية للعام الدراسي 2026. وتُموَّل تكاليف الزيّ المدرسي والرسوم والتسجيل عبر الملجأ.",
+        en: "46 children are enrolled in the local school system for the 2026 academic year. Uniforms, fees and registration are funded through the shelter.",
+        ar: "46 طفلاً مسجّلون في نظام المدرسة المحلية للعام الدراسي 2026. وتُموَّل تكاليف الزيّ المدرسي والرسوم والتسجيل عبر الملجأ.",
       },
     },
     {
@@ -768,7 +768,7 @@ function Gallery({ hiddenKeys = [], extraIds = [] }: { hiddenKeys?: string[]; ex
     {
       src: "/images/kapoeta/field/child-sibling-carrying-baby-kapoeta.jpg",
       alt: { en: "An older child carrying a baby sibling", ar: "طفل أكبر سنًّا يحمل رضيعًا" },
-      caption: { en: "Brothers and sisters", ar: "إخوة وأخوات" },
+      caption: { en: "Together", ar: "معًا" },
     },
     {
       src: "/images/kapoeta/field/children-sitting-bench-kapoeta.jpg",
@@ -837,7 +837,7 @@ function Gallery({ hiddenKeys = [], extraIds = [] }: { hiddenKeys?: string[]; ex
     },
     {
       src: "/images/kapoeta/field/children-school-uniforms-group-kapoeta.jpg",
-      alt: { en: "Children in school uniforms at the Kapoeta shelter — 46 enrolled in the Catholic school system for 2026", ar: "أطفال بالزيّ المدرسي في ملجأ كاپويتا — 46 ملتحقًا بالمدرسة الكاثوليكية لعام 2026" },
+      alt: { en: "Children in school uniforms at the Kapoeta shelter — 46 enrolled in the local school system for 2026", ar: "أطفال بالزيّ المدرسي في ملجأ كاپويتا — 46 ملتحقًا بالمدرسة المحلية لعام 2026" },
       caption: { en: "Going to school", ar: "ذاهبون إلى المدرسة" },
     },
     {
@@ -872,8 +872,8 @@ function Gallery({ hiddenKeys = [], extraIds = [] }: { hiddenKeys?: string[]; ex
     },
     {
       src: "/images/people/mamdouh-mansour-children-kapoeta.jpg",
-      alt: { en: "Elder Mamdouh Mansour with the children at the Kapoeta shelter — one of the Sydney volunteers who organised the container", ar: "الشيخ Mamdouh Mansour مع الأطفال في ملجأ كاپويتا — أحد متطوّعي سيدني الذين نظّموا شحن الحاوية" },
-      caption: { en: "Elder Mamdouh with the children", ar: "الشيخ Mamdouh مع الأطفال" },
+      alt: { en: "Mamdouh Mansour with the children at the Kapoeta shelter — one of the Sydney volunteers who organised the container", ar: "Mamdouh Mansour مع الأطفال في ملجأ كاپويتا — أحد متطوّعي سيدني الذين نظّموا شحن الحاوية" },
+      caption: { en: "Mamdouh with the children", ar: "Mamdouh مع الأطفال" },
     },
     {
       src: "/images/people/mamdouh-mansour-kapoeta-field-2.jpg",

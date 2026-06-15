@@ -21,20 +21,23 @@ const BOARD: { name: string; roles: Dict<string>[]; bio: Dict<string> }[] = [
     name: "Sylvia Mansour",
     roles: [
       { en: "Director", ar: "عضو مجلس إدارة" },
+      { en: "Legal Advisor", ar: "مستشارة قانونية" },
+      { en: "Public Officer", ar: "مسؤولة عامة" },
     ],
     bio: {
-      en: "Sylvia serves as a Director of Pathways of Hope, contributing to the governance and strategic direction of the organisation with a commitment to the welfare of the children in our care.",
-      ar: "تشغل سيلفيا منصب عضو في مجلس إدارة دروب الأمل، وتُسهم في حوكمة المنظمة وتوجيهها الاستراتيجي بالتزامٍ راسخ برفاه الأطفال في رعايتنا.",
+      en: "Sylvia holds responsibility for the organisation's legal and public obligations and governance records. Her diligence ensures Pathways of Hope meets all regulatory requirements as a registered Australian charity.",
+      ar: "تتولّى سيلفيا مسؤولية الالتزامات القانونية والعامة للمنظمة وسجلّات الحوكمة. ودقّتها تكفل وفاء دروب الأمل بجميع المتطلبات التنظيمية بوصفها جمعية خيرية أسترالية مسجّلة.",
     },
   },
   {
     name: "Hanan Morkos",
     roles: [
       { en: "Director", ar: "عضو مجلس إدارة" },
+      { en: "Coordinator", ar: "منسّقة" },
     ],
     bio: {
-      en: "Hanan serves as a Director of Pathways of Hope, contributing to the governance and strategic direction of the organisation with a passion for transparent, community-driven charity.",
-      ar: "تشغل حنان منصب عضو في مجلس إدارة دروب الأمل، وتُسهم في حوكمة المنظمة وتوجيهها الاستراتيجي بشغفٍ نحو العمل الخيري الشفاف النابع من المجتمع.",
+      en: "As Coordinator, Hanan is committed to building sustainable charitable structures that honour both donors and recipients. Her focus is on long-term impact over short-term visibility.",
+      ar: "بصفتها منسّقة، تلتزم حنان ببناء هياكل خيرية مستدامة تُكرّم المتبرّعين والمستفيدين على حدّ سواء. وينصبّ تركيزها على الأثر طويل الأمد بدلًا من البروز قصير المدى.",
     },
   },
 ];
@@ -76,10 +79,10 @@ const COMMITMENTS: { title: Dict<string>; body: Dict<string> }[] = [
     },
   },
   {
-    title: { en: "Multi-church, multi-national accountability", ar: "مساءلة متعددة الكنائس والجنسيات" },
+    title: { en: "Multi-community, multi-national accountability", ar: "مساءلة متعددة المجتمعات والجنسيات" },
     body: {
-      en: "We are not a one-church project. Our accountability network spans churches and communities across Australia, the United Kingdom, and beyond.",
-      ar: "لسنا مشروعًا لكنيسة واحدة. فشبكة مساءلتنا تمتدّ عبر كنائس ومجتمعات في أستراليا وبريطانيا وما وراءها.",
+      en: "We are not a single-community project. Our accountability network spans communities across Australia, the United Kingdom, and beyond.",
+      ar: "لسنا مشروعًا لمجتمع واحد. فشبكة مساءلتنا تمتدّ عبر مجتمعات في أستراليا وبريطانيا وما وراءها.",
     },
   },
 ];
@@ -208,12 +211,12 @@ export default function AboutPage() {
             style={{ fontFamily: "var(--font-serif)" }}
           >
             {t({
-              en: "\"Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver.\"",
-              ar: "«كُلُّ وَاحِدٍ كَمَا يَنْوِي بِقَلْبِهِ، لَيْسَ عَنْ حُزْنٍ أَوِ اضْطِرَارٍ، لِأَنَّ الْمُعْطِيَ الْمَسْرُورَ يُحِبُّهُ اللهُ.»",
+              en: "Give from the heart. Generosity, freely chosen, changes everything.",
+              ar: "«أعطِ من القلب. فالعطاء النابع عن اختيار حرّ يغيّر كل شيء.»",
             })}
           </blockquote>
           <cite className="block mt-5 text-[#d6d3d1] text-sm not-italic tracking-wide">
-            {t({ en: "— 2 Corinthians 9:7", ar: "— كورنثوس الثانية 9:7" })}
+            {t({ en: "— Pathways of Hope", ar: "— دروب الأمل" })}
           </cite>
         </motion.div>
       </section>

@@ -6,7 +6,7 @@ import KapoetaClient from "./kapoeta-client";
 export const metadata = {
   title: "Kapoeta Children's Shelter — Pathways of Hope",
   description:
-    "A children's home in South Sudan, founded by Brother Hakim and built by a community of believers across four continents.",
+    "A children's home in South Sudan, founded by Hakim and built by a community of supporters across four continents.",
 };
 
 // Render per request so admin photo/goal/donation changes appear immediately.

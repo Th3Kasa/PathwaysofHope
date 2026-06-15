@@ -77,8 +77,8 @@ const STEPS: { icon: typeof Search; step: string; title: Dict<string>; body: Dic
     step: "01",
     title: { en: "Identify", ar: "نكتشف" },
     body: {
-      en: "We find a trusted local leader already serving their community — someone with deep roots, genuine calling, and real results on the ground.",
-      ar: "نجد قائدًا محليًّا موثوقًا يخدم مجتمعه بالفعل — صاحب جذور عميقة ودعوةٍ صادقة ونتائج حقيقية في الميدان.",
+      en: "We find a trusted local leader already serving their community — someone with deep roots, genuine sense of purpose, and real results on the ground.",
+      ar: "نجد قائدًا محليًّا موثوقًا يخدم مجتمعه بالفعل — صاحب جذور عميقة وإحساس حقيقي بالهدف ونتائج حقيقية في الميدان.",
     },
   },
   {
@@ -95,8 +95,8 @@ const STEPS: { icon: typeof Search; step: string; title: Dict<string>; body: Dic
     step: "03",
     title: { en: "Mobilise", ar: "نحشد" },
     body: {
-      en: "We rally partners across Australia and globally — churches, families, and individuals — to resource the work for the long term.",
-      ar: "نحشد الشركاء في أستراليا والعالم — كنائس وعائلات وأفرادًا — لدعم العمل على المدى الطويل.",
+      en: "We rally partners across Australia and globally — communities, families, and individuals — to resource the work for the long term.",
+      ar: "نحشد الشركاء في أستراليا والعالم — مجتمعات وعائلات وأفرادًا — لدعم العمل على المدى الطويل.",
     },
   },
 ];
@@ -129,7 +129,7 @@ const PHOTOS: { imageKey: string; src: string; alt: string; caption: Dict<string
   {
     imageKey: "home-strip-5",
     src: "/images/kapoeta/field/children-school-uniforms-group-kapoeta.jpg",
-    alt: "Children in school uniforms enrolled in the Catholic school system, Kapoeta 2025",
+    alt: "Children in school uniforms enrolled in the local school system, Kapoeta 2025",
     caption: { en: "Going to school", ar: "إلى المدرسة" },
   },
   {
@@ -141,7 +141,7 @@ const PHOTOS: { imageKey: string; src: string; alt: string; caption: Dict<string
   {
     imageKey: "home-strip-7",
     src: "/images/people/mamdouh-mansour-children-kapoeta.jpg",
-    alt: "Elder Mamdouh Mansour from Sydney with the children in Kapoeta",
+    alt: "Mamdouh Mansour from Sydney with the children in Kapoeta",
     caption: { en: "Partners from Australia", ar: "شركاء من أستراليا" },
   },
 ];
@@ -209,7 +209,7 @@ export default function HomeClient() {
               variants={fadeUp}
               className="text-[#d6d3d1] text-xs font-bold uppercase tracking-[0.25em] mb-4 sm:mb-5 drop-shadow"
             >
-              {t({ en: "Faith · Partnership · Dignity", ar: "إيمان · شراكة · كرامة" })}
+              {t({ en: "Compassion · Partnership · Dignity", ar: "تعاطف · شراكة · كرامة" })}
             </motion.p>
             <motion.h1
               variants={fadeUp}
@@ -217,8 +217,8 @@ export default function HomeClient() {
               style={{ fontFamily: "var(--font-serif)" }}
             >
               {t({
-                en: "Transforming lives through faith, partnership, and dignity.",
-                ar: "نحوّل الحياة بالإيمان والشراكة والكرامة.",
+                en: "Transforming lives through compassion, partnership, and dignity.",
+                ar: "نحوّل الحياة بالتعاطف والشراكة والكرامة.",
               })}
             </motion.h1>
             <motion.p variants={fadeUp} className="text-base sm:text-xl text-[#C4AE9A] max-w-xl mb-8 sm:mb-10 leading-relaxed">
@@ -375,8 +375,8 @@ export default function HomeClient() {
               country={t({ en: "South Sudan", ar: "جنوب السودان" })}
               title={t({ en: "Kapoeta Children's Shelter", ar: "ملجأ كاپويتا للأطفال" })}
               summary={t({
-                en: "Children given safety, meals, and schooling in one of South Sudan's most remote towns — through the work of a local leader and a global community of believers.",
-                ar: "أطفالٌ نالوا الأمان والطعام والتعليم في واحدةٍ من أبعد بلدات جنوب السودان — بفضل عمل قائدٍ محلي ومجتمعٍ عالمي من المؤمنين.",
+                en: "Children given safety, meals, and schooling in one of South Sudan's most remote towns — through the work of a local leader and a global community of supporters.",
+                ar: "أطفالٌ نالوا الأمان والطعام والتعليم في واحدةٍ من أبعد بلدات جنوب السودان — بفضل عمل قائدٍ محلي ومجتمعٍ عالمي من الداعمين.",
               })}
               imageSrc={img("home-mission-card", "/images/kapoeta/field/children-large-group-activity-kapoeta.jpg")}
               imageAlt="Children gathered together at the Kapoeta Children's Shelter"

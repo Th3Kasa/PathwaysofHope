@@ -30,16 +30,16 @@ const items: Item[] = [
     icon: Users,
     heading: { en: "On-the-ground leadership", ar: "قيادة ميدانية محلية" },
     body: {
-      en: "Brother Hakim lives and works in Kapoeta — local leadership, not outsider management.",
-      ar: "الأخ حكيم يعيش ويعمل في كاپويتا — قيادة محلية من القلب، لا إدارة من الخارج.",
+      en: "Hakim lives and works in Kapoeta — local leadership, not outsider management.",
+      ar: "حكيم يعيش ويعمل في كاپويتا — قيادة محلية من القلب، لا إدارة من الخارج.",
     },
   },
   {
     icon: Globe,
     heading: { en: "Multi-continental partnership", ar: "شراكة عابرة للقارات" },
     body: {
-      en: "Multiple churches from Australia and communities of Australia, the US, UK, and Egypt.",
-      ar: "كنيسة تونغابي ومجتمع من الشركاء في أستراليا والولايات المتحدة وبريطانيا ومصر.",
+      en: "The Toongabbie community and a network of partners across Australia, the US, UK, and Egypt.",
+      ar: "مجتمع تونغابي وشبكة من الشركاء في أستراليا والولايات المتحدة وبريطانيا ومصر.",
     },
   },
 ];
