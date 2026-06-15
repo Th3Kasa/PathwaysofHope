@@ -249,7 +249,7 @@ export default function AboutPage() {
           </motion.div>
 
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
@@ -260,9 +260,9 @@ export default function AboutPage() {
                 key={person.name}
                 variants={fadeUp}
                 whileHover={{ y: -4 }}
-                className="bg-white rounded-2xl border border-[#d6d3d1] overflow-hidden shadow-sm transition-shadow hover:shadow-md"
+                className="bg-white rounded-2xl border border-[#d6d3d1] overflow-hidden shadow-sm transition-shadow hover:shadow-md flex flex-col"
               >
-                <div className="p-7">
+                <div className="p-7 flex flex-col h-full">
                   <h3
                     className="text-xl font-semibold text-[#1e293b] mb-2"
                     style={{ fontFamily: "var(--font-serif)" }}

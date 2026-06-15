@@ -78,7 +78,7 @@ export default function FinancialsPage() {
           {[
             { value: "A$85,000", label: { en: "Raised in the 2024 opening campaign", ar: "جُمعت في حملة الافتتاح عام 2024" } },
             { value: formatAUDFull(DELIVERED_TOTAL), label: { en: "Already delivered on the ground", ar: "أُنجزت بالفعل على أرض الواقع" } },
-            { value: "100%", label: { en: "Of donations reach the field", ar: "من التبرّعات تصل إلى الميدان" } },
+            { value: "100%", label: { en: "Of donations support the children (less unavoidable fees)", ar: "من التبرّعات تدعم الأطفال (باستثناء الرسوم الضرورية)" } },
           ].map((s) => (
             <motion.div key={s.label.en} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.4 }} variants={fadeUp}>
               <div className="text-3xl sm:text-4xl font-light mb-2" style={{ fontFamily: "var(--font-serif)", color: "#C9952A" }}>{s.value}</div>

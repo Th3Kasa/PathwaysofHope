@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
-import { cookies } from "next/headers";
 import { KAPOETA_GOALS } from "@/lib/goals";
+import { getConfig, type AdminConfig } from "@/lib/admin/store";
+import { getEffectiveGoals } from "@/lib/admin/goals-helper";
 
 // Cache totals for 60 seconds to avoid hammering Stripe.
 export const revalidate = 60;
@@ -11,14 +12,33 @@ const getStripe = () =>
 
 type Totals = Record<string, { raised: number; supporters: number }>;
 
-function emptyTotals(): Totals {
+function emptyTotalsFor(config: AdminConfig | null): Totals {
   const t: Totals = {};
-  for (const g of KAPOETA_GOALS) t[g.id] = { raised: 0, supporters: 0 };
+  const goals = config ? getEffectiveGoals(config) : KAPOETA_GOALS;
+  for (const g of goals) t[g.id] = { raised: 0, supporters: 0 };
   return t;
 }
 
+/** Add manually-recorded offline gifts: each entry is +amount and +1 supporter. */
+function applyManualDonations(totals: Totals, config: AdminConfig | null) {
+  if (!config?.manualDonations) return;
+  for (const d of config.manualDonations) {
+    if (d.goalId in totals && typeof d.amount === "number" && d.amount > 0) {
+      totals[d.goalId].raised += d.amount;
+      totals[d.goalId].supporters += 1;
+    }
+  }
+}
+
 export async function GET() {
-  const totals = emptyTotals();
+  let config: AdminConfig | null = null;
+  try {
+    config = await getConfig();
+  } catch {
+    config = null;
+  }
+
+  const totals = emptyTotalsFor(config);
 
   try {
     const stripe = getStripe();
@@ -46,21 +66,8 @@ export async function GET() {
       }
     }
 
-    // Manual adjustments from the admin panel (offline/bank-transfer gifts).
-    try {
-      const store = await cookies();
-      const raw = store.get("poh_adjustments")?.value;
-      if (raw) {
-        const adjustments = JSON.parse(Buffer.from(raw, "base64").toString()) as Record<string, number>;
-        for (const [id, amount] of Object.entries(adjustments)) {
-          if (id in totals && typeof amount === "number" && amount > 0) {
-            totals[id].raised += amount;
-          }
-        }
-      }
-    } catch {
-      // Ignore malformed adjustment cookie — never inflate on error.
-    }
+    // Manually-recorded offline gifts (bank transfer / direct debit) from admin.
+    applyManualDonations(totals, config);
 
     // Round raised figures.
     for (const id of Object.keys(totals)) {
@@ -71,9 +78,15 @@ export async function GET() {
       headers: { "Cache-Control": "s-maxage=60, stale-while-revalidate" },
     });
   } catch (err) {
-    console.warn("[totals] Stripe fetch failed, returning zeroed totals:", err);
-    // Never inflate figures — on failure, everything reads A$0.
-    return NextResponse.json(emptyTotals(), {
+    console.warn("[totals] Stripe fetch failed, returning manual totals only:", err);
+    // Stripe failed — still reflect manually-recorded offline gifts so the
+    // admin's entries appear on the bars even if Stripe is unreachable.
+    const fallback = emptyTotalsFor(config);
+    applyManualDonations(fallback, config);
+    for (const id of Object.keys(fallback)) {
+      fallback[id].raised = Math.round(fallback[id].raised);
+    }
+    return NextResponse.json(fallback, {
       headers: { "Cache-Control": "s-maxage=30, stale-while-revalidate" },
     });
   }

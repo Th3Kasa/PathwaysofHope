@@ -81,8 +81,8 @@ export default function MissionsClient() {
           </h2>
           <p className="text-[#6b7280] mb-8">
             {t({
-              en: "100% of what you give reaches the children. No exceptions.",
-              ar: "‏100% مما تتبرّع به يصل إلى الأطفال. دون استثناء.",
+              en: "100% of donations support the children (less any unavoidable bank, transfer or currency conversion fees).",
+              ar: "100% من التبرّعات تدعم الأطفال (باستثناء أي رسوم بنكية أو تحويل أو صرف عملة لا مناص منها).",
             })}
           </p>
           <DonateButton size="lg">{t({ en: "Give to Kapoeta", ar: "تبرّع لكاپويتا" })}</DonateButton>

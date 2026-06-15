@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { getGoalById, getPart, type Frequency } from "@/lib/goals";
+import { getPart, type Frequency } from "@/lib/goals";
 import { feeFor, stripeRecurring, isRecurring } from "@/lib/donation";
+import { getConfig } from "@/lib/admin/store";
+import { getEffectiveGoals } from "@/lib/admin/goals-helper";
 
 const getStripe = () =>
   new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2026-04-22.dahlia" });
@@ -32,7 +34,9 @@ export async function POST(req: NextRequest) {
     const body = (await req.json()) as CheckoutBody;
     const { goalId, partId, amountAud, frequency, quantity, coverFee } = body;
 
-    const goal = getGoalById(goalId);
+    const config = await getConfig();
+    const effectiveGoals = getEffectiveGoals(config);
+    const goal = effectiveGoals.find((g) => g.id === goalId);
     if (!goal) {
       return NextResponse.json({ error: "Unknown donation goal" }, { status: 400 });
     }

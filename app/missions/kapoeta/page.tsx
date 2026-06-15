@@ -1,12 +1,16 @@
 import { KAPOETA_GOALS } from "@/lib/goals";
-import KapoetaClient from "./kapoeta-client";
 import { getConfig } from "@/lib/admin/store";
+import { getEffectiveGoals } from "@/lib/admin/goals-helper";
+import KapoetaClient from "./kapoeta-client";
 
 export const metadata = {
   title: "Kapoeta Children's Shelter — Pathways of Hope",
   description:
     "A children's home in South Sudan, founded by Hakim and built by a community of supporters across four continents.",
 };
+
+// Render per request so admin photo/goal/donation changes appear immediately.
+export const dynamic = "force-dynamic";
 
 async function getTotals() {
   try {
@@ -22,6 +26,20 @@ async function getTotals() {
 }
 
 export default async function KapoetaPage() {
-  const [totals, { images, titles }] = await Promise.all([getTotals(), getConfig()]);
-  return <KapoetaClient totals={totals} goals={KAPOETA_GOALS} imageOverrides={images} titleOverrides={titles} />;
+  const [totals, config] = await Promise.all([getTotals(), getConfig()]);
+  const effectiveGoals = getEffectiveGoals(config);
+  // Only show original Kapoeta goals on the mission page (not extra goals from other missions)
+  const staticIds = new Set(KAPOETA_GOALS.map((g) => g.id));
+  const goals = effectiveGoals.filter((g) => staticIds.has(g.id));
+
+  return (
+    <KapoetaClient
+      totals={totals}
+      goals={goals}
+      images={config.images}
+      captions={config.captions}
+      hiddenGalleryKeys={config.hiddenGalleryKeys ?? []}
+      galleryExtraIds={config.galleryExtraIds ?? []}
+    />
+  );
 }

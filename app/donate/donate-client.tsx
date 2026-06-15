@@ -3,19 +3,22 @@
 import { DonateHub } from "@/components/donate-hub";
 import { useT, type Dict } from "@/lib/i18n";
 import { ShieldCheck, FileText, HeartHandshake, type LucideIcon } from "lucide-react";
+import type { Goal } from "@/lib/goals";
 
 interface Props {
   totals: Record<string, { raised: number; supporters: number }> | null;
   imageOverrides?: Record<string, string>;
+  captionOverrides?: Record<string, string>;
+  goals: Goal[];
 }
 
 const TRUST: { icon: LucideIcon; label: Dict<string> }[] = [
   { icon: ShieldCheck, label: { en: "Secure checkout via Stripe", ar: "دفع آمن عبر Stripe" } },
   { icon: FileText, label: { en: "DGR — tax-deductible invoice emailed", ar: "فاتورة معفاة من الضرائب (DGR) تُرسل بالبريد" } },
-  { icon: HeartHandshake, label: { en: "100% reaches the children", ar: "100% يصل إلى الأطفال" } },
+  { icon: HeartHandshake, label: { en: "100% of donations support the children (less unavoidable fees)", ar: "100% من التبرّعات تدعم الأطفال (باستثناء الرسوم التي لا مناص منها)" } },
 ];
 
-export function DonateClient({ totals, imageOverrides }: Props) {
+export function DonateClient({ totals, imageOverrides, captionOverrides, goals }: Props) {
   const t = useT();
   return (
     <div className="bg-[#e7e5e4] min-h-screen">
@@ -38,7 +41,7 @@ export function DonateClient({ totals, imageOverrides }: Props) {
           </p>
         </div>
 
-        <DonateHub totals={totals} imageOverrides={imageOverrides} />
+        <DonateHub totals={totals} imageOverrides={imageOverrides} captionOverrides={captionOverrides} goals={goals} />
 
         <div className="mt-8 sm:mt-14 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 text-center">
           {TRUST.map((item) => {

@@ -1,14 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { randomBytes } from "node:crypto";
 import { isAuthed } from "@/lib/admin/auth";
-import { getConfig, saveConfig, uploadFile } from "@/lib/admin/store";
-import { KAPOETA_GOALS } from "@/lib/goals";
-import { ALL_SECTION_KEYS } from "@/lib/admin/sections";
+import { uploadFile, dbSetImage, dbAddReport } from "@/lib/admin/store";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const MAX_BYTES = 15 * 1024 * 1024; // 15 MB
+const MAX_BYTES = 15 * 1024 * 1024;
 
 export async function POST(req: NextRequest) {
   if (!(await isAuthed())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -22,7 +20,6 @@ export async function POST(req: NextRequest) {
   if (file.size > MAX_BYTES) return NextResponse.json({ error: "File too large (max 15 MB)" }, { status: 400 });
 
   const buffer = Buffer.from(await file.arrayBuffer());
-  const config = await getConfig();
 
   if (kind === "report") {
     if (file.type !== "application/pdf") return NextResponse.json({ error: "Reports must be PDF" }, { status: 400 });
@@ -30,21 +27,19 @@ export async function POST(req: NextRequest) {
     const year = String(form.get("year") ?? new Date().getFullYear()).trim();
     const id = randomBytes(8).toString("hex");
     const url = await uploadFile(`reports/${id}.pdf`, buffer, "application/pdf");
-    config.reports.unshift({ id, title, year, url, uploadedAt: new Date().toISOString() });
-    await saveConfig(config);
+    await dbAddReport({ id, title, year, url, uploadedAt: new Date().toISOString() });
     return NextResponse.json({ ok: true, url });
   }
 
   if (kind === "image") {
     const key = String(form.get("key") ?? "");
-    const validKeys = [...ALL_SECTION_KEYS, ...KAPOETA_GOALS.map((g) => g.id)];
-    if (!validKeys.includes(key)) return NextResponse.json({ error: "Unknown section" }, { status: 400 });
+    if (!key || !/^[a-z0-9-]+$/.test(key)) return NextResponse.json({ error: "Invalid key" }, { status: 400 });
     if (!file.type.startsWith("image/")) return NextResponse.json({ error: "File must be an image" }, { status: 400 });
     const ext = file.type.split("/")[1]?.replace("jpeg", "jpg") || "jpg";
     const url = await uploadFile(`sections/${key}-${randomBytes(4).toString("hex")}.${ext}`, buffer, file.type);
-    config.images[key] = url;
-    await saveConfig(config);
-    return NextResponse.json({ ok: true, url });
+    const commit = String(form.get("commit") ?? "true") === "true";
+    if (commit) await dbSetImage(key, url);
+    return NextResponse.json({ ok: true, url, committed: commit });
   }
 
   return NextResponse.json({ error: "Unknown kind" }, { status: 400 });

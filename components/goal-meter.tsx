@@ -9,7 +9,7 @@ import {
 } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { formatAUDFull } from "@/lib/utils";
-import type { Goal } from "@/lib/goals";
+import type { Goal, GoalId } from "@/lib/goals";
 import { useLang, useT } from "@/lib/i18n";
 import { GOAL_AR } from "@/lib/goals-i18n";
 
@@ -26,10 +26,10 @@ export function GoalMeter({
 }: GoalMeterProps) {
   const { lang } = useLang();
   const t = useT();
-  const arGoal = GOAL_AR[goal.id];
-  const title = lang === "ar" ? arGoal.title : goal.title;
-  const description = lang === "ar" ? arGoal.description : goal.description;
-  const unitLabel = lang === "ar" ? arGoal.unitLabel ?? goal.unitLabel : goal.unitLabel;
+  const arGoal = GOAL_AR[goal.id as GoalId];
+  const title = lang === "ar" ? (arGoal?.title ?? goal.title) : goal.title;
+  const description = lang === "ar" ? (arGoal?.description ?? goal.description) : goal.description;
+  const unitLabel = lang === "ar" ? (arGoal?.unitLabel ?? goal.unitLabel) : goal.unitLabel;
 
   const raised = raisedProp ?? 0;
   const supporters = supportersProp ?? 0;
@@ -177,16 +177,22 @@ export function GoalMeter({
 
       {/* Bottom row */}
       <div className="flex items-center justify-between mt-3">
-        {/* % funded */}
-        <motion.p
-          className="text-sm font-semibold"
-          style={{ color: "#C9952A" }}
+        {/* % funded + remaining */}
+        <motion.div
+          className="flex flex-col"
           initial={{ opacity: 0, x: -8 }}
           animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -8 }}
           transition={{ delay: 0.5, duration: 0.5 }}
         >
-          {percentage}% {t({ en: "funded", ar: "مموَّل" })}
-        </motion.p>
+          <p className="text-sm font-semibold" style={{ color: "#C9952A" }}>
+            {percentage}% {t({ en: "funded", ar: "مموَّل" })}
+          </p>
+          {percentage < 100 && (
+            <p className="text-xs text-[#6b7280] mt-0.5">
+              {formatAUDFull(Math.max(goal.goalAmount - raised, 0))} {t({ en: "remaining", ar: "متبقٍّ" })}
+            </p>
+          )}
+        </motion.div>
 
         {/* Supporters */}
         <motion.div

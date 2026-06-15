@@ -26,19 +26,19 @@ export const metadata: Metadata = {
     template: "%s · Pathways of Hope",
   },
   description:
-    "A compassion-driven Australian charity partnering with local leaders to bring safety, education and a sustainable future to children in Kapoeta, South Sudan. 100% of donations reach the children.",
+    "A compassion-driven Australian charity partnering with local leaders to bring safety, education and a sustainable future to children in Kapoeta, South Sudan. 100% of donations support the children.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://pathwaysofhope.org.au"),
   openGraph: {
     type: "website",
     siteName: "Pathways of Hope",
     title: "Pathways of Hope — Kapoeta Children's Shelter",
-    description: "Safety, education and a future for children in Kapoeta, South Sudan. 100% of donations reach the children.",
+    description: "Safety, education and a future for children in Kapoeta, South Sudan. 100% of donations support the children.",
     images: ["/logo.png"],
   },
   twitter: {
     card: "summary",
     title: "Pathways of Hope — Kapoeta Children's Shelter",
-    description: "Safety, education and a future for children in Kapoeta, South Sudan. 100% of donations reach the children.",
+    description: "Safety, education and a future for children in Kapoeta, South Sudan. 100% of donations support the children.",
     images: ["/logo.png"],
   },
 };

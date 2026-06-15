@@ -23,8 +23,8 @@ export function BankTransferPanel() {
           </h3>
           <p className="text-xs text-[#6b7280] leading-relaxed mt-0.5">
             {t({
-              en: "Donate by bank transfer to skip the card processing fee — 100% reaches the children.",
-              ar: "تبرّع بالتحويل المصرفي لتتجاوز رسم معالجة البطاقة — 100% يصل إلى الأطفال.",
+              en: "Donate by bank transfer to skip the card processing fee — 100% of your gift supports the children.",
+              ar: "تبرّع بالتحويل المصرفي لتتجاوز رسم معالجة البطاقة — 100% من تبرّعك يدعم الأطفال.",
             })}
           </p>
         </div>

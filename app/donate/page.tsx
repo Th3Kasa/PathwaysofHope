@@ -1,5 +1,9 @@
 import { DonateClient } from "@/app/donate/donate-client";
 import { getConfig } from "@/lib/admin/store";
+import { getEffectiveGoals } from "@/lib/admin/goals-helper";
+
+// Render per request so admin photo/goal/donation changes appear immediately.
+export const dynamic = "force-dynamic";
 
 async function getTotals() {
   try {
@@ -13,6 +17,7 @@ async function getTotals() {
 }
 
 export default async function DonatePage() {
-  const [totals, { images }] = await Promise.all([getTotals(), getConfig()]);
-  return <DonateClient totals={totals} imageOverrides={images} />;
+  const [totals, config] = await Promise.all([getTotals(), getConfig()]);
+  const goals = getEffectiveGoals(config);
+  return <DonateClient totals={totals} imageOverrides={config.images} captionOverrides={config.captions} goals={goals} />;
 }
