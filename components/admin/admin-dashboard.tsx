@@ -8,6 +8,7 @@ import {
   Plus, Eye, EyeOff, Landmark, ChevronDown, Newspaper, Pencil,
 } from "lucide-react";
 import { MANAGED_IMAGES, MANAGED_IMAGE_GROUPS, defaultAiPrompt, galleryExtraKey, KAPOETA_GALLERY_GROUP } from "@/lib/managed-images";
+import { signIn, signUp, signOut } from "@/lib/auth-client";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -106,6 +107,8 @@ function CollapsibleCard({ title, subtitle, count, defaultOpen = false, children
 // ─── Login ────────────────────────────────────────────────────────────────────
 
 function Login({ onSuccess }: { onSuccess: () => void }) {
+  const [mode, setMode] = useState<"signin" | "setup">("signin");
+  const [email, setEmail] = useState("");
   const [pw, setPw] = useState("");
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -113,10 +116,20 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true); setErr(null);
-    const res = await fetch("/api/admin/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password: pw }) });
-    setLoading(false);
-    if (res.ok) onSuccess();
-    else { const d = await res.json().catch(() => ({})); setErr(d.error || "Incorrect password"); }
+    try {
+      if (mode === "setup") {
+        const { error } = await signUp.email({ email: email.trim(), password: pw, name: "Administrator" });
+        if (error) throw new Error(error.message || "Could not create the account.");
+      } else {
+        const { error } = await signIn.email({ email: email.trim(), password: pw });
+        if (error) throw new Error(error.message || "Incorrect email or password.");
+      }
+      onSuccess();
+    } catch (e2) {
+      setErr((e2 as Error).message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -130,12 +143,24 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
         </div>
         <form onSubmit={submit} className={`${card} space-y-4`}>
           <div>
+            <label className="block text-sm font-medium text-[#374151] mb-1.5">Email</label>
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className={input} autoComplete="username" autoFocus required />
+          </div>
+          <div>
             <label className="block text-sm font-medium text-[#374151] mb-1.5">Password</label>
-            <input type="password" value={pw} onChange={(e) => setPw(e.target.value)} className={input} autoFocus required />
+            <input type="password" value={pw} onChange={(e) => setPw(e.target.value)} className={input} autoComplete={mode === "setup" ? "new-password" : "current-password"} required />
           </div>
           {err && <Toast msg={err} kind="err" />}
           <button type="submit" disabled={loading} className={`${btnPrimary} w-full`}>
-            {loading ? <Loader2 size={16} className="animate-spin" /> : <Lock size={16} />} Sign in
+            {loading ? <Loader2 size={16} className="animate-spin" /> : <Lock size={16} />}
+            {mode === "setup" ? "Create admin account" : "Sign in"}
+          </button>
+          <button
+            type="button"
+            onClick={() => { setMode((m) => (m === "signin" ? "setup" : "signin")); setErr(null); }}
+            className="w-full text-center text-xs text-[#6b7280] hover:text-[#6366f1] transition-colors"
+          >
+            {mode === "signin" ? "First time? Set up the admin account" : "Have an account? Sign in"}
           </button>
         </form>
       </div>
@@ -159,7 +184,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
 
   useEffect(() => { load(); }, [load]);
 
-  const logout = async () => { await fetch("/api/admin/logout", { method: "POST" }); onLogout(); };
+  const logout = async () => { await signOut(); onLogout(); };
 
   return (
     <div className="bg-[#e7e5e4] min-h-screen">
