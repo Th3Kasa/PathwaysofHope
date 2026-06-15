@@ -2,10 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useT, useLang } from "@/lib/i18n";
 import type { NewsletterPost } from "@/lib/admin/store";
 import { DonateButton } from "@/components/donate-button";
-import { Calendar, User, ArrowLeft, MapPin } from "lucide-react";
+import { Calendar, User, ArrowLeft, MapPin, Loader2 } from "lucide-react";
 
 function splitIntoParagraphs(text: string): string[] {
   return text.split(/\n\n+/).map((p) => p.trim()).filter(Boolean);
@@ -14,10 +15,36 @@ function splitIntoParagraphs(text: string): string[] {
 export function NewsletterPostClient({ post }: { post: NewsletterPost }) {
   const t = useT();
   const { lang } = useLang();
+
+  // Arabic is translated on-demand the first time the visitor switches to
+  // Arabic, then cached in the DB. Until it arrives, we show English.
+  const [arabic, setArabic] = useState<{ titleAr?: string; bodyAr?: string }>({
+    titleAr: post.titleAr,
+    bodyAr: post.bodyAr,
+  });
+  const [translating, setTranslating] = useState(false);
+
+  useEffect(() => {
+    if (lang !== "ar" || arabic.bodyAr?.trim() || translating) return;
+    let active = true;
+    setTranslating(true);
+    fetch("/api/newsletter/translate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: post.id }),
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (active && d?.bodyAr) setArabic({ titleAr: d.titleAr, bodyAr: d.bodyAr }); })
+      .catch(() => {})
+      .finally(() => { if (active) setTranslating(false); });
+    return () => { active = false; };
+  }, [lang, arabic.bodyAr, translating, post.id]);
+
   // Show the Arabic version when the site is in Arabic and a translation exists.
-  const isAr = lang === "ar" && Boolean(post.bodyAr?.trim());
-  const title = isAr ? post.titleAr || post.titleEn : post.titleEn;
-  const paragraphs = splitIntoParagraphs(isAr ? post.bodyAr! : post.bodyEn);
+  const isAr = lang === "ar" && Boolean(arabic.bodyAr?.trim());
+  const showTranslating = lang === "ar" && translating && !isAr;
+  const title = isAr ? arabic.titleAr || post.titleEn : post.titleEn;
+  const paragraphs = splitIntoParagraphs(isAr ? arabic.bodyAr! : post.bodyEn);
   const images = post.imageUrls?.length ? post.imageUrls : post.imageUrl ? [post.imageUrl] : [];
 
   // Editorial structure: first paragraph = standfirst lead; rest = body.
@@ -88,6 +115,13 @@ export function NewsletterPostClient({ post }: { post: NewsletterPost }) {
             {dateStr}
           </span>
         </div>
+
+        {showTranslating && (
+          <div className="flex items-center justify-center gap-2 text-sm text-[#92400e] bg-[#fdf3e6] border border-[#e4c9a0] rounded-lg py-2 px-4 mb-8">
+            <Loader2 size={14} className="animate-spin" />
+            {t({ en: "Translating to Arabic…", ar: "جارٍ الترجمة إلى العربية…" })}
+          </div>
+        )}
 
         {/* Hero image with caption */}
         {images[0] && (
