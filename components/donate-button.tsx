@@ -30,16 +30,16 @@ export function DonateButton({
   };
 
   const variantClasses = {
-    primary: "bg-[#6366f1] text-white hover:bg-[#4f46e5]",
-    outline: "border-2 border-[#6366f1] text-[#6366f1] hover:bg-[#6366f1] hover:text-white",
-    ghost: "text-[#6366f1] hover:bg-[#d6d3d1]",
+    primary: "bg-[#4f46e5] text-white hover:bg-[#4338ca] shadow-sm",
+    outline: "border-2 border-[#4f46e5] text-[#4f46e5] hover:bg-[#4f46e5] hover:text-white",
+    ghost: "text-[#4f46e5] hover:bg-[#d6d3d1]",
   };
 
   return (
     <Link
       href={href}
       className={cn(
-        "inline-flex items-center justify-center font-semibold rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#6366f1] focus:ring-offset-2",
+        "inline-flex items-center justify-center font-semibold rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4f46e5] focus-visible:ring-offset-2",
         sizeClasses[size],
         variantClasses[variant],
         className
